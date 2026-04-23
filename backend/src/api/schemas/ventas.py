@@ -1,0 +1,134 @@
+from __future__ import annotations
+
+from decimal import Decimal, ROUND_HALF_UP
+
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_serializer, field_validator
+
+from src.models import Pago, Venta
+
+MONEY_QUANT = Decimal("0.01")
+
+
+def to_money(value: Decimal) -> Decimal:
+    return Decimal(str(value)).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
+
+
+class CreatePagoRequest(BaseModel):
+    medio: str = Field(min_length=1)
+    monto: Decimal
+
+    @field_validator("medio")
+    @classmethod
+    def validate_medio(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("medio is required")
+        return cleaned
+
+    @field_validator("monto")
+    @classmethod
+    def validate_monto(cls, value: Decimal) -> Decimal:
+        amount = to_money(value)
+        if amount <= 0:
+            raise ValueError("monto must be > 0")
+        return amount
+
+
+class CreateVentaRequest(BaseModel):
+    empresa: str = Field(min_length=1)
+    tipo: str = Field(min_length=1)
+    numero_referencia: str = Field(min_length=1)
+    descripcion: str = Field(min_length=1)
+    valor_total: Decimal
+    cliente_id: int | None = None
+    pagos: list[CreatePagoRequest] = Field(min_length=1)
+
+    @field_validator("empresa", "tipo", "numero_referencia", "descripcion")
+    @classmethod
+    def validate_non_empty_text(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("field is required")
+        return cleaned
+
+    @field_validator("valor_total")
+    @classmethod
+    def validate_valor_total(cls, value: Decimal) -> Decimal:
+        total = to_money(value)
+        if total < 0:
+            raise ValueError("valor_total must be >= 0")
+        return total
+
+
+class PagoResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    venta_id: int
+    medio: str
+    monto: Decimal
+
+    @field_serializer("monto", when_used="json")
+    def serialize_monto(self, value: Decimal) -> str:
+        return f"{to_money(value):.2f}"
+
+
+class VentaResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    empresa: str
+    tipo: str
+    numero_referencia: str
+    descripcion: str
+    valor_total: Decimal
+    cliente_id: int | None
+    estado: str
+    creado_en: str
+    modificado_en: str
+    pagos: list[PagoResponse]
+
+    @field_serializer("valor_total", when_used="json")
+    def serialize_valor_total(self, value: Decimal) -> str:
+        return f"{to_money(value):.2f}"
+
+
+class ErrorResponse(BaseModel):
+    detail: str
+
+
+def parse_create_venta_payload(payload: dict) -> CreateVentaRequest:
+    return CreateVentaRequest.model_validate(payload)
+
+
+def venta_to_response(venta: Venta) -> VentaResponse:
+    return VentaResponse(
+        id=venta.id,
+        empresa=venta.empresa,
+        tipo=venta.tipo,
+        numero_referencia=venta.numero_referencia,
+        descripcion=venta.descripcion,
+        valor_total=to_money(venta.valor_total),
+        cliente_id=venta.cliente_id,
+        estado=venta.estado,
+        creado_en=venta.creado_en.isoformat(),
+        modificado_en=venta.modificado_en.isoformat(),
+        pagos=[
+            PagoResponse(
+                id=pago.id,
+                venta_id=pago.venta_id,
+                medio=pago.medio,
+                monto=to_money(pago.monto),
+            )
+            for pago in venta.pagos
+        ],
+    )
+
+
+def get_first_validation_message(exc: ValidationError) -> str:
+    first_error = exc.errors()[0]
+    location = ".".join(str(part) for part in first_error.get("loc", ()))
+    message = first_error.get("msg", "Invalid payload")
+    if location:
+        return f"{location}: {message}"
+    return message

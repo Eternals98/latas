@@ -1,0 +1,210 @@
+openapi: 3.1.0
+info:
+  title: LATAS Ventas API - Registro de Ventas
+  version: 0.2.0
+  description: Contrato para creacion de ventas con multiples formas de pago.
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/health:
+    get:
+      summary: Health check del backend
+      operationId: getHealth
+      tags:
+        - System
+      responses:
+        '200':
+          description: Backend operativo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /api/ventas:
+    post:
+      summary: Crear venta con pagos asociados
+      operationId: createVenta
+      tags:
+        - Ventas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVentaRequest'
+            examples:
+              ventaValida:
+                summary: Venta valida con dos pagos
+                value:
+                  empresa: latas_sas
+                  tipo: formal
+                  numero_referencia: V-1001
+                  descripcion: Venta mostrador
+                  valor_total: "100000.00"
+                  cliente_id: null
+                  pagos:
+                    - medio: efectivo
+                      monto: "60000.00"
+                    - medio: transferencia
+                      monto: "40000.00"
+      responses:
+        '201':
+          description: Venta creada con pagos asociados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VentaResponse'
+              examples:
+                ventaCreada:
+                  summary: Respuesta de creacion exitosa
+                  value:
+                    id: 1
+                    empresa: latas_sas
+                    tipo: formal
+                    numero_referencia: V-1001
+                    descripcion: Venta mostrador
+                    valor_total: "100000.00"
+                    cliente_id: null
+                    estado: activo
+                    creado_en: "2026-04-23T14:10:00"
+                    modificado_en: "2026-04-23T14:10:00"
+                    pagos:
+                      - id: 1
+                        venta_id: 1
+                        medio: efectivo
+                        monto: "60000.00"
+                      - id: 2
+                        venta_id: 1
+                        medio: transferencia
+                        monto: "40000.00"
+        '400':
+          description: Error de validacion de negocio o datos incompletos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                sumaInvalida:
+                  summary: Suma de pagos diferente al total
+                  value:
+                    detail: La suma de pagos no coincide con valor_total.
+                payloadIncompleto:
+                  summary: Campo obligatorio faltante
+                  value:
+                    detail: empresa: Field required
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+
+    CreatePagoRequest:
+      type: object
+      required: [medio, monto]
+      properties:
+        medio:
+          type: string
+          minLength: 1
+        monto:
+          type: string
+          pattern: '^\\d+(\\.\\d{1,2})?$'
+
+    CreateVentaRequest:
+      type: object
+      required:
+        - empresa
+        - tipo
+        - numero_referencia
+        - descripcion
+        - valor_total
+        - pagos
+      properties:
+        empresa:
+          type: string
+          minLength: 1
+        tipo:
+          type: string
+          minLength: 1
+        numero_referencia:
+          type: string
+          minLength: 1
+        descripcion:
+          type: string
+          minLength: 1
+        valor_total:
+          type: string
+          pattern: '^\\d+(\\.\\d{1,2})?$'
+        cliente_id:
+          type: integer
+          nullable: true
+        pagos:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreatePagoRequest'
+
+    PagoResponse:
+      type: object
+      required: [id, venta_id, medio, monto]
+      properties:
+        id:
+          type: integer
+        venta_id:
+          type: integer
+        medio:
+          type: string
+        monto:
+          type: string
+
+    VentaResponse:
+      type: object
+      required:
+        - id
+        - empresa
+        - tipo
+        - numero_referencia
+        - descripcion
+        - valor_total
+        - estado
+        - creado_en
+        - modificado_en
+        - pagos
+      properties:
+        id:
+          type: integer
+        empresa:
+          type: string
+        tipo:
+          type: string
+        numero_referencia:
+          type: string
+        descripcion:
+          type: string
+        valor_total:
+          type: string
+        cliente_id:
+          type: integer
+          nullable: true
+        estado:
+          type: string
+          enum: [activo, anulado]
+        creado_en:
+          type: string
+          format: date-time
+        modificado_en:
+          type: string
+          format: date-time
+        pagos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PagoResponse'
+
+    ErrorResponse:
+      type: object
+      required: [detail]
+      properties:
+        detail:
+          type: string

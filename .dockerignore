@@ -9,3 +9,6 @@
 .env.*
 *.db
 *.sqlite3
+*.log*
+coverage/
+Dockerfile*

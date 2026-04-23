@@ -35,6 +35,21 @@ Respuesta esperada:
 {"status":"ok"}
 ```
 
+## Registrar venta con pagos
+
+```bash
+curl -X POST http://localhost:8000/api/ventas \
+  -H "Content-Type: application/json" \
+  -d "{\"empresa\":\"latas_sas\",\"tipo\":\"formal\",\"numero_referencia\":\"V-1001\",\"descripcion\":\"Venta mostrador\",\"valor_total\":\"100000.00\",\"cliente_id\":null,\"pagos\":[{\"medio\":\"efectivo\",\"monto\":\"60000.00\"},{\"medio\":\"transferencia\",\"monto\":\"40000.00\"}]}"
+```
+
+Respuesta esperada:
+- `201` con venta + pagos creados.
+
+Errores esperados:
+- `400` con `{"detail":"La suma de pagos no coincide con valor_total."}` cuando el total no cuadra.
+- `400` con `{"detail":"<campo>: Field required"}` en payload incompleto.
+
 ## Ejecutar pruebas
 
 ```bash
