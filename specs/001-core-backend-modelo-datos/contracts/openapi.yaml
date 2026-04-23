@@ -1,0 +1,107 @@
+openapi: 3.1.0
+info:
+  title: LATAS Ventas API - Core Backend
+  version: 0.1.0
+  description: Contrato inicial para salud operativa y esquemas base de dominio.
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/health:
+    get:
+      summary: Health check del backend
+      operationId: getHealth
+      tags:
+        - System
+      responses:
+        '200':
+          description: Backend operativo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [ok]
+      example:
+        status: ok
+    Cliente:
+      type: object
+      required:
+        - id
+        - nombre
+        - creado_en
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        telefono:
+          type: string
+          nullable: true
+        creado_en:
+          type: string
+          format: date-time
+    Venta:
+      type: object
+      required:
+        - id
+        - empresa
+        - tipo
+        - numero_referencia
+        - descripcion
+        - valor_total
+        - estado
+        - creado_en
+        - modificado_en
+      properties:
+        id:
+          type: integer
+        empresa:
+          type: string
+          enum: [latas_sas, tomas_gomez]
+        tipo:
+          type: string
+          enum: [formal, informal]
+        numero_referencia:
+          type: string
+        descripcion:
+          type: string
+        valor_total:
+          type: string
+          description: Decimal serializado como string para precisión
+        cliente_id:
+          type: integer
+          nullable: true
+        estado:
+          type: string
+          enum: [activo, anulado]
+        creado_en:
+          type: string
+          format: date-time
+        modificado_en:
+          type: string
+          format: date-time
+    Pago:
+      type: object
+      required:
+        - id
+        - venta_id
+        - medio
+        - monto
+      properties:
+        id:
+          type: integer
+        venta_id:
+          type: integer
+        medio:
+          type: string
+        monto:
+          type: string
+          description: Decimal serializado como string para precisión
