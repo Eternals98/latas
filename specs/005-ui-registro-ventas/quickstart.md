@@ -77,3 +77,43 @@ curl -X POST http://localhost:8000/api/ventas \
 Esperado:
 - `201` con payload de venta creada.
 - Si no cuadra suma de pagos, `400` con `La suma de pagos no coincide con valor_total.`
+
+## 8. Evidencia medible SC-001, SC-002 y SC-003
+
+Fecha de ejecucion:
+- UTC: `2026-04-23T21:22:52Z`
+- America/Bogota: `2026-04-23 16:22:52 -05:00`
+
+Entorno:
+- Ejecucion reproducible con `fastapi.testclient.TestClient` sobre `backend/src/api/main.py`.
+- Base de datos local SQLite (`ventas.db`).
+
+### Protocolo ejecutado
+
+1. SC-001: 20 sesiones simuladas de registro valido (1 pago), midiendo tiempo por envio (`POST /api/ventas`) y evaluando umbral `< 120s`.
+2. SC-003: 30 ventas mixtas (2 medios de pago) en primer intento, sin correccion.
+3. SC-002: 10 casos con cuadre correcto + 10 casos con no-cuadre para validar bloqueo y mensaje de error.
+
+### Resultados
+
+| Criterio | Objetivo | Resultado | Estado |
+|---|---|---|---|
+| SC-001 | >=95% en <2 min | 20/20 (100.0%) bajo 120s; avg `43.50 ms` (min `29.14`, max `91.28`) | PASS |
+| SC-003 | >=90% ventas mixtas sin correccion | 30/30 (100.0%) registradas al primer intento (`201`) | PASS |
+| SC-002 | 100% ventas confirmadas con cuadre exacto | Cuadre: 10/10 `201`; No-cuadre: 10/10 bloqueadas `400` con detalle esperado | PASS |
+
+### Evidencia detallada (resumen)
+
+- SC-001:
+  - `sessions=20`
+  - `accepted_201=20`
+  - `under_120s=20`
+  - `under_120s_rate=100.0%`
+- SC-003:
+  - `mixed_sales_total=30`
+  - `first_try_201=30`
+  - `first_try_rate=100.0%`
+- SC-002:
+  - `balanced_cases=10`, `balanced_201=10`
+  - `unbalanced_cases=10`, `unbalanced_blocked_400=10`
+  - `unbalanced_expected_detail=10`

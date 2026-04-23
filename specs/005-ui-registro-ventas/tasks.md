@@ -114,9 +114,9 @@ Prefer focused, single-thread execution of high-priority work; only mark `[P]` w
 
 - [X] T033 [P] Mejorar accesibilidad y foco de teclado en `frontend/src/components/venta/VentaFormFields.tsx` y `frontend/src/components/venta/PagoRow.tsx`
 - [X] T034 Ajustar estados de carga para clientes/medios de pago/envio en `frontend/src/pages/RegistroVentasPage.tsx`
-- [ ] T035 Ejecutar protocolo medible SC-001 (tiempo de registro) y documentar resultados en `specs/005-ui-registro-ventas/quickstart.md`
-- [ ] T036 Ejecutar protocolo medible SC-003 (ventas mixtas sin correccion) y documentar resultados en `specs/005-ui-registro-ventas/quickstart.md`
-- [ ] T037 Verificar SC-002 con casos de cuadre/no-cuadre y documentar evidencia en `specs/005-ui-registro-ventas/quickstart.md`
+- [X] T035 Ejecutar protocolo medible SC-001 (tiempo de registro) y documentar resultados en `specs/005-ui-registro-ventas/quickstart.md`
+- [X] T036 Ejecutar protocolo medible SC-003 (ventas mixtas sin correccion) y documentar resultados en `specs/005-ui-registro-ventas/quickstart.md`
+- [X] T037 Verificar SC-002 con casos de cuadre/no-cuadre y documentar evidencia en `specs/005-ui-registro-ventas/quickstart.md`
 - [X] T038 Actualizar guia operativa para flujo UI registro ventas en `backend/README.md`
 
 ---
