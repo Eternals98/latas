@@ -50,6 +50,34 @@ Errores esperados:
 - `400` con `{"detail":"La suma de pagos no coincide con valor_total."}` cuando el total no cuadra.
 - `400` con `{"detail":"<campo>: Field required"}` en payload incompleto.
 
+## Gestion de clientes
+
+### Crear cliente
+
+```bash
+curl -X POST http://localhost:8000/api/clientes \
+  -H "Content-Type: application/json" \
+  -d "{\"nombre\":\"Comercial Andina SAS\",\"telefono\":\"3001234567\"}"
+```
+
+Respuesta esperada:
+- `201` con `id`, `nombre`, `telefono`, `creado_en`, `modificado_en`, `estado`.
+
+Errores esperados:
+- `400` cuando el payload es invalido.
+- `409` cuando el nombre ya existe tras normalizacion (trim + case-insensitive).
+
+### Buscar clientes para autocompletar
+
+```bash
+curl "http://localhost:8000/api/clientes?search=andi"
+```
+
+Respuesta esperada:
+- `200` con lista de coincidencias parciales.
+- maximo `10` resultados por consulta.
+- orden deterministico por relevancia y nombre ascendente.
+
 ## Ejecutar pruebas
 
 ```bash

@@ -1,0 +1,168 @@
+openapi: 3.1.0
+info:
+  title: LATAS Ventas API - Gestion de Clientes
+  version: 0.3.1
+  description: Contrato para busqueda y creacion de clientes para flujo de autocompletado.
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/health:
+    get:
+      summary: Health check del backend
+      operationId: getHealth
+      tags:
+        - System
+      responses:
+        '200':
+          description: Backend operativo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /api/clientes:
+    get:
+      summary: Buscar clientes por nombre parcial
+      operationId: searchClientes
+      tags:
+        - Clientes
+      parameters:
+        - in: query
+          name: search
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 160
+          description: Texto parcial para autocompletado por nombre de cliente (se normalizan espacios al inicio y fin).
+      responses:
+        '200':
+          description: Lista de clientes coincidentes (maximo 10) con orden deterministico por relevancia y desempate por nombre ascendente.
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 10
+                items:
+                  $ref: '#/components/schemas/ClienteResponse'
+              examples:
+                resultados:
+                  summary: Coincidencias parciales
+                  value:
+                    - id: 10
+                      nombre: Comercial Andina SAS
+                      telefono: "3001234567"
+                      creado_en: "2026-04-23T15:05:00"
+                      modificado_en: "2026-04-23T15:05:00"
+                      estado: activo
+                    - id: 11
+                      nombre: Andina Ferreteria
+                      telefono: null
+                      creado_en: "2026-04-23T15:07:00"
+                      modificado_en: "2026-04-23T15:07:00"
+                      estado: activo
+    post:
+      summary: Crear cliente nuevo
+      operationId: createCliente
+      tags:
+        - Clientes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClienteRequest'
+            examples:
+              clienteValido:
+                summary: Cliente nuevo valido
+                value:
+                  nombre: Comercial Andina SAS
+                  telefono: "3001234567"
+      responses:
+        '201':
+          description: Cliente creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteResponse'
+              examples:
+                clienteCreado:
+                  summary: Resultado de creacion exitosa
+                  value:
+                    id: 10
+                    nombre: Comercial Andina SAS
+                    telefono: "3001234567"
+                    creado_en: "2026-04-23T15:05:00"
+                    modificado_en: "2026-04-23T15:05:00"
+                    estado: activo
+        '400':
+          description: Payload invalido o nombre vacio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                nombreInvalido:
+                  summary: Nombre vacio
+                  value:
+                    detail: nombre: Field required
+        '409':
+          description: Duplicado exacto de cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                duplicado:
+                  summary: Conflicto por duplicado exacto
+                  value:
+                    detail: Ya existe un cliente con ese nombre.
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+
+    CreateClienteRequest:
+      type: object
+      required: [nombre]
+      properties:
+        nombre:
+          type: string
+          minLength: 1
+          maxLength: 160
+        telefono:
+          type: string
+          nullable: true
+          maxLength: 40
+
+    ClienteResponse:
+      type: object
+      required: [id, nombre, creado_en, modificado_en, estado]
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        telefono:
+          type: string
+          nullable: true
+        creado_en:
+          type: string
+          format: date-time
+        modificado_en:
+          type: string
+          format: date-time
+        estado:
+          type: string
+          enum: [activo, anulado]
+
+    ErrorResponse:
+      type: object
+      required: [detail]
+      properties:
+        detail:
+          type: string
