@@ -96,6 +96,35 @@ Guia para frontend:
 - no mantener listas hardcodeadas en cliente.
 - refrescar selector consultando backend para mantener consistencia operativa.
 
+## Flujo UI Registro de Ventas
+
+### Levantar frontend
+
+```bash
+cd ../frontend
+npm install
+copy .env.example .env
+npm run dev
+```
+
+### Operacion rapida de registro
+
+1. Seleccionar `Empresa` y `Tipo`.
+2. Ingresar `Numero referencia`, `Descripcion` y `Valor total`.
+3. Buscar cliente por nombre en el campo de autocomplete (2+ caracteres).
+4. Confirmar telefono autocompletado (editable).
+5. Agregar/editar filas en tabla de pagos.
+6. Verificar indicador de cuadre:
+   - `Cuadre OK` para habilitar guardado.
+   - `Descuadre detectado` cuando pagos != total.
+7. Guardar venta y validar mensaje de exito.
+
+### Validaciones operativas
+
+- El boton `Guardar venta` permanece deshabilitado si faltan campos obligatorios.
+- El boton `Guardar venta` permanece deshabilitado cuando pagos y total no cuadran.
+- Errores del backend (`400`) se muestran al usuario en la pantalla sin perder datos de captura.
+
 ## Ejecutar pruebas
 
 ```bash
