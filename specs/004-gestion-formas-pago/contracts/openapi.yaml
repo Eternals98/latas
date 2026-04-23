@@ -1,0 +1,131 @@
+openapi: 3.1.0
+info:
+  title: LATAS Ventas API - Gestion de Medios de Pago
+  version: 0.4.0
+  description: |
+    Contrato para consultar el catalogo centralizado de medios de pago.
+    Alcance actual: solo lectura (`GET /api/medios-pago`).
+    Fuera de alcance en esta fase: crear, editar, activar/desactivar o eliminar medios.
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/health:
+    get:
+      summary: Health check del backend
+      operationId: getHealth
+      tags:
+        - System
+      responses:
+        '200':
+          description: Backend operativo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+  /api/medios-pago:
+    get:
+      summary: Listar medios de pago disponibles
+      operationId: listMediosPago
+      tags:
+        - MediosPago
+      responses:
+        '200':
+          description: Lista de medios de pago activos para consumo en frontend.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MedioPagoResponse'
+              examples:
+                listaInicial:
+                  summary: Catalogo inicial de medios de pago
+                  value:
+                    - id: 1
+                      codigo: bancolombia_latas
+                      nombre: Bancolombia Latas
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 2
+                      codigo: bancolombia_tomas
+                      nombre: Bancolombia Tomas
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 3
+                      codigo: bbva_latas
+                      nombre: BBVA Latas
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 4
+                      codigo: bbva_tomas
+                      nombre: BBVA Tomas
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 5
+                      codigo: davivienda
+                      nombre: Davivienda
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 6
+                      codigo: efectivo
+                      nombre: Efectivo
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 7
+                      codigo: nequi
+                      nombre: Nequi
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 8
+                      codigo: otro
+                      nombre: Otro
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 9
+                      codigo: tarjeta_latas
+                      nombre: Tarjeta Latas
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+                    - id: 10
+                      codigo: tarjeta_tomas
+                      nombre: Tarjeta Tomas
+                      activo: true
+                      creado_en: '2026-04-23T15:10:00'
+                      modificado_en: '2026-04-23T15:10:00'
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+
+    MedioPagoResponse:
+      type: object
+      required: [id, codigo, nombre, activo, creado_en, modificado_en]
+      properties:
+        id:
+          type: integer
+        codigo:
+          type: string
+        nombre:
+          type: string
+        activo:
+          type: boolean
+        creado_en:
+          type: string
+          format: date-time
+        modificado_en:
+          type: string
+          format: date-time

@@ -78,6 +78,24 @@ Respuesta esperada:
 - maximo `10` resultados por consulta.
 - orden deterministico por relevancia y nombre ascendente.
 
+## Catalogo de medios de pago
+
+### Consultar catalogo centralizado
+
+```bash
+curl http://localhost:8000/api/medios-pago
+```
+
+Respuesta esperada:
+- `200` con lista de medios activos.
+- cada item incluye `id`, `codigo`, `nombre`, `activo`, `creado_en`, `modificado_en`.
+- orden deterministico por `nombre` ascendente (desempate por `id`).
+
+Guia para frontend:
+- consumir siempre `GET /api/medios-pago` para llenar selectores.
+- no mantener listas hardcodeadas en cliente.
+- refrescar selector consultando backend para mantener consistencia operativa.
+
 ## Ejecutar pruebas
 
 ```bash
