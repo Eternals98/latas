@@ -31,7 +31,18 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Simplicity gate: justify any architecture beyond modular monolith.
+- Domain gate: data model maps to Venta/Cliente/Pago and explicit relations.
+- Backend-truth gate: business rules and critical validations live in backend.
+- Persistence gate: SQLAlchemy models remain PostgreSQL-compatible.
+- Security gate: local-first + admin JWT only, no premature external auth.
+- Modularity gate: impacts mapped to Ventas/Clientes/Reportes/Admin/Analisis.
+- UX productivity gate: fast forms/autocomplete/payment splits considered.
+- AI decoupling gate: `/api/analisis` isolated and optional.
+- Export gate: formal/informal Excel compatibility preserved when in scope.
+- Deploy gate: Docker Compose and offline/LAN operation remain viable.
+- Traceability gate: timestamps + logical status in affected entities.
+- Evolution gate: scope constrained to current phase without overreach.
 
 ## Project Structure
 

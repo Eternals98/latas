@@ -95,6 +95,21 @@
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
+### Constitutional Alignment *(mandatory)*
+
+- **CA-001 Simplicity**: Describe the simplest viable design and rejected complexity.
+- **CA-002 Domain Model**: List affected entities (`Venta`, `Cliente`, `Pago`) and relationships.
+- **CA-003 Backend Rules**: List business rules enforced in backend APIs/services.
+- **CA-004 Persistence**: Confirm SQLAlchemy + PostgreSQL compatibility assumptions.
+- **CA-005 Security**: Define admin-only operations and local-first security boundaries.
+- **CA-006 Modularity**: Identify impacted modules (Ventas, Clientes, Reportes, Administracion, Analisis).
+- **CA-007 UX Productivity**: Specify friction-reduction behaviors (autocomplete, dynamic payment inputs).
+- **CA-008 AI Decoupling**: If AI exists, show isolation via `/api/analisis`.
+- **CA-009 Export Compatibility**: If reporting/export is in scope, include formal vs informal outputs.
+- **CA-010 Deploy Local-First**: Confirm LAN/offline and Docker Compose viability.
+- **CA-011 Traceability**: Include timestamp/status expectations for changed data.
+- **CA-012 Phase Control**: State current phase and explicit out-of-scope deferred work.
+
 ### Key Entities *(include if feature involves data)*
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]

@@ -11,6 +11,7 @@ description: "Task list template for feature implementation"
 **Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+Prefer focused, single-thread execution of high-priority work; only mark `[P]` when true file-level independence exists.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -245,6 +246,7 @@ With multiple developers:
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
+- Keep tasks specific and avoid multitasking across stories unless explicitly justified
 - Verify tests fail before implementing
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
