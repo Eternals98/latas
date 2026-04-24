@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_serializer, field_validator
@@ -39,6 +40,7 @@ class CreateVentaRequest(BaseModel):
     tipo: str = Field(min_length=1)
     numero_referencia: str = Field(min_length=1)
     descripcion: str = Field(min_length=1)
+    fecha_venta: date | None = None
     valor_total: Decimal
     cliente_id: int | None = None
     pagos: list[CreatePagoRequest] = Field(min_length=1)
@@ -89,6 +91,7 @@ class VentaResponse(BaseModel):
     tipo: str
     numero_referencia: str
     descripcion: str
+    fecha_venta: str
     valor_total: Decimal
     cliente_id: int | None
     estado: str
@@ -165,7 +168,7 @@ def cliente_to_report(cliente: Cliente | None) -> ClienteReporte | None:
 def venta_to_report_item(venta: Venta) -> VentaReporteItem:
     return VentaReporteItem(
         id=venta.id,
-        fecha=venta.creado_en.isoformat(),
+        fecha=venta.fecha_venta.isoformat(),
         empresa=venta.empresa,
         tipo=venta.tipo,
         numero_referencia=venta.numero_referencia,
@@ -199,6 +202,7 @@ def venta_to_response(venta: Venta) -> VentaResponse:
         tipo=venta.tipo,
         numero_referencia=venta.numero_referencia,
         descripcion=venta.descripcion,
+        fecha_venta=venta.fecha_venta.isoformat(),
         valor_total=to_money(venta.valor_total),
         cliente_id=venta.cliente_id,
         estado=venta.estado,

@@ -94,3 +94,41 @@ def test_post_clientes_allows_partial_name_variants(client, db_session):
     search = client.get("/api/clientes", params={"search": "andina"})
     assert search.status_code == 200
     assert len(search.json()) == 2
+
+
+def test_get_clientes_all_returns_registered_clients_sorted(client, db_session):
+    _create_cliente(db_session, nombre="Zulu", telefono="3009999999")
+    _create_cliente(db_session, nombre="Andina", telefono="3001111111")
+
+    response = client.get("/api/clientes/all")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert [item["nombre"] for item in body] == ["Andina", "Zulu"]
+
+
+def test_put_clientes_updates_name_and_phone(client, db_session):
+    cliente = _create_cliente(db_session, nombre="Cliente Viejo", telefono="3000000000")
+
+    response = client.put(
+        f"/api/clientes/{cliente.id}",
+        json={"nombre": "Cliente Nuevo", "telefono": "3001234567"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["nombre"] == "Cliente Nuevo"
+    assert body["telefono"] == "3001234567"
+
+
+def test_put_clientes_rejects_duplicate_name(client, db_session):
+    _create_cliente(db_session, nombre="Cliente A", telefono="3000000000")
+    cliente_b = _create_cliente(db_session, nombre="Cliente B", telefono="3001111111")
+
+    response = client.put(
+        f"/api/clientes/{cliente_b.id}",
+        json={"nombre": "cliente a", "telefono": "3002222222"},
+    )
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "Ya existe un cliente con ese nombre."

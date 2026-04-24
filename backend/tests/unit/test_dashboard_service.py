@@ -20,6 +20,7 @@ def _sale(
         tipo="formal",
         numero_referencia=referencia,
         descripcion="Venta dashboard",
+        fecha_venta=creado_en.date(),
         valor_total=Decimal(valor_total),
         estado=estado,
         creado_en=creado_en,

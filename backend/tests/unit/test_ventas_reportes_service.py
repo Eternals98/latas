@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from io import BytesIO
 
@@ -18,8 +18,8 @@ from src.services.ventas_service import (
 def test_month_range_uses_start_inclusive_end_exclusive_dates():
     start, end = month_range(2, 2028)
 
-    assert start == datetime(2028, 2, 1)
-    assert end == datetime(2028, 3, 1)
+    assert start == date(2028, 2, 1)
+    assert end == date(2028, 3, 1)
 
 
 @pytest.mark.parametrize(
@@ -62,6 +62,7 @@ def test_build_ventas_xlsx_writes_headers_and_rows():
         tipo="formal",
         numero_referencia="F-001",
         descripcion="Venta",
+        fecha_venta=date(2026, 4, 2),
         valor_total=Decimal("50.00"),
         estado="activo",
         creado_en=datetime(2026, 4, 2, 9, 30, 0),
@@ -73,7 +74,7 @@ def test_build_ventas_xlsx_writes_headers_and_rows():
 
     assert rows[0][0:4] == ("Fecha", "Empresa", "Tipo", "Numero referencia")
     assert rows[1] == (
-        "2026-04-02 09:30:00",
+        "2026-04-02",
         "latas_sas",
         "formal",
         "F-001",

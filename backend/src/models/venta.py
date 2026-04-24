@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
 
-from sqlalchemy import DateTime, ForeignKey, Numeric, String
+from sqlalchemy import Date, DateTime, ForeignKey, Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.db.base import Base
@@ -31,6 +31,7 @@ class Venta(Base):
     tipo: Mapped[str] = mapped_column(String(16), nullable=False)
     numero_referencia: Mapped[str] = mapped_column(String(100), nullable=False)
     descripcion: Mapped[str] = mapped_column(String, nullable=False)
+    fecha_venta: Mapped[date] = mapped_column(Date, default=date.today, nullable=False)
     valor_total: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
     cliente_id: Mapped[int] = mapped_column(ForeignKey("cliente.id"), nullable=True)
     estado: Mapped[str] = mapped_column(String(16), default=EstadoVentaEnum.ACTIVO.value, nullable=False)

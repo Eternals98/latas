@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from io import BytesIO
 from typing import Iterable
@@ -69,12 +69,12 @@ def validate_tipo_export(tipo: str | None) -> str:
     return cleaned
 
 
-def month_range(mes: int, anio: int) -> tuple[datetime, datetime]:
-    start = datetime(anio, mes, 1)
+def month_range(mes: int, anio: int) -> tuple[date, date]:
+    start = date(anio, mes, 1)
     if mes == 12:
-        end = datetime(anio + 1, 1, 1)
+        end = date(anio + 1, 1, 1)
     else:
-        end = datetime(anio, mes + 1, 1)
+        end = date(anio, mes + 1, 1)
     return start, end
 
 
@@ -108,6 +108,7 @@ def create_venta_with_pagos(db: Session, payload: CreateVentaRequest) -> Venta:
             tipo=payload.tipo,
             numero_referencia=payload.numero_referencia,
             descripcion=payload.descripcion,
+            fecha_venta=payload.fecha_venta or date.today(),
             valor_total=to_money(payload.valor_total),
             cliente_id=payload.cliente_id,
             estado=EstadoVentaEnum.ACTIVO.value,
@@ -177,6 +178,7 @@ def update_venta_with_pagos(db: Session, venta_id: int, payload: UpdateVentaRequ
         venta.tipo = payload.tipo
         venta.numero_referencia = payload.numero_referencia
         venta.descripcion = payload.descripcion
+        venta.fecha_venta = payload.fecha_venta or date.today()
         venta.valor_total = to_money(payload.valor_total)
         venta.cliente_id = payload.cliente_id
 
@@ -239,10 +241,10 @@ def list_ventas_by_month(db: Session, mes: int | str | None, anio: int | str | N
             .options(selectinload(Venta.cliente), selectinload(Venta.pagos))
             .where(
                 Venta.estado == EstadoVentaEnum.ACTIVO.value,
-                Venta.creado_en >= start,
-                Venta.creado_en < end,
+                Venta.fecha_venta >= start,
+                Venta.fecha_venta < end,
             )
-            .order_by(Venta.creado_en.asc(), Venta.id.asc())
+            .order_by(Venta.fecha_venta.asc(), Venta.id.asc())
         )
         .scalars()
         .all()
@@ -271,14 +273,14 @@ def list_ventas_for_export(
     ]
     if period is not None:
         start, end = month_range(*period)
-        filters.extend([Venta.creado_en >= start, Venta.creado_en < end])
+        filters.extend([Venta.fecha_venta >= start, Venta.fecha_venta < end])
 
     return (
         db.execute(
             select(Venta)
             .options(selectinload(Venta.cliente), selectinload(Venta.pagos))
             .where(*filters)
-            .order_by(Venta.creado_en.asc(), Venta.id.asc())
+            .order_by(Venta.fecha_venta.asc(), Venta.id.asc())
         )
         .scalars()
         .all()
@@ -312,7 +314,7 @@ def build_ventas_xlsx(ventas: Iterable[Venta]) -> bytes:
     for venta in ventas:
         sheet.append(
             [
-                venta.creado_en.strftime("%Y-%m-%d %H:%M:%S"),
+                venta.fecha_venta.isoformat(),
                 venta.empresa,
                 venta.tipo,
                 venta.numero_referencia,

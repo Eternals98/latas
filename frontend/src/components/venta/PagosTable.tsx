@@ -9,10 +9,26 @@ interface PagosTableProps {
   onAdd: () => void
   onChange: (rowId: string, changes: Partial<Omit<PagoDraft, 'rowId'>>) => void
   onRemove: (rowId: string) => void
+  isSinglePaymentMode?: boolean
+  onToggleSinglePaymentMode?: () => void
+  disableAdd?: boolean
+  disableMontoEdit?: boolean
+  forceSingleRow?: boolean
   onLoadingChange?: (loading: boolean) => void
 }
 
-export function PagosTable({ pagos, onAdd, onChange, onRemove, onLoadingChange }: PagosTableProps) {
+export function PagosTable({
+  pagos,
+  onAdd,
+  onChange,
+  onRemove,
+  isSinglePaymentMode = false,
+  onToggleSinglePaymentMode,
+  disableAdd = false,
+  disableMontoEdit = false,
+  forceSingleRow = false,
+  onLoadingChange,
+}: PagosTableProps) {
   const [mediosOptions, setMediosOptions] = useState<Array<{ value: string; label: string }>>([])
   const [isLoadingMedios, setIsLoadingMedios] = useState(false)
 
@@ -43,31 +59,55 @@ export function PagosTable({ pagos, onAdd, onChange, onRemove, onLoadingChange }
     }
   }, [onLoadingChange])
 
-  const canRemove = useMemo(() => pagos.length > 1, [pagos.length])
+  const canRemove = useMemo(() => !forceSingleRow && pagos.length > 1, [forceSingleRow, pagos.length])
 
   return (
-    <section className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-900">Pagos</h2>
-        <button type="button" onClick={onAdd} className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700">
-          Agregar pago
-        </button>
+    <section className="rounded-xl border border-slate-200 bg-white p-4 md:p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-slate-800">Pagos</h2>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onToggleSinglePaymentMode}
+            className={`rounded-md px-2 py-1 text-sm font-medium transition-colors ${
+              isSinglePaymentMode ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            Forma de pago única
+          </button>
+          <button
+            type="button"
+            onClick={onAdd}
+            disabled={disableAdd}
+            className="rounded-md px-2 py-1 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50 disabled:cursor-not-allowed disabled:text-slate-400"
+          >
+            + Agregar pago
+          </button>
+        </div>
       </div>
 
       {isLoadingMedios && <p className="mb-2 text-sm text-slate-600">Cargando medios de pago...</p>}
 
-      <div className="overflow-x-auto">
+      <div className="overflow-hidden rounded-lg border border-slate-200">
         <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="bg-slate-100 text-sm">
-              <th className="px-3 py-2 font-semibold">Medio</th>
-              <th className="px-3 py-2 font-semibold">Monto</th>
-              <th className="px-3 py-2 font-semibold text-right">Acciones</th>
+          <thead className="bg-slate-50">
+            <tr className="text-xs uppercase tracking-wide text-slate-500">
+              <th className="px-3 py-3 font-semibold">Método</th>
+              <th className="px-3 py-3 font-semibold">Monto</th>
+              <th className="w-10 px-3 py-3 text-right font-semibold"> </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-200">
             {pagos.map((pago) => (
-              <PagoRow key={pago.rowId} pago={pago} mediosOptions={mediosOptions} canRemove={canRemove} onChange={onChange} onRemove={onRemove} />
+              <PagoRow
+                key={pago.rowId}
+                pago={pago}
+                mediosOptions={mediosOptions}
+                canRemove={canRemove}
+                disableMontoEdit={disableMontoEdit}
+                onChange={onChange}
+                onRemove={onRemove}
+              />
             ))}
           </tbody>
         </table>

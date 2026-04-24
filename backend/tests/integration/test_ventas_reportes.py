@@ -24,6 +24,7 @@ def _create_venta(
         tipo=tipo,
         numero_referencia=referencia,
         descripcion=descripcion,
+        fecha_venta=creado_en.date(),
         valor_total=Decimal(valor_total),
         cliente_id=cliente.id if cliente else None,
         estado=estado,

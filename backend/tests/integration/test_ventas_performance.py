@@ -36,6 +36,7 @@ def test_monthly_listing_and_export_performance_smoke(client, db_session):
             tipo="formal" if index % 2 == 0 else "informal",
             numero_referencia=f"V-PERF-RPT-{index:03d}",
             descripcion="Venta para reporte",
+            fecha_venta=datetime(2026, 4, 1, 8, 0, 0).date(),
             valor_total=Decimal("1000.00"),
             estado="activo",
             creado_en=datetime(2026, 4, 1, 8, 0, 0),

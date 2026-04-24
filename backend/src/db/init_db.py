@@ -1,3 +1,4 @@
+from sqlalchemy import inspect, text
 from sqlalchemy.orm import Session
 
 from src.db.base import Base
@@ -6,8 +7,26 @@ from src.models import cliente, medio_pago, pago, venta  # noqa: F401
 from src.services.medios_pago_service import ensure_initial_catalog
 
 
+def _ensure_venta_fecha_venta_column() -> None:
+    if engine.dialect.name != "sqlite":
+        return
+
+    inspector = inspect(engine)
+    if "venta" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("venta")}
+    if "fecha_venta" in columns:
+        return
+
+    with engine.begin() as connection:
+        connection.execute(text("ALTER TABLE venta ADD COLUMN fecha_venta DATE NOT NULL DEFAULT '1970-01-01'"))
+        connection.execute(text("UPDATE venta SET fecha_venta = substr(creado_en, 1, 10) WHERE fecha_venta = '1970-01-01'"))
+
+
 def init_db() -> None:
     Base.metadata.create_all(bind=engine)
+    _ensure_venta_fecha_venta_column()
     session: Session = SessionLocal()
     try:
         ensure_initial_catalog(session)

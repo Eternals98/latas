@@ -41,8 +41,16 @@ class ErrorResponse(BaseModel):
     detail: str
 
 
+class UpdateClienteRequest(CreateClienteRequest):
+    pass
+
+
 def parse_create_cliente_payload(payload: dict) -> CreateClienteRequest:
     return CreateClienteRequest.model_validate(payload)
+
+
+def parse_update_cliente_payload(payload: dict) -> UpdateClienteRequest:
+    return UpdateClienteRequest.model_validate(payload)
 
 
 def cliente_to_response(cliente: Cliente) -> ClienteResponse:

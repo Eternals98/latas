@@ -4,7 +4,19 @@ import { searchClientes } from '../services/clientesApi'
 import type { ClienteResponse, ClienteSummary, FormValidationState, PagoDraft, RegistroVentaFormValues } from '../types/venta'
 import { equalsMoney, parseMoney, sumMoney } from '../utils/money'
 
-const SEARCH_THRESHOLD = 2
+const SEARCH_THRESHOLD = 1
+
+function sanitizePhone(value: string): string {
+  return value.replace(/\D/g, '').slice(0, 10)
+}
+
+function getTodayLocalISO(): string {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = `${now.getMonth() + 1}`.padStart(2, '0')
+  const day = `${now.getDate()}`.padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 function createDefaultPago(index: number): PagoDraft {
   return {
@@ -18,6 +30,7 @@ export function useRegistroVentaForm() {
   const [formValues, setFormValues] = useState<RegistroVentaFormValues>({
     empresa: '',
     tipo: '',
+    fechaVenta: getTodayLocalISO(),
     numeroReferencia: '',
     descripcion: '',
     valorTotal: '',
@@ -79,7 +92,12 @@ export function useRegistroVentaForm() {
   }, [formValues.valorTotal, pagos, isBalanced])
 
   function updateField<K extends keyof RegistroVentaFormValues>(field: K, value: RegistroVentaFormValues[K]) {
-    setFormValues((prev) => ({ ...prev, [field]: value }))
+    setFormValues((prev) => {
+      if (field === 'telefono' && typeof value === 'string') {
+        return { ...prev, telefono: sanitizePhone(value) }
+      }
+      return { ...prev, [field]: value }
+    })
   }
 
   function updateClienteQuery(query: string) {
@@ -101,7 +119,7 @@ export function useRegistroVentaForm() {
       ...prev,
       cliente,
       clienteQuery: cliente.nombre,
-      telefono: cliente.telefono ?? '',
+      telefono: sanitizePhone(cliente.telefono ?? ''),
     }))
     setClienteSuggestions([])
   }
@@ -121,10 +139,19 @@ export function useRegistroVentaForm() {
     })
   }
 
+  function setPagosDrafts(nextPagos: PagoDraft[]) {
+    if (nextPagos.length === 0) {
+      setPagos([createDefaultPago(0)])
+      return
+    }
+    setPagos(nextPagos)
+  }
+
   function resetForm() {
     setFormValues({
       empresa: '',
       tipo: '',
+      fechaVenta: getTodayLocalISO(),
       numeroReferencia: '',
       descripcion: '',
       valorTotal: '',
@@ -150,6 +177,7 @@ export function useRegistroVentaForm() {
     addPagoRow,
     updatePagoRow,
     removePagoRow,
+    setPagosDrafts,
     resetForm,
   }
 }

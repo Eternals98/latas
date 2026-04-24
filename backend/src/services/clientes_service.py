@@ -16,6 +16,10 @@ class ClienteDuplicateError(Exception):
     pass
 
 
+class ClienteNotFoundError(Exception):
+    pass
+
+
 def normalize_name(value: str) -> str:
     return value.strip().lower()
 
@@ -50,6 +54,15 @@ def search_clientes(db: Session, search: str | None) -> list[Cliente]:
     return list(db.execute(stmt).scalars().all())
 
 
+def list_clientes(db: Session, limit: int = 200) -> list[Cliente]:
+    stmt = (
+        select(Cliente)
+        .order_by(func.lower(Cliente.nombre).asc(), Cliente.id.asc())
+        .limit(max(1, min(limit, 500)))
+    )
+    return list(db.execute(stmt).scalars().all())
+
+
 def create_cliente(db: Session, payload: CreateClienteRequest) -> Cliente:
     cleaned_name = payload.nombre.strip()
     if not cleaned_name:
@@ -67,6 +80,35 @@ def create_cliente(db: Session, payload: CreateClienteRequest) -> Cliente:
             estado="activo",
         )
         db.add(cliente)
+        db.commit()
+        db.refresh(cliente)
+        return cliente
+    except IntegrityError as exc:
+        db.rollback()
+        raise ClienteDuplicateError("Ya existe un cliente con ese nombre.") from exc
+    except Exception:
+        db.rollback()
+        raise
+
+
+def update_cliente(db: Session, cliente_id: int, payload: CreateClienteRequest) -> Cliente:
+    cliente = db.execute(select(Cliente).where(Cliente.id == cliente_id)).scalar_one_or_none()
+    if cliente is None:
+        raise ClienteNotFoundError("Cliente no encontrado.")
+
+    cleaned_name = payload.nombre.strip()
+    if not cleaned_name:
+        raise ClienteValidationError("nombre is required")
+
+    normalized_name = normalize_name(cleaned_name)
+    existing = find_cliente_by_normalized_name(db, normalized_name)
+    if existing is not None and existing.id != cliente_id:
+        raise ClienteDuplicateError("Ya existe un cliente con ese nombre.")
+
+    try:
+        cliente.nombre = cleaned_name
+        cliente.nombre_normalizado = normalized_name
+        cliente.telefono = payload.telefono
         db.commit()
         db.refresh(cliente)
         return cliente

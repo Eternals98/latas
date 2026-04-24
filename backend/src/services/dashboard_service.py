@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 
 from sqlalchemy import select
@@ -17,12 +17,12 @@ from src.api.schemas.ventas import to_money
 from src.models import EstadoVentaEnum, Venta
 
 
-def _current_month_range(now: datetime) -> tuple[datetime, datetime]:
-    start = datetime(now.year, now.month, 1)
+def _current_month_range(now: datetime) -> tuple[date, date]:
+    start = date(now.year, now.month, 1)
     if now.month == 12:
-        end = datetime(now.year + 1, 1, 1)
+        end = date(now.year + 1, 1, 1)
     else:
-        end = datetime(now.year, now.month + 1, 1)
+        end = date(now.year, now.month + 1, 1)
     return start, end
 
 
@@ -39,7 +39,7 @@ def get_dashboard(db: Session, *, now: datetime | None = None) -> DashboardRespo
             select(Venta)
             .options(selectinload(Venta.pagos))
             .where(Venta.estado == EstadoVentaEnum.ACTIVO.value)
-            .order_by(Venta.creado_en.asc(), Venta.id.asc())
+            .order_by(Venta.fecha_venta.asc(), Venta.id.asc())
         )
         .scalars()
         .all()
@@ -54,7 +54,7 @@ def get_dashboard(db: Session, *, now: datetime | None = None) -> DashboardRespo
         (
             to_money(venta.valor_total)
             for venta in active_sales
-            if current_start <= venta.creado_en < current_end
+            if current_start <= venta.fecha_venta < current_end
         ),
         start=Decimal("0.00"),
     )
@@ -70,7 +70,7 @@ def get_dashboard(db: Session, *, now: datetime | None = None) -> DashboardRespo
     )
 
     for venta in active_sales:
-        month_key = (venta.creado_en.year, venta.creado_en.month)
+        month_key = (venta.fecha_venta.year, venta.fecha_venta.month)
         monthly[month_key]["cantidad_ventas"] += 1
         monthly[month_key]["valor_total"] += to_money(venta.valor_total)
 

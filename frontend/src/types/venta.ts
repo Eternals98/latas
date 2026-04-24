@@ -15,6 +15,11 @@ export interface ClienteResponse extends ClienteSummary {
   estado: string
 }
 
+export interface CreateClienteRequest {
+  nombre: string
+  telefono: string | null
+}
+
 export interface MedioPagoResponse {
   id: number
   codigo: string
@@ -33,6 +38,7 @@ export interface PagoDraft {
 export interface RegistroVentaFormValues {
   empresa: EmpresaOption | ''
   tipo: TipoOption | ''
+  fechaVenta: string
   numeroReferencia: string
   descripcion: string
   valorTotal: string
@@ -49,6 +55,7 @@ export interface CreatePagoRequest {
 export interface CreateVentaRequest {
   empresa: EmpresaOption
   tipo: TipoOption
+  fecha_venta: string
   numero_referencia: string
   descripcion: string
   valor_total: string
@@ -83,6 +90,7 @@ export interface VentaResponse {
   id: number
   empresa: string
   tipo: string
+  fecha_venta: string
   numero_referencia: string
   descripcion: string
   valor_total: string

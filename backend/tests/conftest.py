@@ -60,16 +60,18 @@ def create_sale_fixture(
     pagos: list[tuple[str, str]] | None = None,
     cliente_id: int | None = None,
 ) -> Venta:
+    timestamp = creado_en or datetime.utcnow()
     venta = Venta(
         empresa=empresa,
         tipo="formal",
         numero_referencia=referencia,
         descripcion="Venta admin",
+        fecha_venta=timestamp.date(),
         valor_total=Decimal(valor_total),
         cliente_id=cliente_id,
         estado=estado,
-        creado_en=creado_en or datetime.utcnow(),
-        modificado_en=creado_en or datetime.utcnow(),
+        creado_en=timestamp,
+        modificado_en=timestamp,
     )
     db_session.add(venta)
     db_session.flush()
