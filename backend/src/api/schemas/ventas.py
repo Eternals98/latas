@@ -60,6 +60,14 @@ class CreateVentaRequest(BaseModel):
         return total
 
 
+class UpdatePagoRequest(CreatePagoRequest):
+    pass
+
+
+class UpdateVentaRequest(CreateVentaRequest):
+    pagos: list[UpdatePagoRequest] = Field(min_length=1)
+
+
 class PagoResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -178,6 +186,10 @@ def venta_to_report_item(venta: Venta) -> VentaReporteItem:
 
 def parse_create_venta_payload(payload: dict) -> CreateVentaRequest:
     return CreateVentaRequest.model_validate(payload)
+
+
+def parse_update_venta_payload(payload: dict) -> UpdateVentaRequest:
+    return UpdateVentaRequest.model_validate(payload)
 
 
 def venta_to_response(venta: Venta) -> VentaResponse:

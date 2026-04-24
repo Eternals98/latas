@@ -6,20 +6,29 @@ from io import BytesIO
 from typing import Iterable
 
 from openpyxl import Workbook
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.orm import Session, selectinload
 
 from src.api.schemas.ventas import (
     CreateVentaRequest,
     ResumenMensualVentas,
+    UpdateVentaRequest,
     VentasMensualesResponse,
     to_money,
     venta_to_report_item,
 )
-from src.models import EstadoVentaEnum, Pago, TipoVentaEnum, Venta
+from src.models import Cliente, EstadoVentaEnum, Pago, TipoVentaEnum, Venta
 
 
 class VentaValidationError(Exception):
+    pass
+
+
+class VentaNotFoundError(Exception):
+    pass
+
+
+class VentaConflictError(Exception):
     pass
 
 
@@ -129,6 +138,80 @@ def create_venta_with_pagos(db: Session, payload: CreateVentaRequest) -> Venta:
         .scalars()
         .one()
     )
+
+
+def _get_venta_with_pagos(db: Session, venta_id: int) -> Venta:
+    venta = (
+        db.execute(
+            select(Venta)
+            .options(selectinload(Venta.pagos))
+            .where(Venta.id == venta_id)
+        )
+        .scalars()
+        .one_or_none()
+    )
+    if venta is None:
+        raise VentaNotFoundError("Venta no encontrada.")
+    return venta
+
+
+def _validate_cliente_exists(db: Session, cliente_id: int | None) -> None:
+    if cliente_id is None:
+        return
+    exists = db.execute(select(Cliente.id).where(Cliente.id == cliente_id)).scalar_one_or_none()
+    if exists is None:
+        raise VentaValidationError("cliente_id no corresponde a un cliente existente.")
+
+
+def update_venta_with_pagos(db: Session, venta_id: int, payload: UpdateVentaRequest) -> Venta:
+    validate_positive_payments(payload)
+    validate_total_equals_payments(payload)
+    _validate_cliente_exists(db, payload.cliente_id)
+
+    try:
+        venta = _get_venta_with_pagos(db, venta_id)
+        if venta.estado != EstadoVentaEnum.ACTIVO.value:
+            raise VentaConflictError("Solo se pueden editar ventas activas.")
+
+        venta.empresa = payload.empresa
+        venta.tipo = payload.tipo
+        venta.numero_referencia = payload.numero_referencia
+        venta.descripcion = payload.descripcion
+        venta.valor_total = to_money(payload.valor_total)
+        venta.cliente_id = payload.cliente_id
+
+        db.execute(delete(Pago).where(Pago.venta_id == venta.id))
+        db.flush()
+        for pago in payload.pagos:
+            db.add(Pago(venta_id=venta.id, medio=pago.medio, monto=to_money(pago.monto)))
+
+        db.commit()
+    except (VentaNotFoundError, VentaConflictError, VentaValidationError):
+        db.rollback()
+        raise
+    except Exception:
+        db.rollback()
+        raise
+
+    return _get_venta_with_pagos(db, venta_id)
+
+
+def annul_venta(db: Session, venta_id: int) -> Venta:
+    try:
+        venta = _get_venta_with_pagos(db, venta_id)
+        if venta.estado != EstadoVentaEnum.ANULADO.value:
+            venta.estado = EstadoVentaEnum.ANULADO.value
+            db.commit()
+        else:
+            db.commit()
+    except VentaNotFoundError:
+        db.rollback()
+        raise
+    except Exception:
+        db.rollback()
+        raise
+
+    return _get_venta_with_pagos(db, venta_id)
 
 
 def build_monthly_summary(

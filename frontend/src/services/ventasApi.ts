@@ -1,14 +1,41 @@
 import { httpClient } from './httpClient'
 import type {
+  AdminLoginRequest,
+  AdminTokenResponse,
   CreateVentaRequest,
   ExportVentasParams,
+  UpdateVentaRequest,
   VentaResponse,
   VentasMensualesParams,
   VentasMensualesResponse,
 } from '../types/venta'
 
+function adminAuthHeaders(token: string): HeadersInit {
+  return { Authorization: `Bearer ${token}` }
+}
+
+export async function adminLogin(payload: AdminLoginRequest): Promise<AdminTokenResponse> {
+  return httpClient.post<AdminTokenResponse, AdminLoginRequest>('/api/admin/login', payload)
+}
+
 export async function createVenta(payload: CreateVentaRequest): Promise<VentaResponse> {
   return httpClient.post<VentaResponse, CreateVentaRequest>('/api/ventas', payload)
+}
+
+export async function updateVenta(
+  ventaId: number,
+  payload: UpdateVentaRequest,
+  token: string,
+): Promise<VentaResponse> {
+  return httpClient.put<VentaResponse, UpdateVentaRequest>(`/api/ventas/${ventaId}`, payload, {
+    headers: adminAuthHeaders(token),
+  })
+}
+
+export async function annulVenta(ventaId: number, token: string): Promise<VentaResponse> {
+  return httpClient.delete<VentaResponse>(`/api/ventas/${ventaId}`, {
+    headers: adminAuthHeaders(token),
+  })
 }
 
 export async function listVentasByMonth(

@@ -48,4 +48,17 @@ export const httpClient = {
       body: JSON.stringify(body),
     })
   },
+  put<T, TBody>(path: string, body: TBody, init?: RequestInit): Promise<T> {
+    return request<T>(path, {
+      ...init,
+      method: 'PUT',
+      body: JSON.stringify(body),
+    })
+  },
+  delete<T>(path: string, init?: RequestInit): Promise<T> {
+    return request<T>(path, {
+      ...init,
+      method: 'DELETE',
+    })
+  },
 }

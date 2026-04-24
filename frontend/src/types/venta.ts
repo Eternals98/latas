@@ -56,6 +56,22 @@ export interface CreateVentaRequest {
   pagos: CreatePagoRequest[]
 }
 
+export interface AdminLoginRequest {
+  username: string
+  password: string
+}
+
+export interface AdminTokenResponse {
+  access_token: string
+  token_type: 'bearer'
+  expires_in: number
+  expires_at: string
+}
+
+export type UpdatePagoRequest = CreatePagoRequest
+
+export type UpdateVentaRequest = CreateVentaRequest
+
 export interface PagoResponse {
   id: number
   venta_id: number

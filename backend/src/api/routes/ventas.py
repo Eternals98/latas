@@ -11,15 +11,21 @@ from src.api.schemas.ventas import (
     VentasMensualesResponse,
     get_first_validation_message,
     parse_create_venta_payload,
+    UpdateVentaRequest,
     venta_to_response,
 )
 from src.db.session import get_db
+from src.services.admin_auth import require_admin
 from src.services.ventas_service import (
+    VentaConflictError,
+    VentaNotFoundError,
     VentaValidationError,
+    annul_venta,
     build_ventas_xlsx,
     create_venta_with_pagos,
     list_ventas_by_month,
     list_ventas_for_export,
+    update_venta_with_pagos,
     validate_tipo_export,
 )
 
@@ -96,5 +102,54 @@ def create_venta(payload: dict = Body(...), db: Session = Depends(get_db)) -> Ve
         venta = create_venta_with_pagos(db=db, payload=request_payload)
     except VentaValidationError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+    return venta_to_response(venta)
+
+
+@router.put(
+    "/{venta_id}",
+    response_model=VentaResponse,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+        status.HTTP_409_CONFLICT: {"model": ErrorResponse},
+    },
+)
+def update_venta(
+    venta_id: int,
+    payload: UpdateVentaRequest,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(require_admin),
+) -> VentaResponse:
+    try:
+        venta = update_venta_with_pagos(db=db, venta_id=venta_id, payload=payload)
+    except VentaValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    except VentaNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except VentaConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+
+    return venta_to_response(venta)
+
+
+@router.delete(
+    "/{venta_id}",
+    response_model=VentaResponse,
+    responses={
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+    },
+)
+def delete_venta(
+    venta_id: int,
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(require_admin),
+) -> VentaResponse:
+    try:
+        venta = annul_venta(db=db, venta_id=venta_id)
+    except VentaNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
     return venta_to_response(venta)

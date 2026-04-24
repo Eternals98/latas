@@ -1,0 +1,250 @@
+openapi: 3.1.0
+info:
+  title: LATAS Ventas API - Administracion de Ventas
+  version: 0.7.0
+  description: Contrato para login administrativo, edicion de ventas y anulacion logica.
+servers:
+  - url: http://localhost:8000
+security: []
+paths:
+  /api/admin/login:
+    post:
+      summary: Iniciar sesion administrativa
+      operationId: adminLogin
+      tags: [Administracion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLoginRequest'
+      responses:
+        '200':
+          description: Token administrativo emitido con vigencia de 8 horas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminTokenResponse'
+        '401':
+          description: Credenciales administrativas invalidas o inactivas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ventas/{id}:
+    put:
+      summary: Editar venta activa
+      operationId: updateVenta
+      tags: [Ventas]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Identificador de la venta a editar.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVentaRequest'
+      responses:
+        '200':
+          description: Venta actualizada correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VentaResponse'
+        '400':
+          description: Error de validacion funcional o de formato.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Token ausente, invalido o vencido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Venta no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Venta no editable por estado actual.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Anular venta logicamente
+      operationId: annulVenta
+      tags: [Ventas]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+          description: Identificador de la venta a anular.
+      responses:
+        '200':
+          description: Venta anulada o ya anulada; el registro no fue borrado fisicamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VentaResponse'
+        '401':
+          description: Token ausente, invalido o vencido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Venta no encontrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AdminLoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+          format: password
+
+    AdminTokenResponse:
+      type: object
+      required: [access_token, token_type, expires_in, expires_at]
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          const: bearer
+        expires_in:
+          type: integer
+          const: 28800
+          description: Vigencia del token en segundos.
+        expires_at:
+          type: string
+          format: date-time
+
+    UpdatePagoRequest:
+      type: object
+      required: [medio, monto]
+      properties:
+        medio:
+          type: string
+          minLength: 1
+        monto:
+          type: string
+          description: Decimal con 2 decimales, debe ser mayor a cero.
+
+    UpdateVentaRequest:
+      type: object
+      required: [empresa, tipo, numero_referencia, descripcion, valor_total, pagos]
+      properties:
+        empresa:
+          type: string
+          enum: [latas_sas, tomas_gomez]
+        tipo:
+          type: string
+          enum: [formal, informal]
+        numero_referencia:
+          type: string
+          minLength: 1
+        descripcion:
+          type: string
+          minLength: 1
+        valor_total:
+          type: string
+          description: Decimal con 2 decimales, debe ser mayor o igual a cero.
+        cliente_id:
+          type: integer
+          nullable: true
+        pagos:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/UpdatePagoRequest'
+
+    PagoResponse:
+      type: object
+      required: [id, venta_id, medio, monto]
+      properties:
+        id:
+          type: integer
+        venta_id:
+          type: integer
+        medio:
+          type: string
+        monto:
+          type: string
+
+    VentaResponse:
+      type: object
+      required: [id, empresa, tipo, numero_referencia, descripcion, valor_total, estado, creado_en, modificado_en, pagos]
+      properties:
+        id:
+          type: integer
+        empresa:
+          type: string
+        tipo:
+          type: string
+          enum: [formal, informal]
+        numero_referencia:
+          type: string
+        descripcion:
+          type: string
+        valor_total:
+          type: string
+        cliente_id:
+          type: integer
+          nullable: true
+        estado:
+          type: string
+          enum: [activo, anulado]
+        creado_en:
+          type: string
+          format: date-time
+        modificado_en:
+          type: string
+          format: date-time
+        pagos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PagoResponse'
+
+    ErrorResponse:
+      type: object
+      required: [detail]
+      properties:
+        detail:
+          type: string

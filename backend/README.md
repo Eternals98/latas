@@ -23,6 +23,21 @@ python scripts/check_schema.py
 uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+## Variables administrativas
+
+Configurar en `.env` para habilitar login y operaciones protegidas:
+
+```env
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin-password
+ADMIN_JWT_SECRET=change-this-secret
+ADMIN_JWT_ALGORITHM=HS256
+ADMIN_JWT_TTL_SECONDS=28800
+```
+
+`ADMIN_JWT_TTL_SECONDS=28800` equivale a 8 horas. Cambiar `ADMIN_JWT_SECRET` y
+`ADMIN_PASSWORD` en cualquier entorno compartido.
+
 ## Verificar salud
 
 ```bash
