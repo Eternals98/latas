@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 
 from src.api.routes.admin import router as admin_router
 from src.api.routes.clientes import router as clientes_router
+from src.api.routes.dashboard import router as dashboard_router
 from src.api.routes.health import router as health_router
 from src.api.routes.medios_pago import router as medios_pago_router
 from src.api.routes.ventas import router as ventas_router
@@ -28,3 +29,4 @@ app.include_router(admin_router)
 app.include_router(ventas_router)
 app.include_router(clientes_router)
 app.include_router(medios_pago_router)
+app.include_router(dashboard_router)

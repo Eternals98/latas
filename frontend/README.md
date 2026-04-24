@@ -1,4 +1,27 @@
-# React + TypeScript + Vite
+# LATAS Frontend
+
+Aplicacion React + TypeScript + Vite para el registro de ventas y el dashboard de negocio.
+
+## Ejecutar
+
+```bash
+npm install
+npm run dev
+```
+
+El dashboard queda montado como vista inicial en `App.tsx` y consume `GET /api/dashboard`.
+La pantalla usa Recharts para ventas por mes, ventas por empresa y distribucion por metodo
+de pago.
+
+## Validar
+
+```bash
+npm run build
+```
+
+Configura `VITE_API_URL` si el backend no corre en `http://localhost:8000`.
+
+## Base Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

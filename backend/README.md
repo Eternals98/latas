@@ -67,6 +67,18 @@ Errores esperados:
 
 ## Reportes de ventas
 
+### Consultar dashboard de negocio
+
+```bash
+curl http://localhost:8000/api/dashboard
+```
+
+Respuesta esperada:
+- `200` con `ventas_por_mes`, `ventas_por_empresa`, `metodos_pago`, `ticket_promedio`, `total_ventas`, `total_mes_actual`, `cantidad_ventas` y `generado_en`.
+- Solo incluye ventas con `estado=activo`.
+- Los montos y porcentajes se serializan como strings decimales con dos cifras.
+- Si no hay ventas activas, devuelve arreglos vacios y totales en `0.00`.
+
 ### Consultar ventas activas por mes
 
 ```bash

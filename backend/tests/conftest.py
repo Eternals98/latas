@@ -1,5 +1,7 @@
 from pathlib import Path
 import sys
+from datetime import datetime
+from decimal import Decimal
 
 import pytest
 
@@ -53,22 +55,57 @@ def create_sale_fixture(
     referencia: str = "ADM-001",
     estado: str = EstadoVentaEnum.ACTIVO.value,
     valor_total: str = "100.00",
+    empresa: str = "latas_sas",
+    creado_en: datetime | None = None,
+    pagos: list[tuple[str, str]] | None = None,
     cliente_id: int | None = None,
 ) -> Venta:
     venta = Venta(
-        empresa="latas_sas",
+        empresa=empresa,
         tipo="formal",
         numero_referencia=referencia,
         descripcion="Venta admin",
-        valor_total=valor_total,
+        valor_total=Decimal(valor_total),
         cliente_id=cliente_id,
         estado=estado,
+        creado_en=creado_en or datetime.utcnow(),
+        modificado_en=creado_en or datetime.utcnow(),
     )
     db_session.add(venta)
     db_session.flush()
-    db_session.add(Pago(venta_id=venta.id, medio="efectivo", monto=valor_total))
+    for medio, monto in (pagos or [("efectivo", valor_total)]):
+        db_session.add(Pago(venta_id=venta.id, medio=medio, monto=Decimal(monto)))
     db_session.commit()
     return venta
+
+
+def create_dashboard_sale(
+    db_session,
+    *,
+    referencia: str,
+    valor_total: str,
+    creado_en: datetime,
+    empresa: str = "latas_sas",
+    estado: str = EstadoVentaEnum.ACTIVO.value,
+    pagos: list[tuple[str, str]] | None = None,
+) -> Venta:
+    return create_sale_fixture(
+        db_session,
+        referencia=referencia,
+        estado=estado,
+        valor_total=valor_total,
+        empresa=empresa,
+        creado_en=creado_en,
+        pagos=pagos,
+    )
+
+
+@pytest.fixture
+def dashboard_sale_factory(db_session):
+    def factory(**kwargs):
+        return create_dashboard_sale(db_session, **kwargs)
+
+    return factory
 
 
 @pytest.fixture
