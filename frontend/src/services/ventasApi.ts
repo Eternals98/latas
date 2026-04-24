@@ -1,6 +1,40 @@
 import { httpClient } from './httpClient'
-import type { CreateVentaRequest, VentaResponse } from '../types/venta'
+import type {
+  CreateVentaRequest,
+  ExportVentasParams,
+  VentaResponse,
+  VentasMensualesParams,
+  VentasMensualesResponse,
+} from '../types/venta'
 
 export async function createVenta(payload: CreateVentaRequest): Promise<VentaResponse> {
   return httpClient.post<VentaResponse, CreateVentaRequest>('/api/ventas', payload)
+}
+
+export async function listVentasByMonth(
+  params: VentasMensualesParams,
+): Promise<VentasMensualesResponse> {
+  const search = new URLSearchParams({
+    mes: String(params.mes),
+    anio: String(params.anio),
+  })
+  return httpClient.get<VentasMensualesResponse>(`/api/ventas?${search.toString()}`)
+}
+
+export async function exportVentas(params: ExportVentasParams): Promise<Blob> {
+  const search = new URLSearchParams({ tipo: params.tipo })
+  if (params.mes !== undefined) {
+    search.set('mes', String(params.mes))
+  }
+  if (params.anio !== undefined) {
+    search.set('anio', String(params.anio))
+  }
+
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/ventas/export?${search.toString()}`,
+  )
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`)
+  }
+  return response.blob()
 }

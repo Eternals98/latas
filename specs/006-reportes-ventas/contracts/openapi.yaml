@@ -1,0 +1,298 @@
+openapi: 3.1.0
+info:
+  title: LATAS Ventas API - Reportes de Ventas
+  version: 0.6.0
+  description: Contrato para consulta mensual de ventas y exportacion formal/informal.
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/ventas:
+    get:
+      summary: Consultar ventas activas por mes y anio
+      operationId: listVentasByMonth
+      tags: [Ventas]
+      parameters:
+        - in: query
+          name: mes
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+          description: Mes calendario a consultar.
+        - in: query
+          name: anio
+          required: true
+          schema:
+            type: integer
+            minimum: 2000
+          description: Anio calendario a consultar.
+      responses:
+        '200':
+          description: Lista de ventas activas del periodo con resumen mensual.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VentasMensualesResponse'
+        '400':
+          description: Parametros de periodo invalidos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Registrar venta con pagos
+      operationId: createVenta
+      tags: [Ventas]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVentaRequest'
+      responses:
+        '201':
+          description: Venta registrada correctamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VentaResponse'
+        '400':
+          description: Error de validacion funcional o de formato.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/ventas/export:
+    get:
+      summary: Exportar ventas activas formales o informales a XLSX
+      operationId: exportVentas
+      tags: [Ventas]
+      parameters:
+        - in: query
+          name: tipo
+          required: true
+          schema:
+            type: string
+            enum: [formal, informal]
+          description: Tipo de ventas activas a exportar.
+        - in: query
+          name: mes
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+          description: Mes calendario opcional para limitar la exportacion.
+        - in: query
+          name: anio
+          required: false
+          schema:
+            type: integer
+            minimum: 2000
+          description: Anio calendario opcional para limitar la exportacion.
+      responses:
+        '200':
+          description: Archivo XLSX generado para el tipo solicitado.
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: Nombre sugerido del archivo.
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Tipo o periodo invalido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ClienteReporte:
+      type: object
+      required: [id, nombre]
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        telefono:
+          type: string
+          nullable: true
+
+    PagoReporteItem:
+      type: object
+      required: [id, medio, monto]
+      properties:
+        id:
+          type: integer
+        medio:
+          type: string
+        monto:
+          type: string
+          description: Decimal serializado con 2 decimales.
+
+    VentaReporteItem:
+      type: object
+      required:
+        - id
+        - fecha
+        - empresa
+        - tipo
+        - numero_referencia
+        - descripcion
+        - valor_total
+        - estado
+        - pagos
+      properties:
+        id:
+          type: integer
+        fecha:
+          type: string
+          format: date-time
+        empresa:
+          type: string
+        tipo:
+          type: string
+          enum: [formal, informal]
+        numero_referencia:
+          type: string
+        descripcion:
+          type: string
+        cliente:
+          anyOf:
+            - $ref: '#/components/schemas/ClienteReporte'
+            - type: 'null'
+        valor_total:
+          type: string
+          description: Decimal serializado con 2 decimales.
+        estado:
+          type: string
+        pagos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PagoReporteItem'
+
+    ResumenMensualVentas:
+      type: object
+      required: [mes, anio, cantidad_ventas, valor_total]
+      properties:
+        mes:
+          type: integer
+        anio:
+          type: integer
+        cantidad_ventas:
+          type: integer
+        valor_total:
+          type: string
+          description: Decimal serializado con 2 decimales.
+
+    VentasMensualesResponse:
+      type: object
+      required: [mes, anio, items, resumen_mensual]
+      properties:
+        mes:
+          type: integer
+        anio:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/VentaReporteItem'
+        resumen_mensual:
+          $ref: '#/components/schemas/ResumenMensualVentas'
+
+    CreatePagoRequest:
+      type: object
+      required: [medio, monto]
+      properties:
+        medio:
+          type: string
+          minLength: 1
+        monto:
+          type: string
+
+    CreateVentaRequest:
+      type: object
+      required: [empresa, tipo, numero_referencia, descripcion, valor_total, pagos]
+      properties:
+        empresa:
+          type: string
+          enum: [latas_sas, tomas_gomez]
+        tipo:
+          type: string
+          enum: [formal, informal]
+        numero_referencia:
+          type: string
+          minLength: 1
+        descripcion:
+          type: string
+          minLength: 1
+        valor_total:
+          type: string
+        cliente_id:
+          type: integer
+          nullable: true
+        pagos:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CreatePagoRequest'
+
+    PagoResponse:
+      type: object
+      required: [id, venta_id, medio, monto]
+      properties:
+        id:
+          type: integer
+        venta_id:
+          type: integer
+        medio:
+          type: string
+        monto:
+          type: string
+
+    VentaResponse:
+      type: object
+      required: [id, empresa, tipo, numero_referencia, descripcion, valor_total, estado, creado_en, modificado_en, pagos]
+      properties:
+        id:
+          type: integer
+        empresa:
+          type: string
+        tipo:
+          type: string
+        numero_referencia:
+          type: string
+        descripcion:
+          type: string
+        valor_total:
+          type: string
+        cliente_id:
+          type: integer
+          nullable: true
+        estado:
+          type: string
+        creado_en:
+          type: string
+          format: date-time
+        modificado_en:
+          type: string
+          format: date-time
+        pagos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PagoResponse'
+
+    ErrorResponse:
+      type: object
+      required: [detail]
+      properties:
+        detail:
+          type: string

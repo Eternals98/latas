@@ -77,6 +77,56 @@ export interface VentaResponse {
   pagos: PagoResponse[]
 }
 
+export interface ClienteReporte {
+  id: number
+  nombre: string
+  telefono: string | null
+}
+
+export interface PagoReporteItem {
+  id: number
+  medio: string
+  monto: string
+}
+
+export interface VentaReporteItem {
+  id: number
+  fecha: string
+  empresa: string
+  tipo: TipoOption
+  numero_referencia: string
+  descripcion: string
+  cliente: ClienteReporte | null
+  valor_total: string
+  estado: string
+  pagos: PagoReporteItem[]
+}
+
+export interface ResumenMensualVentas {
+  mes: number
+  anio: number
+  cantidad_ventas: number
+  valor_total: string
+}
+
+export interface VentasMensualesResponse {
+  mes: number
+  anio: number
+  items: VentaReporteItem[]
+  resumen_mensual: ResumenMensualVentas
+}
+
+export interface VentasMensualesParams {
+  mes: number
+  anio: number
+}
+
+export interface ExportVentasParams {
+  tipo: TipoOption
+  mes?: number
+  anio?: number
+}
+
 export interface ApiErrorPayload {
   detail: string
 }

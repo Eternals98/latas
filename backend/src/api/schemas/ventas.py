@@ -4,7 +4,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_serializer, field_validator
 
-from src.models import Pago, Venta
+from src.models import Cliente, Pago, Venta
 
 MONEY_QUANT = Decimal("0.01")
 
@@ -95,6 +95,85 @@ class VentaResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     detail: str
+
+
+class ClienteReporte(BaseModel):
+    id: int
+    nombre: str
+    telefono: str | None
+
+
+class PagoReporteItem(BaseModel):
+    id: int
+    medio: str
+    monto: Decimal
+
+    @field_serializer("monto", when_used="json")
+    def serialize_monto(self, value: Decimal) -> str:
+        return f"{to_money(value):.2f}"
+
+
+class VentaReporteItem(BaseModel):
+    id: int
+    fecha: str
+    empresa: str
+    tipo: str
+    numero_referencia: str
+    descripcion: str
+    cliente: ClienteReporte | None
+    valor_total: Decimal
+    estado: str
+    pagos: list[PagoReporteItem]
+
+    @field_serializer("valor_total", when_used="json")
+    def serialize_valor_total(self, value: Decimal) -> str:
+        return f"{to_money(value):.2f}"
+
+
+class ResumenMensualVentas(BaseModel):
+    mes: int
+    anio: int
+    cantidad_ventas: int
+    valor_total: Decimal
+
+    @field_serializer("valor_total", when_used="json")
+    def serialize_valor_total(self, value: Decimal) -> str:
+        return f"{to_money(value):.2f}"
+
+
+class VentasMensualesResponse(BaseModel):
+    mes: int
+    anio: int
+    items: list[VentaReporteItem]
+    resumen_mensual: ResumenMensualVentas
+
+
+def cliente_to_report(cliente: Cliente | None) -> ClienteReporte | None:
+    if cliente is None:
+        return None
+    return ClienteReporte(id=cliente.id, nombre=cliente.nombre, telefono=cliente.telefono)
+
+
+def venta_to_report_item(venta: Venta) -> VentaReporteItem:
+    return VentaReporteItem(
+        id=venta.id,
+        fecha=venta.creado_en.isoformat(),
+        empresa=venta.empresa,
+        tipo=venta.tipo,
+        numero_referencia=venta.numero_referencia,
+        descripcion=venta.descripcion,
+        cliente=cliente_to_report(venta.cliente),
+        valor_total=to_money(venta.valor_total),
+        estado=venta.estado,
+        pagos=[
+            PagoReporteItem(
+                id=pago.id,
+                medio=pago.medio,
+                monto=to_money(pago.monto),
+            )
+            for pago in venta.pagos
+        ],
+    )
 
 
 def parse_create_venta_payload(payload: dict) -> CreateVentaRequest:

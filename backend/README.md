@@ -50,6 +50,39 @@ Errores esperados:
 - `400` con `{"detail":"La suma de pagos no coincide con valor_total."}` cuando el total no cuadra.
 - `400` con `{"detail":"<campo>: Field required"}` en payload incompleto.
 
+## Reportes de ventas
+
+### Consultar ventas activas por mes
+
+```bash
+curl "http://localhost:8000/api/ventas?mes=4&anio=2026"
+```
+
+Respuesta esperada:
+- `200` con `mes`, `anio`, `items` y `resumen_mensual`.
+- Solo incluye ventas con `estado=activo` creadas dentro del mes solicitado.
+- `resumen_mensual.valor_total` se serializa como decimal con dos cifras.
+
+Errores esperados:
+- `400` cuando falta `mes` o `anio`.
+- `400` cuando `mes` esta fuera de `1..12` o `anio` es menor a `2000`.
+
+### Exportar ventas a XLSX
+
+```bash
+curl -L "http://localhost:8000/api/ventas/export?tipo=formal&mes=4&anio=2026" -o ventas-formal-2026-04.xlsx
+curl -L "http://localhost:8000/api/ventas/export?tipo=informal&mes=4&anio=2026" -o ventas-informal-2026-04.xlsx
+```
+
+Respuesta esperada:
+- `200` con `Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
+- Archivo con encabezados simples y filas filtradas por `tipo`.
+- Si no hay coincidencias, se genera un XLSX valido solo con encabezados.
+
+Errores esperados:
+- `400` cuando `tipo` no es `formal` o `informal`.
+- `400` cuando se envia solo uno de `mes` o `anio`.
+
 ## Gestion de clientes
 
 ### Crear cliente
