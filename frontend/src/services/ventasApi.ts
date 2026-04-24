@@ -1,4 +1,4 @@
-import { httpClient } from './httpClient'
+import { API_URL, httpClient } from './httpClient'
 import type {
   AdminLoginRequest,
   AdminTokenResponse,
@@ -57,9 +57,7 @@ export async function exportVentas(params: ExportVentasParams): Promise<Blob> {
     search.set('anio', String(params.anio))
   }
 
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/ventas/export?${search.toString()}`,
-  )
+  const response = await fetch(`${API_URL}/api/ventas/export?${search.toString()}`)
   if (!response.ok) {
     throw new Error(`Request failed with status ${response.status}`)
   }

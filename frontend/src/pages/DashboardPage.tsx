@@ -50,8 +50,6 @@ export function DashboardPage() {
 
   useEffect(() => {
     let cancelled = false
-    setIsLoading(true)
-    setError(null)
 
     getDashboard()
       .then((payload) => {
