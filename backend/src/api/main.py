@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.routes.admin import router as admin_router
 from src.api.routes.clientes import router as clientes_router
@@ -10,6 +11,19 @@ from src.api.routes.medios_pago import router as medios_pago_router
 from src.api.routes.ventas import router as ventas_router
 
 app = FastAPI(title="LATAS Ventas API", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(RequestValidationError)
