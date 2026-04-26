@@ -4,6 +4,8 @@ import type {
   AdminTokenResponse,
   CreateVentaRequest,
   ExportVentasParams,
+  ImportVentasExcelResponse,
+  TipoOption,
   UpdateVentaRequest,
   VentaResponse,
   VentasMensualesParams,
@@ -62,4 +64,34 @@ export async function exportVentas(params: ExportVentasParams): Promise<Blob> {
     throw new Error(`Request failed with status ${response.status}`)
   }
   return response.blob()
+}
+
+export async function importVentasExcel(
+  params: {
+    archivo: File
+    mes: number
+    anio: number
+    tipo_default: TipoOption
+  },
+  token: string,
+): Promise<ImportVentasExcelResponse> {
+  const formData = new FormData()
+  formData.append('archivo', params.archivo)
+  formData.append('mes', String(params.mes))
+  formData.append('anio', String(params.anio))
+  formData.append('tipo_default', params.tipo_default)
+
+  const response = await fetch(`${API_URL}/api/ventas/import-excel`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  })
+
+  const payload = (await response.json()) as ImportVentasExcelResponse | { detail?: string }
+  if (!response.ok) {
+    throw new Error((payload as { detail?: string }).detail || `Request failed with status ${response.status}`)
+  }
+  return payload as ImportVentasExcelResponse
 }

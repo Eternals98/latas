@@ -18,6 +18,6 @@ class Pago(Base):
 
     def __init__(self, **kwargs):
         monto = kwargs.get("monto")
-        if monto is None or Decimal(str(monto)) <= 0:
-            raise ValueError("monto must be > 0")
+        if monto is None or Decimal(str(monto)) == 0:
+            raise ValueError("monto must be != 0")
         super().__init__(**kwargs)

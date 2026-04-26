@@ -1,4 +1,4 @@
-export type EmpresaOption = 'latas_sas' | 'tomas_gomez'
+export type EmpresaOption = 'latas_sas' | 'tomas_gomez' | 'generico'
 export type TipoOption = 'formal' | 'informal'
 
 export type FormValidationState = 'neutral' | 'ok' | 'error'
@@ -88,6 +88,7 @@ export interface PagoResponse {
 
 export interface VentaResponse {
   id: number
+  codigo_venta: string
   empresa: string
   tipo: string
   fecha_venta: string
@@ -115,6 +116,7 @@ export interface PagoReporteItem {
 
 export interface VentaReporteItem {
   id: number
+  codigo_venta: string
   fecha: string
   empresa: string
   tipo: TipoOption
@@ -149,6 +151,14 @@ export interface ExportVentasParams {
   tipo: TipoOption
   mes?: number
   anio?: number
+}
+
+export interface ImportVentasExcelResponse {
+  creadas: number
+  omitidas: number
+  hojas_procesadas: number
+  hojas_omitidas: string[]
+  errores: string[]
 }
 
 export interface ApiErrorPayload {

@@ -2,7 +2,7 @@ from src.services.ventas_service import (
     VentaValidationError,
     calculate_payment_total,
     create_venta_with_pagos,
-    validate_positive_payments,
+    validate_non_zero_payments,
     validate_total_equals_payments,
 )
 from src.services.medios_pago_service import (
@@ -15,7 +15,7 @@ __all__ = [
     "VentaValidationError",
     "calculate_payment_total",
     "create_venta_with_pagos",
-    "validate_positive_payments",
+    "validate_non_zero_payments",
     "validate_total_equals_payments",
     "INITIAL_MEDIOS_PAGO",
     "ensure_initial_catalog",

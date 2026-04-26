@@ -1,12 +1,15 @@
 from io import BytesIO
+from datetime import date
 
 from pydantic import ValidationError
-from fastapi import APIRouter, Body, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, File, Form, HTTPException, Query, UploadFile, status
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from src.api.schemas.ventas import (
+    ControlCajaDiarioResponse,
     ErrorResponse,
+    ImportVentasExcelResponse,
     VentaResponse,
     VentasMensualesResponse,
     get_first_validation_message,
@@ -23,11 +26,13 @@ from src.services.ventas_service import (
     annul_venta,
     build_ventas_xlsx,
     create_venta_with_pagos,
+    get_control_caja_diario,
     list_ventas_by_month,
     list_ventas_for_export,
     update_venta_with_pagos,
     validate_tipo_export,
 )
+from src.services.ventas_import_service import ImportVentasError, import_ventas_excel
 
 router = APIRouter(prefix="/api/ventas", tags=["Ventas"])
 
@@ -153,3 +158,60 @@ def delete_venta(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
     return venta_to_response(venta)
+
+
+@router.post(
+    "/import-excel",
+    response_model=ImportVentasExcelResponse,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+        status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse},
+    },
+)
+async def import_ventas_from_excel(
+    mes: int = Form(...),
+    anio: int = Form(...),
+    tipo_default: str = Form("informal"),
+    archivo: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    _admin: dict = Depends(require_admin),
+) -> ImportVentasExcelResponse:
+    if mes < 1 or mes > 12:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="mes debe estar entre 1 y 12.")
+    if anio < 2000 or anio > 9999:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="anio debe estar entre 2000 y 9999.")
+
+    try:
+        file_bytes = await archivo.read()
+        if not file_bytes:
+            raise ImportVentasError("El archivo esta vacio.")
+        result = import_ventas_excel(
+            db,
+            file_bytes=file_bytes,
+            mes=mes,
+            anio=anio,
+            default_tipo=tipo_default,
+        )
+    except ImportVentasError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+
+@router.get(
+    "/control-caja-diario",
+    response_model=ControlCajaDiarioResponse,
+    responses={status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse}},
+)
+def get_control_diario_caja(
+    fecha: str = Query(...),
+    tipo: str = Query(default="ambos"),
+    db: Session = Depends(get_db),
+) -> ControlCajaDiarioResponse:
+    try:
+        parsed_fecha = date.fromisoformat(fecha)
+        return get_control_caja_diario(db=db, fecha=parsed_fecha, tipo=tipo)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="fecha debe tener formato YYYY-MM-DD.") from exc
+    except VentaValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+    return ImportVentasExcelResponse(**result)

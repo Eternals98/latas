@@ -14,6 +14,19 @@ def to_money(value: Decimal) -> Decimal:
     return Decimal(str(value)).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
 
 
+def format_payment_method_display(value: str) -> str:
+    cleaned = " ".join(value.replace("_", " ").replace("-", " ").split())
+    if not cleaned:
+        return value
+    return cleaned.title()
+
+
+def resolve_sale_code(venta: Venta) -> str:
+    if venta.codigo_venta and venta.codigo_venta.strip():
+        return venta.codigo_venta.strip()
+    return f"{venta.id:03d}{venta.fecha_venta.month:02d}{venta.fecha_venta.year:04d}"
+
+
 class CreatePagoRequest(BaseModel):
     medio: str = Field(min_length=1)
     monto: Decimal
@@ -30,8 +43,8 @@ class CreatePagoRequest(BaseModel):
     @classmethod
     def validate_monto(cls, value: Decimal) -> Decimal:
         amount = to_money(value)
-        if amount <= 0:
-            raise ValueError("monto must be > 0")
+        if amount == 0:
+            raise ValueError("monto must be != 0")
         return amount
 
 
@@ -57,8 +70,8 @@ class CreateVentaRequest(BaseModel):
     @classmethod
     def validate_valor_total(cls, value: Decimal) -> Decimal:
         total = to_money(value)
-        if total < 0:
-            raise ValueError("valor_total must be >= 0")
+        if total == 0:
+            raise ValueError("valor_total must be != 0")
         return total
 
 
@@ -78,6 +91,10 @@ class PagoResponse(BaseModel):
     medio: str
     monto: Decimal
 
+    @field_serializer("medio", when_used="json")
+    def serialize_medio(self, value: str) -> str:
+        return format_payment_method_display(value)
+
     @field_serializer("monto", when_used="json")
     def serialize_monto(self, value: Decimal) -> str:
         return f"{to_money(value):.2f}"
@@ -87,6 +104,7 @@ class VentaResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    codigo_venta: str
     empresa: str
     tipo: str
     numero_referencia: str
@@ -119,6 +137,10 @@ class PagoReporteItem(BaseModel):
     medio: str
     monto: Decimal
 
+    @field_serializer("medio", when_used="json")
+    def serialize_medio(self, value: str) -> str:
+        return format_payment_method_display(value)
+
     @field_serializer("monto", when_used="json")
     def serialize_monto(self, value: Decimal) -> str:
         return f"{to_money(value):.2f}"
@@ -126,6 +148,7 @@ class PagoReporteItem(BaseModel):
 
 class VentaReporteItem(BaseModel):
     id: int
+    codigo_venta: str
     fecha: str
     empresa: str
     tipo: str
@@ -159,6 +182,28 @@ class VentasMensualesResponse(BaseModel):
     resumen_mensual: ResumenMensualVentas
 
 
+class ImportVentasExcelResponse(BaseModel):
+    creadas: int
+    omitidas: int
+    hojas_procesadas: int
+    hojas_omitidas: list[str]
+    errores: list[str]
+
+
+class ControlCajaDiarioResponse(BaseModel):
+    fecha: str
+    tipo: str
+    total_ventas: Decimal
+    efectivo_neto: Decimal
+    entregas: Decimal
+    efectivo_en_caja: Decimal
+    cantidad_ventas: int
+
+    @field_serializer("total_ventas", "efectivo_neto", "entregas", "efectivo_en_caja", when_used="json")
+    def serialize_money(self, value: Decimal) -> str:
+        return f"{to_money(value):.2f}"
+
+
 def cliente_to_report(cliente: Cliente | None) -> ClienteReporte | None:
     if cliente is None:
         return None
@@ -168,6 +213,7 @@ def cliente_to_report(cliente: Cliente | None) -> ClienteReporte | None:
 def venta_to_report_item(venta: Venta) -> VentaReporteItem:
     return VentaReporteItem(
         id=venta.id,
+        codigo_venta=resolve_sale_code(venta),
         fecha=venta.fecha_venta.isoformat(),
         empresa=venta.empresa,
         tipo=venta.tipo,
@@ -198,6 +244,7 @@ def parse_update_venta_payload(payload: dict) -> UpdateVentaRequest:
 def venta_to_response(venta: Venta) -> VentaResponse:
     return VentaResponse(
         id=venta.id,
+        codigo_venta=resolve_sale_code(venta),
         empresa=venta.empresa,
         tipo=venta.tipo,
         numero_referencia=venta.numero_referencia,

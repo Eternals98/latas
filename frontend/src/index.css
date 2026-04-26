@@ -5,7 +5,7 @@
 :root {
   font-family: Inter, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #111827;
-  background: #f5f7fc;
+  background: #eceef4;
 }
 
 * {
@@ -15,15 +15,23 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: #f5f7fc;
+  background: #eceef4;
 }
 
 #root {
   min-height: 100vh;
 }
 
+.font-manrope {
+  font-family: Manrope, Inter, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 @layer utilities {
   .bg-app-surface {
-    background: #f5f7fc;
+    background: #eceef4;
   }
 }

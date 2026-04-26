@@ -7,6 +7,7 @@ from src.models import MedioPago
 
 INITIAL_MEDIOS_PAGO: tuple[tuple[str, str], ...] = (
     ("efectivo", "Efectivo"),
+    ("entrega", "Entrega"),
     ("tarjeta_latas", "Tarjeta Latas"),
     ("tarjeta_tomas", "Tarjeta Tomas"),
     ("bancolombia_latas", "Bancolombia Latas"),

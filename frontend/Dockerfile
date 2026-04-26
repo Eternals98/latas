@@ -1,9 +1,10 @@
-FROM node:24-alpine AS build
+FROM node:22.13-bookworm-slim AS build
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm config set strict-ssl false
+RUN npm ci --no-audit --no-fund
 
 COPY . .
 RUN npm run build

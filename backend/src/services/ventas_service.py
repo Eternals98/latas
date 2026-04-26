@@ -6,10 +6,11 @@ from io import BytesIO
 from typing import Iterable
 
 from openpyxl import Workbook
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session, selectinload
 
 from src.api.schemas.ventas import (
+    ControlCajaDiarioResponse,
     CreateVentaRequest,
     ResumenMensualVentas,
     UpdateVentaRequest,
@@ -78,6 +79,23 @@ def month_range(mes: int, anio: int) -> tuple[date, date]:
     return start, end
 
 
+def generate_sale_code(db: Session, fecha_venta: date) -> str:
+    start, end = month_range(fecha_venta.month, fecha_venta.year)
+    current_count = (
+        db.execute(
+            select(func.count(Venta.id)).where(
+                Venta.fecha_venta >= start,
+                Venta.fecha_venta < end,
+            )
+        )
+        .scalar_one()
+    )
+    next_sequence = int(current_count) + 1
+    if next_sequence > 999:
+        raise VentaValidationError("No hay cupo de consecutivos disponibles para el mes seleccionado.")
+    return f"{next_sequence:03d}{fecha_venta.month:02d}{fecha_venta.year:04d}"
+
+
 def calculate_payment_total(payload: CreateVentaRequest) -> Decimal:
     return sum((to_money(pago.monto) for pago in payload.pagos), start=Decimal("0.00"))
 
@@ -89,26 +107,29 @@ def validate_total_equals_payments(payload: CreateVentaRequest) -> None:
         raise VentaValidationError("La suma de pagos no coincide con valor_total.")
 
 
-def validate_positive_payments(payload: CreateVentaRequest) -> None:
+def validate_non_zero_payments(payload: CreateVentaRequest) -> None:
     for pago in payload.pagos:
-        if to_money(pago.monto) <= 0:
-            raise VentaValidationError("Cada pago debe tener monto positivo.")
+        if to_money(pago.monto) == 0:
+            raise VentaValidationError("Cada pago debe tener monto diferente de 0.")
 
 
 def create_venta_with_pagos(db: Session, payload: CreateVentaRequest) -> Venta:
     if not payload.pagos:
         raise VentaValidationError("Debe enviar al menos un pago.")
 
-    validate_positive_payments(payload)
+    validate_non_zero_payments(payload)
     validate_total_equals_payments(payload)
+    sale_date = payload.fecha_venta or date.today()
+    codigo_venta = generate_sale_code(db, sale_date)
 
     try:
         venta = Venta(
             empresa=payload.empresa,
             tipo=payload.tipo,
             numero_referencia=payload.numero_referencia,
+            codigo_venta=codigo_venta,
             descripcion=payload.descripcion,
-            fecha_venta=payload.fecha_venta or date.today(),
+            fecha_venta=sale_date,
             valor_total=to_money(payload.valor_total),
             cliente_id=payload.cliente_id,
             estado=EstadoVentaEnum.ACTIVO.value,
@@ -165,7 +186,7 @@ def _validate_cliente_exists(db: Session, cliente_id: int | None) -> None:
 
 
 def update_venta_with_pagos(db: Session, venta_id: int, payload: UpdateVentaRequest) -> Venta:
-    validate_positive_payments(payload)
+    validate_non_zero_payments(payload)
     validate_total_equals_payments(payload)
     _validate_cliente_exists(db, payload.cliente_id)
 
@@ -196,6 +217,64 @@ def update_venta_with_pagos(db: Session, venta_id: int, payload: UpdateVentaRequ
         raise
 
     return _get_venta_with_pagos(db, venta_id)
+
+
+def build_control_caja_diario(
+    ventas: Iterable[Venta],
+    *,
+    fecha: date,
+    tipo: str,
+) -> ControlCajaDiarioResponse:
+    ventas_list = list(ventas)
+    total_ventas = sum((to_money(venta.valor_total) for venta in ventas_list), start=Decimal("0.00"))
+
+    efectivo_neto = Decimal("0.00")
+    entregas = Decimal("0.00")
+    for venta in ventas_list:
+        for pago in venta.pagos:
+            if pago.medio == "efectivo":
+                efectivo_neto += to_money(pago.monto)
+            elif pago.medio == "entrega":
+                entregas += to_money(pago.monto)
+
+    return ControlCajaDiarioResponse(
+        fecha=fecha.isoformat(),
+        tipo=tipo,
+        total_ventas=to_money(total_ventas),
+        efectivo_neto=to_money(efectivo_neto),
+        entregas=to_money(entregas),
+        efectivo_en_caja=to_money(efectivo_neto - entregas),
+        cantidad_ventas=len(ventas_list),
+    )
+
+
+def get_control_caja_diario(
+    db: Session,
+    *,
+    fecha: date,
+    tipo: str,
+) -> ControlCajaDiarioResponse:
+    if tipo not in ("formal", "informal", "ambos"):
+        raise VentaValidationError("tipo debe ser formal, informal o ambos.")
+
+    filters = [
+        Venta.estado == EstadoVentaEnum.ACTIVO.value,
+        Venta.fecha_venta == fecha,
+    ]
+    if tipo != "ambos":
+        filters.append(Venta.tipo == tipo)
+
+    ventas = (
+        db.execute(
+            select(Venta)
+            .options(selectinload(Venta.pagos))
+            .where(*filters)
+            .order_by(Venta.id.asc())
+        )
+        .scalars()
+        .all()
+    )
+    return build_control_caja_diario(ventas, fecha=fecha, tipo=tipo)
 
 
 def annul_venta(db: Session, venta_id: int) -> Venta:
