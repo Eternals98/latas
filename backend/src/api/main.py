@@ -11,11 +11,14 @@ from src.api.routes.dashboard import router as dashboard_router
 from src.api.routes.health import router as health_router
 from src.api.routes.medios_pago import router as medios_pago_router
 from src.api.routes.ventas import router as ventas_router
+from src.core.config import get_cors_origins, settings
 from src.db.init_db import init_db
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    if not settings.admin_password or not settings.admin_jwt_secret:
+        raise RuntimeError("ADMIN_PASSWORD and ADMIN_JWT_SECRET must be set.")
     init_db()
     yield
 
@@ -24,13 +27,7 @@ app = FastAPI(title="LATAS Ventas API", version="0.1.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:4173",
-        "http://127.0.0.1:4173",
-        "http://ventas.local",
-    ],
+    allow_origins=get_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
