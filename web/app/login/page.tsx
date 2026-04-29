@@ -11,17 +11,21 @@ export default function LoginPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password })
-    });
-    if (!response.ok) {
-      setError("Credenciales inválidas.");
-      return;
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      });
+      if (!response.ok) {
+        setError("Credenciales inválidas o error de sesión.");
+        return;
+      }
+      router.push("/");
+      router.refresh();
+    } catch {
+      setError("No se pudo conectar con el servicio de login.");
     }
-    router.push("/");
-    router.refresh();
   }
 
   return (
