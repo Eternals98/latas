@@ -1,12 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -21,8 +19,7 @@ export default function LoginPage() {
         setError("Credenciales inválidas o error de sesión.");
         return;
       }
-      router.push("/");
-      router.refresh();
+      window.location.assign("/");
     } catch {
       setError("No se pudo conectar con el servicio de login.");
     }
