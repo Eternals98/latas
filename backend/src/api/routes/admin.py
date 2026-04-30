@@ -1,9 +1,11 @@
 from pydantic import ValidationError
-from fastapi import APIRouter, Body, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 
 from src.api.schemas.admin import AdminLoginRequest, AdminTokenResponse
 from src.api.schemas.ventas import ErrorResponse, get_first_validation_message
 from src.core.config import settings
+from src.db.session import get_db
 from src.services.admin_auth import create_admin_token, validate_admin_credentials
 
 router = APIRouter(prefix="/api/admin", tags=["Administracion"])
@@ -14,7 +16,7 @@ router = APIRouter(prefix="/api/admin", tags=["Administracion"])
     response_model=AdminTokenResponse,
     responses={status.HTTP_401_UNAUTHORIZED: {"model": ErrorResponse}},
 )
-def admin_login(payload: dict = Body(...)) -> AdminTokenResponse:
+def admin_login(payload: dict = Body(...), db: Session = Depends(get_db)) -> AdminTokenResponse:
     try:
         request_payload = AdminLoginRequest.model_validate(payload)
     except ValidationError as exc:
@@ -23,13 +25,13 @@ def admin_login(payload: dict = Body(...)) -> AdminTokenResponse:
             detail=get_first_validation_message(exc),
         ) from exc
 
-    if not validate_admin_credentials(request_payload.username, request_payload.password):
+    if not validate_admin_credentials(db, request_payload.username, request_payload.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales administrativas invalidas.",
         )
 
-    token, expires_at = create_admin_token()
+    token, expires_at = create_admin_token(request_payload.username)
     return AdminTokenResponse(
         access_token=token,
         expires_in=settings.admin_jwt_ttl_seconds,

@@ -26,3 +26,9 @@ export function verifySession(raw: string | undefined): boolean {
 export const SESSION = {
   cookieName: SESSION_COOKIE
 };
+
+export function parseSessionValue(raw: string | undefined): string | null {
+  if (!raw) return null;
+  const [value] = raw.split(".");
+  return value || null;
+}

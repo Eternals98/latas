@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from src.db.base import Base
 from src.db.session import SessionLocal, engine
 from src.models import cliente, medio_pago, pago, venta  # noqa: F401
+from src.services.admin_auth import ensure_initial_admin_user
 from src.services.medios_pago_service import ensure_initial_catalog
 
 
@@ -74,6 +75,7 @@ def init_db() -> None:
     session: Session = SessionLocal()
     try:
         ensure_initial_catalog(session)
+        ensure_initial_admin_user(session)
     finally:
         session.close()
 

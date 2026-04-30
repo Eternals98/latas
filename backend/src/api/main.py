@@ -17,8 +17,8 @@ from src.db.init_db import init_db
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    if not settings.admin_password or not settings.admin_jwt_secret:
-        raise RuntimeError("ADMIN_PASSWORD and ADMIN_JWT_SECRET must be set.")
+    if not settings.admin_jwt_secret:
+        raise RuntimeError("ADMIN_JWT_SECRET must be set.")
     init_db()
     yield
 

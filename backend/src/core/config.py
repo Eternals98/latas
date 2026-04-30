@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./ventas.db"
     admin_username: str = "admin"
     admin_password: str = ""
+    admin_initial_username: str = "admin"
+    admin_initial_password: str = ""
     admin_jwt_secret: str = ""
     admin_jwt_algorithm: str = "HS256"
     admin_jwt_ttl_seconds: int = 8 * 60 * 60
