@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION, verifySession } from "./lib/session";
+import { decodeSessionUser, SESSION } from "./lib/session";
 
 const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/logout", "/api/auth/session"];
 
@@ -9,8 +9,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const session = request.cookies.get(SESSION.cookieName)?.value;
-  if (!verifySession(session)) {
+  const session = decodeSessionUser(request.cookies.get(SESSION.cookieName)?.value);
+  if (!session) {
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
