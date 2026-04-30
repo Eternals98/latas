@@ -4,7 +4,7 @@ import { EMPRESA_OPTIONS } from '../constants/ventaOptions'
 import { searchClientes } from '../services/clientesApi'
 import { ApiError } from '../services/httpClient'
 import { listMediosPago } from '../services/mediosPagoApi'
-import { adminLogin, exportVentas, importVentasExcel, listVentasByMonth, updateVenta } from '../services/ventasApi'
+import { adminLogin, annulVenta, exportVentas, importVentasExcel, listVentasByMonth, updateVenta } from '../services/ventasApi'
 import type {
   AdminLoginRequest,
   ClienteResponse,
@@ -76,8 +76,6 @@ interface TransaccionesPageProps {
   onGoClientes?: () => void
   onGoReportes?: () => void
 }
-
-const ADMIN_INITIAL_KEY = 'partes2627'
 
 function pad2(value: number): string {
   return String(value).padStart(2, '0')
@@ -350,11 +348,7 @@ export function TransaccionesPage({
   const [error, setError] = useState<string | null>(null)
   const [reloadTick, setReloadTick] = useState(0)
   const [adminToken, setAdminToken] = useState('')
-  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false)
-  const [pendingEditItem, setPendingEditItem] = useState<TransactionItem | null>(null)
-  const [adminKeyInput, setAdminKeyInput] = useState('')
-  const [adminError, setAdminError] = useState<string | null>(null)
-  const [isAdminLoading, setIsAdminLoading] = useState(false)
+  const [sessionRole, setSessionRole] = useState<'admin' | 'vendedor' | null>(null)
   const [editing, setEditing] = useState<EditDraft | null>(null)
   const [viewing, setViewing] = useState<ViewDraft | null>(null)
   const [isSavingEdit, setIsSavingEdit] = useState(false)
@@ -366,6 +360,25 @@ export function TransaccionesPage({
   const [comparisonInterval, setComparisonInterval] = useState<DateInterval>(() =>
     previousInterval(computeCurrentInterval('mes', '', '', '', '')),
   )
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/auth/session')
+      .then((response) => response.json())
+      .then((payload: { role?: 'admin' | 'vendedor' }) => {
+        if (!cancelled) {
+          setSessionRole(payload.role ?? null)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSessionRole(null)
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -564,31 +577,14 @@ export function TransaccionesPage({
     }
   }
 
-  async function unlockAdmin() {
-    setIsAdminLoading(true)
-    setAdminError(null)
-
-    if (adminKeyInput !== ADMIN_INITIAL_KEY) {
-      setAdminError('Clave administrativa incorrecta.')
-      setIsAdminLoading(false)
-      return
+  async function getAdminToken(): Promise<string> {
+    if (adminToken) {
+      return adminToken
     }
-
-    try {
-      const payload: AdminLoginRequest = { username: 'admin', password: adminKeyInput }
-      const token = await adminLogin(payload)
-      setAdminToken(token.access_token)
-      setIsAdminModalOpen(false)
-      setAdminKeyInput('')
-      if (pendingEditItem) {
-        openEdit(pendingEditItem)
-        setPendingEditItem(null)
-      }
-    } catch (err) {
-      setAdminError(err instanceof ApiError ? err.message : 'No fue posible autenticar modo administrador.')
-    } finally {
-      setIsAdminLoading(false)
-    }
+    const payload: AdminLoginRequest = { username: 'admin', password: 'admin' }
+    const token = await adminLogin(payload)
+    setAdminToken(token.access_token)
+    return token.access_token
   }
 
   function openEdit(item: TransactionItem) {
@@ -632,10 +628,11 @@ export function TransaccionesPage({
   }
 
   function startEditWithAuth(item: TransactionItem) {
-    setPendingEditItem(item)
-    setAdminError(null)
-    setAdminKeyInput('')
-    setIsAdminModalOpen(true)
+    if (sessionRole !== 'admin') {
+      setError('Solo el usuario admin puede editar o eliminar transacciones.')
+      return
+    }
+    openEdit(item)
   }
 
   function updateEditPayment(rowId: string, changes: Partial<EditPaymentDraft>) {
@@ -673,7 +670,7 @@ export function TransaccionesPage({
   }
 
   async function saveEdit() {
-    if (!editing || !adminToken) {
+    if (!editing) {
       return
     }
 
@@ -710,6 +707,7 @@ export function TransaccionesPage({
     setError(null)
 
     try {
+      const token = await getAdminToken()
       await updateVenta(
         editing.id,
         {
@@ -722,7 +720,7 @@ export function TransaccionesPage({
           cliente_id: editing.clienteId,
           pagos: pagosPayload,
         },
-        adminToken,
+        token,
       )
       setEditing(null)
       setReloadTick((prev) => prev + 1)
@@ -730,6 +728,25 @@ export function TransaccionesPage({
       setError(err instanceof ApiError ? err.message : 'No fue posible editar la venta.')
     } finally {
       setIsSavingEdit(false)
+    }
+  }
+
+  async function deleteVenta(ventaId: number) {
+    if (sessionRole !== 'admin') {
+      setError('Solo el usuario admin puede eliminar transacciones.')
+      return
+    }
+    const confirmed = window.confirm('Esta acción eliminará la transacción. ¿Deseas continuar?')
+    if (!confirmed) {
+      return
+    }
+    setError(null)
+    try {
+      const token = await getAdminToken()
+      await annulVenta(ventaId, token)
+      setReloadTick((prev) => prev + 1)
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'No fue posible eliminar la venta.')
     }
   }
 
@@ -944,20 +961,20 @@ export function TransaccionesPage({
                   </article>
                 </div>
 
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsImportModalOpen(true)
-                      setAdminError(null)
-                      setAdminKeyInput('')
-                    }}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">upload_file</span>
-                    Cargar Excel historico
-                  </button>
-                </div>
+                {sessionRole === 'admin' && (
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsImportModalOpen(true)
+                      }}
+                      className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">upload_file</span>
+                      Cargar Excel historico
+                    </button>
+                  </div>
+                )}
 
                 {error && (
                   <section className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</section>
@@ -1017,15 +1034,28 @@ export function TransaccionesPage({
                                   >
                                     <span className="material-symbols-outlined text-[18px]">visibility</span>
                                   </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => startEditWithAuth(item)}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300 text-slate-600 hover:bg-slate-50"
-                                    title="Editar registro"
-                                    aria-label="Editar registro"
-                                  >
-                                    <span className="material-symbols-outlined text-[18px]">edit</span>
-                                  </button>
+                                  {sessionRole === 'admin' && (
+                                    <>
+                                      <button
+                                        type="button"
+                                        onClick={() => startEditWithAuth(item)}
+                                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-300 text-slate-600 hover:bg-slate-50"
+                                        title="Editar registro"
+                                        aria-label="Editar registro"
+                                      >
+                                        <span className="material-symbols-outlined text-[18px]">edit</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => deleteVenta(item.ventaId)}
+                                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-rose-300 text-rose-600 hover:bg-rose-50"
+                                        title="Eliminar registro"
+                                        aria-label="Eliminar registro"
+                                      >
+                                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                                      </button>
+                                    </>
+                                  )}
                                 </div>
                               </td>
                             </tr>
@@ -1150,44 +1180,6 @@ export function TransaccionesPage({
         </div>
       )}
 
-      {isAdminModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/30 px-4">
-          <section className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-4 shadow-lg">
-            <h2 className="text-base font-semibold text-slate-900">Clave de edicion</h2>
-            <p className="mt-1 text-xs text-slate-500">Ingrese la clave para poder editar este registro.</p>
-            <input
-              type="password"
-              value={adminKeyInput}
-              onChange={(event) => setAdminKeyInput(event.target.value)}
-              className="mt-3 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              placeholder="Clave administrativa"
-            />
-            {adminError && <p className="mt-2 text-xs text-rose-600">{adminError}</p>}
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsAdminModalOpen(false)
-                  setAdminError(null)
-                  setPendingEditItem(null)
-                }}
-                className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={unlockAdmin}
-                disabled={isAdminLoading}
-                className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-slate-400"
-              >
-                {isAdminLoading ? 'Validando...' : 'Continuar'}
-              </button>
-            </div>
-          </section>
-        </div>
-      )}
-
       {isImportModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/30 px-4">
           <section className="w-full max-w-lg rounded-xl border border-slate-200 bg-white p-4 shadow-lg">
@@ -1195,17 +1187,6 @@ export function TransaccionesPage({
             <p className="mt-1 text-xs text-slate-500">
               Ingresa clave, mes y anio. Solo se procesan hojas con nombre numerico (dia), y se ignoran celdas con #REF!.
             </p>
-
-            <label className="mt-3 block text-xs font-medium text-slate-600">
-              Clave administrativa
-              <input
-                type="password"
-                value={adminKeyInput}
-                onChange={(event) => setAdminKeyInput(event.target.value)}
-                className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                placeholder="Clave"
-              />
-            </label>
 
             <div className="mt-3 grid grid-cols-2 gap-3">
               <label className="text-xs font-medium text-slate-600">
@@ -1254,7 +1235,6 @@ export function TransaccionesPage({
               />
             </label>
 
-            {adminError && <p className="mt-2 text-xs text-rose-600">{adminError}</p>}
             {importSummary && <p className="mt-2 text-xs text-emerald-700">{importSummary}</p>}
 
             <div className="mt-4 flex justify-end gap-2">
@@ -1264,7 +1244,6 @@ export function TransaccionesPage({
                   setIsImportModalOpen(false)
                   setImportSummary(null)
                   setImportFile(null)
-                  setAdminError(null)
                 }}
                 className="rounded-md border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
               >
@@ -1274,24 +1253,16 @@ export function TransaccionesPage({
                 type="button"
                 disabled={isImporting}
                 onClick={async () => {
-                  if (adminKeyInput !== ADMIN_INITIAL_KEY) {
-                    setAdminError('Clave administrativa incorrecta.')
+                  if (sessionRole !== 'admin') {
+                    setError('Solo el usuario admin puede importar historico.')
                     return
                   }
-                  if (!adminToken) {
-                    try {
-                      const token = await adminLogin({ username: 'admin', password: adminKeyInput })
-                      setAdminToken(token.access_token)
-                      await handleImportExcel(token.access_token)
-                      return
-                    } catch (err) {
-                      setAdminError(
-                        err instanceof ApiError ? err.message : 'No fue posible autenticar modo administrador.',
-                      )
-                      return
-                    }
+                  try {
+                    const token = await getAdminToken()
+                    await handleImportExcel(token)
+                  } catch (err) {
+                    setError(err instanceof ApiError ? err.message : 'No fue posible autenticar modo administrador.')
                   }
-                  await handleImportExcel()
                 }}
                 className="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-slate-400"
               >

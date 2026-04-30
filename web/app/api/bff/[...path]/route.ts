@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { decodeSessionUser, SESSION } from "../../../../lib/session";
 
 function getBackendUrl(): string {
   const base = process.env.BACKEND_API_URL?.replace(/\/$/, "");
@@ -16,6 +17,13 @@ function buildHeaders(request: NextRequest): Headers {
 }
 
 async function proxy(request: NextRequest, method: string, path: string[]): Promise<Response> {
+  if (isVentasWrite(method, path)) {
+    const session = decodeSessionUser(request.cookies.get(SESSION.cookieName)?.value);
+    if (!session || session.role !== "admin") {
+      return NextResponse.json({ detail: "No autorizado para editar o eliminar transacciones." }, { status: 403 });
+    }
+  }
+
   const search = request.nextUrl.search;
   const target = `${getBackendUrl()}/${path.join("/")}${search}`;
   const body = method === "GET" || method === "HEAD" ? undefined : await request.arrayBuffer();
@@ -35,6 +43,16 @@ async function proxy(request: NextRequest, method: string, path: string[]): Prom
     status: upstream.status,
     headers: responseHeaders,
   });
+}
+
+function isVentasWrite(method: string, path: string[]): boolean {
+  if (method !== "PUT" && method !== "DELETE") {
+    return false;
+  }
+  if (path.length < 3) {
+    return false;
+  }
+  return path[0] === "api" && path[1] === "ventas" && /^\d+$/.test(path[2]);
 }
 
 export async function GET(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
