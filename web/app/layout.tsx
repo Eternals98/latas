@@ -1,20 +1,16 @@
 import "./globals.css";
-import Link from "next/link";
 import { ReactNode } from "react";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es">
-      <body>
-        <header style={{ background: "#14213d", color: "#fff", padding: "12px 24px" }}>
-          <nav className="container" style={{ display: "flex", gap: 16 }}>
-            <Link href="/">Dashboard</Link>
-            <Link href="/ventas">Registro</Link>
-            <Link href="/reportes">Reportes</Link>
-          </nav>
-        </header>
-        <main className="container">{children}</main>
-      </body>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
