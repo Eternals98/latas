@@ -1,27 +1,38 @@
 # LATAS Monorepo
 
 Arquitectura activa:
-- `web/`: Next.js (deploy en Vercel)
-- `backend/`: FastAPI (deploy en Render)
-- `supabase/`: esquema SQL de base de datos
+- `web/`: Next.js (Vercel)
+- `backend/`: FastAPI (Render)
+- `supabase/`: esquema SQL fase 1
 
-## Estructura
+## Fase 1 implementada
 
-```text
-.
-├── web/
-├── backend/
-└── supabase/
+Incluye:
+- Modelo base de datos nuevo (`companies`, `profiles`, `customers`, `payment_methods`, `cash_sessions`, `transactions`, `transaction_payments`, `cash_movements`, `audit_logs`).
+- Autenticación con Supabase Auth.
+- Backend base con JWT validation (`/api/auth/me`, `/api/payment-methods`, `/api/companies`, `/api/customers`, `/api/health`).
+- Frontend con login/logout/session sobre Supabase.
+
+## Estado Fase 2 (ventas)
+
+- Nuevo flujo activo de ventas en `web/app/registro` y backend `POST/GET /api/sales`, implementado sobre `transactions` + `transaction_payments`.
+- `web/legacy` queda como referencia temporal y no debe usarse para nuevas funcionalidades.
+- Endpoints legacy (`/api/ventas`, `/api/clientes`, `/api/medios-pago`) se mantienen solo por compatibilidad transitoria.
+- No se cargan datos semilla automáticos al iniciar backend.
+
+## Reset limpio BD (ejecutar en Supabase SQL Editor)
+
+```sql
+drop table if exists public.pago;
+drop table if exists public.venta;
+drop table if exists public.medio_pago;
+drop table if exists public.cliente;
+drop table if exists public.admin_user;
 ```
 
-## Variables de Entorno
+Luego aplicar `supabase/schema.sql`.
 
-### Web (`web/.env.local`)
-
-```env
-BACKEND_API_BASE_URL=https://<tu-backend>.onrender.com
-APP_ENV=production
-```
+## Variables de entorno
 
 ### Backend (`backend/.env`)
 
@@ -30,38 +41,16 @@ APP_ENV=production
 APP_HOST=0.0.0.0
 APP_PORT=10000
 DATABASE_URL=postgresql+psycopg://postgres:<password>@<host>:5432/postgres?sslmode=require
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=admin-password
-ADMIN_INITIAL_USERNAME=admin
-ADMIN_INITIAL_PASSWORD=admin-password
-ADMIN_JWT_SECRET=change-me-admin-secret
-ADMIN_JWT_ALGORITHM=HS256
-ADMIN_JWT_TTL_SECONDS=28800
-CORS_ORIGINS=http://localhost:3000,https://<tu-frontend>.vercel.app
+CORS_ORIGINS=http://localhost:3000,https://<frontend>.vercel.app
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 ```
 
-## Desarrollo Local
+### Frontend (`web/.env.local`)
 
-### Frontend
-
-```bash
-cd web
-npm ci
-npm run dev
+```env
+BACKEND_API_URL=https://<backend>.onrender.com
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_ANON_KEY=<anon-key>
 ```
-
-### Backend
-
-```bash
-cd backend
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-## Deploy
-
-- Vercel: conectar repo `Eternals98/latas` y configurar `Root Directory = web`.
-- Render: desplegar `backend` como servicio web Python y definir variables del `.env`.
-- Supabase: aplicar `supabase/schema.sql` sobre tu proyecto.

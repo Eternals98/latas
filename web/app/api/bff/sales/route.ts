@@ -3,23 +3,23 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { search } = new URL(request.url);
-  const response = await backendFetch(`/api/ventas${search}`);
+  const response = await backendFetch(`/api/sales${search}`);
   const body = await response.text();
   return new NextResponse(body, {
     status: response.status,
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   });
 }
 
 export async function POST(request: Request) {
   const payload = await request.text();
-  const response = await backendFetch("/api/ventas", {
+  const response = await backendFetch("/api/sales", {
     method: "POST",
-    body: payload
+    body: payload,
   });
   const body = await response.text();
   return new NextResponse(body, {
     status: response.status,
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   });
 }

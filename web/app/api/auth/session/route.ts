@@ -1,13 +1,37 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { decodeSessionUser, SESSION } from "../../../../lib/session";
+import { getAccessTokenFromCookies } from "../../../../lib/auth";
+
+function backendUrl(): string {
+  const base = (process.env.BACKEND_API_URL || "").replace(/\/$/, "");
+  if (!base) throw new Error("BACKEND_API_URL is required");
+  return base;
+}
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const raw = cookieStore.get(SESSION.cookieName)?.value;
-  const session = decodeSessionUser(raw);
-  if (!session) {
+  const token = await getAccessTokenFromCookies();
+  if (!token) {
     return NextResponse.json({ authenticated: false }, { status: 401 });
   }
-  return NextResponse.json({ authenticated: true, ...session });
+
+  const response = await fetch(`${backendUrl()}/api/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return NextResponse.json({ authenticated: false }, { status: 401 });
+  }
+
+  const payload = (await response.json()) as {
+    id: string;
+    full_name: string;
+    role: "admin" | "cashier";
+  };
+
+  return NextResponse.json({
+    authenticated: true,
+    userId: payload.id,
+    username: payload.full_name,
+    role: payload.role,
+  });
 }

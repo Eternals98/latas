@@ -11,7 +11,11 @@ def _is_sqlite(url: str) -> bool:
 engine = create_engine(
     settings.database_url,
     future=True,
-    connect_args={"check_same_thread": False} if _is_sqlite(settings.database_url) else {},
+    connect_args=(
+        {"check_same_thread": False}
+        if _is_sqlite(settings.database_url)
+        else {"prepare_threshold": None}
+    ),
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, future=True)

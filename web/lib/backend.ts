@@ -1,3 +1,5 @@
+import { getAccessTokenFromCookies } from "./auth";
+
 const BACKEND_API_URL = (process.env.BACKEND_API_URL || "").replace(/\/$/, "");
 
 function requireBackendUrl(): string {
@@ -8,12 +10,14 @@ function requireBackendUrl(): string {
 }
 
 export async function backendFetch(path: string, init?: RequestInit): Promise<Response> {
+  const token = await getAccessTokenFromCookies();
   return fetch(`${requireBackendUrl()}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      ...(init?.headers || {})
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(init?.headers || {}),
     },
-    cache: "no-store"
+    cache: "no-store",
   });
 }
