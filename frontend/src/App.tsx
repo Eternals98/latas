@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { clearSession, readSession, writeSession, type AppSession } from './auth'
 import { ClientesPage } from './pages/ClientesPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { LibroDiarioPage } from './pages/LibroDiarioPage'
 import { LibroMensualPage } from './pages/LibroMensualPage'
+import { LoginPage } from './pages/LoginPage'
 import { RegistroVentasPage } from './pages/RegistroVentasPage'
 import { TransaccionesPage } from './pages/TransaccionesPage'
 
@@ -11,13 +13,46 @@ type AppView = 'dashboard' | 'registro' | 'clientes' | 'ventas_transacciones' | 
 
 function App() {
   const [view, setView] = useState<AppView>('ventas_transacciones')
+  const [session, setSession] = useState<AppSession | null>(null)
+  const [isBootstrapping, setIsBootstrapping] = useState(true)
   const pageTitle = "Axentria"
+
+  useEffect(() => {
+    setSession(readSession())
+    setIsBootstrapping(false)
+  }, [])
+
+  function handleLogin(nextSession: AppSession) {
+    writeSession(nextSession)
+    setSession(nextSession)
+  }
+
+  function handleLogout() {
+    clearSession()
+    setSession(null)
+  }
+
+  if (isBootstrapping) {
+    return <main className="min-h-screen bg-[#eceef4]" />
+  }
+
+  if (!session) {
+    return <LoginPage onLogin={handleLogin} />
+  }
 
   return (
     <div className="min-h-screen bg-[#eceef4] text-slate-900">
       <header className="fixed left-0 right-0 top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between px-4 sm:px-5">
           <h1 className="font-manrope text-lg font-extrabold tracking-tight text-blue-600">{pageTitle}</h1>
+          <div className="flex items-center gap-3 text-xs">
+            <span className="rounded-md bg-slate-100 px-2 py-1 font-semibold text-slate-700">
+              {session.username} ({session.role})
+            </span>
+            <button type="button" onClick={handleLogout} className="rounded-md px-2 py-1 font-semibold text-rose-700 hover:bg-rose-50">
+              Cerrar sesión
+            </button>
+          </div>
         </div>
       </header>
 
