@@ -33,48 +33,53 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[#eceef4] px-6 py-16 font-[Inter] text-[#0b1c30]">
+    <main className="relative flex min-h-screen flex-col bg-[#f8f9ff] px-6 py-16 font-[Inter] text-[#0b1c30] antialiased">
       <header className="fixed left-0 top-0 z-30 flex w-full items-center justify-between px-6 py-4">
-        <h1 className="font-manrope text-[40px] font-extrabold tracking-[-0.02em] text-blue-600">Axentria</h1>
+        <h1 className="font-manrope text-[40px] font-black tracking-[-0.02em] text-blue-600">Axentria</h1>
         <button type="button" aria-label="Ayuda" className="text-blue-600">
           <span className="material-symbols-outlined text-[20px]">help</span>
         </button>
       </header>
 
-      <section className="w-full max-w-[420px]">
+      <section className="flex flex-1 items-center justify-center">
+        <div className="w-full max-w-[400px]">
         <div className="text-center">
-          <h2 className="font-manrope text-[48px] font-bold leading-[1.06] tracking-[-0.02em]">Bienvenido de nuevo</h2>
-          <p className="mx-auto mt-2 max-w-[370px] text-[15px] leading-6 text-slate-600">
+          <h2 className="font-manrope text-[30px] font-bold leading-[38px] tracking-[-0.02em] text-[#0b1c30]">
+            Bienvenido de nuevo
+          </h2>
+          <p className="mx-auto mt-1 max-w-[360px] text-[14px] leading-[20px] text-[#434655]">
             Por favor, introduce tus credenciales para acceder a tu cuenta.
           </p>
         </div>
 
-        <form onSubmit={onSubmit} className="mt-8 space-y-5">
-          <label className="block text-sm font-semibold text-slate-700">
-            Usuario
-            <div className="group relative mt-2 border-b border-slate-300">
-              <span className="material-symbols-outlined pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-[20px] text-slate-400 group-focus-within:text-blue-600">
+        <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-5">
+          <label className="flex flex-col gap-2 text-[14px] font-semibold leading-5 text-[#0b1c30]">
+            Correo electrónico
+            <div className="group relative border-b border-[#c3c6d7]">
+              <span className="material-symbols-outlined pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-[20px] text-[#737686] transition-colors group-focus-within:text-blue-600">
                 mail
               </span>
               <input
                 type="text"
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
-                placeholder="vendedor o admin"
-                className="h-11 w-full bg-transparent pl-8 pr-2 text-base outline-none placeholder:text-slate-400"
+                placeholder="nombre@empresa.com"
+                className="h-12 w-full rounded-none bg-transparent pl-10 pr-4 text-[16px] leading-6 outline-none placeholder:text-[#c3c6d7]"
                 autoComplete="username"
                 required
               />
             </div>
           </label>
 
-          <label className="block text-sm font-semibold text-slate-700">
-            <span className="flex items-center justify-between">
-              Contraseña
-              <span className="text-xs font-semibold text-blue-600">¿Olvidaste tu contraseña?</span>
+          <label className="flex flex-col gap-2 text-[14px] font-semibold leading-5 text-[#0b1c30]">
+            <span className="flex items-baseline justify-between">
+              <span>Contraseña</span>
+              <a href="#" className="text-[12px] font-medium leading-4 text-blue-600">
+                ¿Olvidaste tu contraseña?
+              </a>
             </span>
-            <div className="group relative mt-2 border-b border-slate-300">
-              <span className="material-symbols-outlined pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-[20px] text-slate-400 group-focus-within:text-blue-600">
+            <div className="group relative border-b border-[#c3c6d7]">
+              <span className="material-symbols-outlined pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-[20px] text-[#737686] transition-colors group-focus-within:text-blue-600">
                 lock
               </span>
               <input
@@ -82,14 +87,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder="••••••••"
-                className="h-11 w-full bg-transparent pl-8 pr-10 text-base outline-none placeholder:text-slate-400"
+                className="h-12 w-full rounded-none bg-transparent pl-10 pr-10 text-[16px] leading-6 outline-none placeholder:text-[#c3c6d7]"
                 autoComplete="current-password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((value) => !value)}
-                className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-slate-700"
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-[#737686] transition hover:text-[#0b1c30]"
                 aria-label="Mostrar u ocultar contraseña"
               >
                 <span className="material-symbols-outlined text-[20px]">{showPassword ? "visibility" : "visibility_off"}</span>
@@ -100,23 +105,23 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-2 inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-blue-700 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+            className="mt-2 inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-[#0053db] px-4 text-[14px] font-semibold leading-5 text-white shadow-sm transition hover:bg-[#004ac6] active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-400"
           >
             <span>{isSubmitting ? "Ingresando..." : "Iniciar sesión"}</span>
             <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </button>
         </form>
 
-        <p className="mt-4 text-center text-xs text-slate-500">Admin: admin/admin | Vendedor: vendedor/vendedor</p>
         {error && <p className="mt-2 text-center text-sm text-rose-700">{error}</p>}
+        </div>
       </section>
 
-      <footer className="fixed bottom-0 left-0 flex w-full justify-center px-4 pb-8 text-xs text-slate-400">
-        <div className="flex flex-wrap items-center justify-center gap-5">
-          <a href="#" className="hover:text-blue-600">
+      <footer className="fixed bottom-0 left-0 flex w-full justify-center px-4 pb-8 text-[12px] leading-4 text-[#737686]">
+        <div className="flex flex-wrap items-center justify-center gap-5 font-medium">
+          <a href="#" className="transition hover:text-blue-600">
             Privacidad
           </a>
-          <a href="#" className="hover:text-blue-600">
+          <a href="#" className="transition hover:text-blue-600">
             Términos
           </a>
           <span>© 2024 Axentria Financial. Todos los derechos reservados.</span>
