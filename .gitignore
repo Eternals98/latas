@@ -28,3 +28,6 @@ backend/**/*.py[cod]
 # Databases / local artifacts
 *.db
 *.sqlite3
+
+.vercel
+.env*.local
