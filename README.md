@@ -1,11 +1,10 @@
 # LATAS Ventas
 
-## Despliegue local con Docker
+## Web App Activa
 
-La guia para levantar frontend, backend y proxy local con `http://ventas.local` esta en
-[docs/docker-local.md](docs/docker-local.md).
+La aplicacion activa es `web/` (Next.js).
 
-## Migracion Fase 1 (hibrida)
+## Migracion Fase 1
 
-La implementacion inicial de migracion a `Next.js + Supabase + Vercel` se documenta en:
+La implementacion de migracion a `Next.js + Supabase + Vercel` se documenta en:
 [docs/migration-phase1.md](docs/migration-phase1.md)
