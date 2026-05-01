@@ -15,8 +15,8 @@ Incluye:
 
 ## Estado Fase 2 (ventas)
 
-- Nuevo flujo activo de ventas en `web/app/registro` y backend `POST/GET /api/sales`, implementado sobre `transactions` + `transaction_payments`.
-- `web/legacy` queda como referencia temporal y no debe usarse para nuevas funcionalidades.
+- Nuevo flujo activo de ventas en `web/app/salesRegister` y backend `POST/GET /api/sales`, implementado sobre `transactions` + `transaction_payments`.
+- `web/legacy` fue retirado del repo.
 - Endpoints legacy (`/api/ventas`, `/api/clientes`, `/api/medios-pago`) se mantienen solo por compatibilidad transitoria.
 - No se cargan datos semilla automáticos al iniciar backend.
 

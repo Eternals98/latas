@@ -68,19 +68,19 @@ Checklist de trabajo pendiente para cerrar el flujo de ventas y dejarlo listo pa
 
 ## Frontend ventas
 
-- [ ] Normalizar la búsqueda de clientes por nombre y teléfono con UX final.
-- [ ] Revisar si el formulario debe autocompletar el teléfono desde cliente seleccionado o dejarlo editable.
+- [x] Normalizar la búsqueda de clientes por nombre y teléfono con UX final.
+- [x] Revisar si el formulario debe autocompletar el teléfono desde cliente seleccionado o dejarlo editable.
+- [x] Confirmar si el formulario necesita validación visual adicional para teléfonos inválidos.
 - [ ] Agregar listado de ventas en `transacciones` o pantalla equivalente usando el nuevo contrato.
-- [ ] Confirmar si el formulario necesita validación visual adicional para teléfonos inválidos.
 
 ## Integración
 
 - [ ] Verificar el flujo completo contra backend real en entorno de desarrollo.
-- [ ] Confirmar que `web/app/ventas` y `web/app/registro` queden apuntando a la misma pantalla final.
-- [ ] Definir si se retira definitivamente `web/legacy` cuando termine la migración.
+- [x] Confirmar que `web/app/salesRegister` quede como pantalla única de ventas.
+- [x] Retirar definitivamente `web/legacy`.
 
 ## Datos y seguridad
 
-- [ ] Crear policies RLS concretas para `transactions`, `transaction_payments` y `audit_logs`.
-- [ ] Validar que `profiles` tenga roles definitivos antes de ampliar permisos.
-- [ ] Decidir si el alta de cliente genérico debe ser bootstrap controlado o creación bajo demanda.
+- [x] Crear policies RLS concretas para `transactions`, `transaction_payments` y `audit_logs`.
+- [x] Validar que `profiles` tenga roles definitivos antes de ampliar permisos.
+- [x] Decidir si el alta de cliente genérico debe ser bootstrap controlado o creación bajo demanda.

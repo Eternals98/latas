@@ -29,9 +29,8 @@ function logoutAction() {
 ========================= */
 const MAIN_NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
-  { href: "/registro", label: "Registro de ventas", icon: "point_of_sale" },
+  { href: "/salesRegister", label: "Registro de ventas", icon: "point_of_sale" },
   { href: "/transacciones", label: "Transacciones", icon: "receipt_long" },
-  { href: "/ventas", label: "Gestión de caja", icon: "account_balance_wallet" },
   { href: "/reportes", label: "Reportes", icon: "analytics" },
   { href: "/configuracion", label: "Administración", icon: "settings" },
   { href: "/clientes", label: "Clientes", icon: "groups" },
