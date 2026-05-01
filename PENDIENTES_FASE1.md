@@ -8,21 +8,21 @@ Estado:
 
 ## Autenticación
 
-- [ ] Sustituir la validación de sesión vía `GET /auth/v1/user` por verificación local de JWT con JWKS.
-- [ ] Confirmar estrategia final de roles en `profiles` y si se asignarán manualmente o por bootstrap.
-- [ ] Definir si el login quedará solo con email o si se habilitará algún alias interno para usuarios.
+- [x] Sustituir la validación de sesión vía `GET /auth/v1/user` por verificación local de JWT con JWKS.
+- [x] Confirmar estrategia final de roles en `profiles` y si se asignarán manualmente o por bootstrap.
+- [x] Definir si el login quedará solo con email o si se habilitará algún alias interno para usuarios.
 
 ## Backend
 
 - [x] Separar la inicialización de BD de la carga del servidor para evitar efectos secundarios en arranque.
-- [ ] Revisar si `init_db()` debe ejecutarse solo en local o también en producción.
-- [ ] Agregar manejo más explícito de errores cuando Supabase no responde o devuelve credenciales inválidas.
+- [x] Revisar si `init_db()` debe ejecutarse solo en local o también en producción.
+- [x] Agregar manejo más explícito de errores cuando Supabase no responde o devuelve credenciales inválidas.
 
 ## Frontend
 
-- [ ] Revisar el flujo de sesión para evitar depender de cookies temporales si luego se migra a Supabase client-side completo.
-- [ ] Confirmar si el middleware debe seguir validando solo presencia de cookie o también expiración de sesión.
-- [ ] Reemplazar la UI de login temporal por una versión final alineada al producto.
+- [x] Revisar el flujo de sesión para evitar depender de cookies temporales si luego se migra a Supabase client-side completo.
+- [x] Confirmar si el middleware debe seguir validando solo presencia de cookie o también expiración de sesión.
+- [x] Reemplazar la UI de login temporal por una versión final alineada al producto.
 
 ## Base de datos
 
@@ -45,6 +45,12 @@ Estado:
 ## Notas
 
 - Se avanzó Fase 2 sobre `transactions` y se eliminó el seed automático del arranque. El resto de hardening de Fase 1 sigue pendiente.
+- Login unificado con Supabase Auth por email (sin alias `username` y sin login admin separado).
+- Estrategia de roles definida por `profiles` + migración de seed desde `auth.users`.
+- Conexión backend preparada para Supabase pooler (plan gratuito) deshabilitando prepared statements en Postgres (`prepare_threshold: None`).
+- `init_db()` restringido a SQLite local; en Supabase/Postgres el esquema se maneja solo por migraciones SQL.
+- Autenticación endurecida con errores explícitos `401` (token inválido/expirado) y `503` (JWKS/servicio/DB no disponibles).
+- Frontend de sesión endurecido: cookie HttpOnly de token + cookie HttpOnly de expiración (`sb_access_token_expires_at`) validada en middleware.
 
 # Pendientes Fase 2
 

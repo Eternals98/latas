@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +17,7 @@ export default function LoginPage() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ email, password })
       });
       const payload = (await response.json().catch(() => null)) as { detail?: string } | null;
       if (!response.ok) {
@@ -60,7 +60,7 @@ export default function LoginPage() {
         {/* Usuario */}
         <label className="flex w-full flex-col gap-1.5">
           <span className="text-xs font-bold uppercase leading-4 text-[#4C5D8D]">
-            Correo electrónico o usuario
+            Correo electrónico
           </span>
 
           <div className="relative h-10 w-full overflow-hidden rounded-lg bg-white outline outline-1 outline-offset-[-1px] outline-[#C3C6D6] focus-within:outline-[#003D9B]">
@@ -70,11 +70,12 @@ export default function LoginPage() {
 
             <input
               type="text"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               className="h-full w-full bg-transparent pl-12 pr-3 text-sm font-normal leading-5 text-[#121C27] outline-none placeholder:text-[#C3C6D6]"
               placeholder=""
-              autoComplete=""
+              autoComplete="email"
               required
             />
           </div>

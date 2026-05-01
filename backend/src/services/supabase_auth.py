@@ -6,6 +6,7 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import InvalidTokenError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from src.core.config import get_supabase_jwks_url, get_supabase_jwt_issuer, settings
@@ -50,43 +51,6 @@ def _load_jwks() -> dict[str, Any]:
         raise _auth_503() from exc
 
 
-def _decode_token_remote(token: str) -> dict[str, Any]:
-    supabase_url = settings.supabase_url.strip()
-    if not supabase_url:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Supabase URL no configurada.")
-
-    api_key = (settings.supabase_service_role_key or settings.supabase_anon_key or "").strip()
-    if not api_key:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="No hay clave de Supabase configurada para fallback de autenticación.",
-        )
-
-    try:
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "apikey": api_key,
-        }
-        response = httpx.get(f"{supabase_url.rstrip('/')}/auth/v1/user", headers=headers, timeout=10.0)
-        if response.status_code in {status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN}:
-            raise _auth_401()
-        if response.status_code >= status.HTTP_500_INTERNAL_SERVER_ERROR:
-            raise _auth_503()
-        response.raise_for_status()
-        payload = response.json()
-        if not isinstance(payload, dict):
-            raise _auth_401()
-        return payload
-    except httpx.RequestError as exc:  # pragma: no cover
-        raise _auth_503() from exc
-    except httpx.HTTPError as exc:  # pragma: no cover
-        raise _auth_503() from exc
-    except HTTPException:
-        raise
-    except Exception as exc:  # pragma: no cover
-        raise _auth_503() from exc
-
-
 def _decode_token(token: str) -> dict[str, Any]:
     issuer = get_supabase_jwt_issuer().strip()
     if not issuer:
@@ -98,12 +62,12 @@ def _decode_token(token: str) -> dict[str, Any]:
         kid = header.get("kid")
         alg = (header.get("alg") or "").upper()
         if not kid or alg.startswith("HS"):
-            return _decode_token_remote(token)
+            raise _auth_401()
 
         keys = _load_jwks().get("keys", [])
         jwk = next((item for item in keys if item.get("kid") == kid), None)
         if jwk is None:
-            return _decode_token_remote(token)
+            raise _auth_401()
 
         public_key = jwt.PyJWK.from_dict(jwk).key
         options = {"require": ["exp", "iat", "sub"], "verify_aud": bool(audience)}
@@ -118,22 +82,12 @@ def _decode_token(token: str) -> dict[str, Any]:
         if not isinstance(payload, dict):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado.")
         return payload
-    except HTTPException as exc:
-        if exc.status_code >= status.HTTP_500_INTERNAL_SERVER_ERROR:
-            return _decode_token_remote(token)
+    except HTTPException:
         raise
     except InvalidTokenError as exc:
-        try:
-            return _decode_token_remote(token)
-        except HTTPException:
-            raise _auth_401() from exc
+        raise _auth_401() from exc
     except Exception as exc:  # pragma: no cover
-        try:
-            return _decode_token_remote(token)
-        except HTTPException as fallback_exc:
-            if fallback_exc.status_code >= status.HTTP_500_INTERNAL_SERVER_ERROR:
-                raise _auth_503() from exc
-            raise _auth_401() from exc
+        raise _auth_503() from exc
 
 
 def _display_name(payload: dict[str, Any]) -> str:
@@ -159,10 +113,17 @@ def ensure_profile(db: Session, payload: dict[str, Any]) -> Profile:
         is_active=True,
         created_at=datetime.utcnow(),
     )
-    db.add(profile)
-    db.commit()
-    db.refresh(profile)
-    return profile
+    try:
+        db.add(profile)
+        db.commit()
+        db.refresh(profile)
+        return profile
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="No fue posible sincronizar el perfil de usuario.",
+        ) from exc
 
 
 def require_user(
@@ -173,7 +134,13 @@ def require_user(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token requerido.")
 
     payload = _decode_token(credentials.credentials)
-    profile = ensure_profile(db, payload)
+    try:
+        profile = ensure_profile(db, payload)
+    except SQLAlchemyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Base de datos no disponible para validar usuario.",
+        ) from exc
     if not profile.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Usuario inactivo.")
     return profile
