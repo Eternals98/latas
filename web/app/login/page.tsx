@@ -69,7 +69,6 @@ export default function LoginPage() {
             </span>
 
             <input
-              type="text"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}

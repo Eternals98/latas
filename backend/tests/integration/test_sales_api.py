@@ -403,6 +403,31 @@ def test_create_sale_fails_when_generic_customer_missing(client, db_session):
     assert response.json()["detail"] == "No existe un cliente genérico activo configurado."
 
 
+def test_create_sale_fails_when_company_is_inactive(client, db_session):
+    actor, company, _, _, method_cash, _ = _seed_core(db_session)
+    company.is_active = False
+    db_session.commit()
+
+    app.dependency_overrides[require_user] = lambda: actor
+    try:
+        response = client.post(
+            "/api/sales",
+            json={
+                "company_id": company.id,
+                "transaction_date": date(2026, 4, 30).isoformat(),
+                "document_number": "REF-1006",
+                "description": "Venta empresa inactiva",
+                "total_amount": "1000.00",
+                "payments": [{"payment_method_id": method_cash.id, "amount": "1000.00"}],
+            },
+        )
+    finally:
+        app.dependency_overrides.pop(require_user, None)
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "company_id no corresponde a una empresa activa."
+
+
 def test_create_sale_with_cash_requires_open_session(client, db_session):
     actor, company, _, _, method_cash, _ = _seed_core(db_session)
     app.dependency_overrides[require_user] = lambda: actor

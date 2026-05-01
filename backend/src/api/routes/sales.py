@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from datetime import date
 from sqlalchemy.orm import Session
 
 from src.api.schemas.sales import (
@@ -53,8 +54,8 @@ def create_sale_route(
     responses={status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse}},
 )
 def list_sales_route(
-    date_from: str | None = Query(default=None),
-    date_to: str | None = Query(default=None),
+    date_from: date | None = Query(default=None),
+    date_to: date | None = Query(default=None),
     company_id: str | None = Query(default=None),
     search: str | None = Query(default=None),
     limit: int = Query(default=50),

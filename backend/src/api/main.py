@@ -11,12 +11,10 @@ from src.api.routes.health import router as health_router
 from src.api.routes.payment_methods import router as payment_methods_router
 from src.api.routes.sales import router as sales_router
 from src.core.config import get_cors_origins
-from src.db.init_db import init_db
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    init_db()
     yield
 
 

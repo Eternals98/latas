@@ -19,7 +19,15 @@ export async function GET() {
   });
 
   if (!response.ok) {
-    return NextResponse.json({ authenticated: false }, { status: 401 });
+    const detail = await response.text().catch(() => "");
+    return NextResponse.json(
+      {
+        authenticated: false,
+        backend_status: response.status,
+        backend_detail: detail || null,
+      },
+      { status: 401 },
+    );
   }
 
   const payload = (await response.json()) as {

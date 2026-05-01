@@ -6,6 +6,7 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import InvalidTokenError
+from jwt.exceptions import MissingCryptographyError
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -21,8 +22,8 @@ def _auth_401() -> HTTPException:
     return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado.")
 
 
-def _auth_503() -> HTTPException:
-    return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Servicio de autenticación no disponible.")
+def _auth_503(detail: str = "Servicio de autenticación no disponible.") -> HTTPException:
+    return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=detail)
 
 
 def _load_jwks() -> dict[str, Any]:
@@ -48,7 +49,7 @@ def _load_jwks() -> dict[str, Any]:
     except HTTPException:
         raise
     except Exception as exc:  # pragma: no cover
-        raise _auth_503() from exc
+        raise _auth_503(f"Error cargando JWKS: {type(exc).__name__}: {exc}") from exc
 
 
 def _decode_token(token: str) -> dict[str, Any]:
@@ -86,8 +87,13 @@ def _decode_token(token: str) -> dict[str, Any]:
         raise
     except InvalidTokenError as exc:
         raise _auth_401() from exc
+    except MissingCryptographyError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Falta instalar 'cryptography' para validar JWT ES256.",
+        ) from exc
     except Exception as exc:  # pragma: no cover
-        raise _auth_503() from exc
+        raise _auth_503(f"Error decodificando JWT: {type(exc).__name__}: {exc}") from exc
 
 
 def _display_name(payload: dict[str, Any]) -> str:
@@ -139,7 +145,7 @@ def require_user(
     except SQLAlchemyError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Base de datos no disponible para validar usuario.",
+            detail=f"Base de datos no disponible para validar usuario: {type(exc).__name__}: {exc}",
         ) from exc
     if not profile.is_active:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Usuario inactivo.")

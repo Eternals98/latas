@@ -1,10 +1,8 @@
 from pathlib import Path
 import sys
-from uuid import uuid4
 
 import pytest
-from sqlalchemy import event, text
-from sqlalchemy.engine import Engine
+from sqlalchemy import text
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -14,29 +12,44 @@ from fastapi.testclient import TestClient
 
 from src.api.main import app
 from src.db.base import Base
-from src.db.session import SessionLocal, engine
+from src.db.session import SessionLocal, engine, get_db
+from src import models  # noqa: F401
+
+TEST_PROFILE_IDS = [
+    ("11111111-1111-1111-1111-111111111111", "admin@example.com", "Admin"),
+    ("22222222-2222-2222-2222-222222222222", "cashier@example.com", "Cajero"),
+]
 
 
-@pytest.fixture(scope="session", autouse=True)
-def isolated_test_schema():
-    schema_name = f"test_{uuid4().hex}"
-
-    @event.listens_for(Engine, "connect")
-    def set_search_path(dbapi_connection, _connection_record):
-        cursor = dbapi_connection.cursor()
-        cursor.execute(f'SET search_path TO "{schema_name}", public')
-        cursor.close()
-
+def _seed_auth_users():
     with engine.begin() as connection:
-        connection.execute(text(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}"'))
-
-    engine.dispose()
-    try:
-        yield schema_name
-    finally:
-        engine.dispose()
-        with engine.begin() as connection:
-            connection.execute(text(f'DROP SCHEMA IF EXISTS "{schema_name}" CASCADE'))
+        for user_id, email, full_name in TEST_PROFILE_IDS:
+            connection.execute(
+                text(
+                    """
+                    insert into auth.users (
+                        id, aud, role, email, encrypted_password, email_confirmed_at,
+                        raw_app_meta_data, raw_user_meta_data, is_sso_user, is_anonymous,
+                        created_at, updated_at
+                    )
+                    values (
+                        cast(:id as uuid), 'authenticated', 'authenticated', cast(:email as text), '',
+                        now(),
+                        '{}'::jsonb,
+                        jsonb_build_object('full_name', cast(:full_name as text), 'name', cast(:full_name as text)),
+                        false,
+                        false,
+                        now(),
+                        now()
+                    )
+                    on conflict (id) do update set
+                        email = excluded.email,
+                        raw_user_meta_data = excluded.raw_user_meta_data,
+                        updated_at = excluded.updated_at
+                    """
+                ),
+                {"id": user_id, "email": email, "full_name": full_name},
+            )
 
 
 @pytest.fixture(scope="session")
@@ -46,13 +59,21 @@ def client() -> TestClient:
 
 @pytest.fixture(scope="function")
 def db_session():
-    Base.metadata.create_all(bind=engine)
-    session = SessionLocal()
+    _seed_auth_users()
+    connection = engine.connect()
+    trans = connection.begin()
+    connection.execute(text("SET search_path TO public, auth, pg_temp"))
+    Base.metadata.create_all(bind=connection)
+    session = SessionLocal(bind=connection)
+    app.dependency_overrides[get_db] = lambda: session
     try:
         yield session
     finally:
+        app.dependency_overrides.pop(get_db, None)
         session.close()
-        Base.metadata.drop_all(bind=engine)
+        Base.metadata.drop_all(bind=connection)
+        trans.rollback()
+        connection.close()
 
 
 @pytest.fixture
