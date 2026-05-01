@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from src.api.main import app
 from src.models.audit_log import AuditLog
+from src.models.cash_session import CashSession
 from src.models.company import Company
 from src.models.customer import Customer
 from src.models.payment_method import PaymentMethod
@@ -90,8 +91,31 @@ def _seed_core(db_session):
     return actor, company, customer_generic, customer_named, method_cash, method_transfer
 
 
+def _open_cash_session(db_session, *, actor_id: str, session_date: date):
+    existing = db_session.query(CashSession).filter(CashSession.session_date == session_date).first()
+    if existing is not None:
+        return existing
+    session = CashSession(
+        id="99999999-9999-9999-9999-999999999999",
+        session_date=session_date,
+        opening_cash=Decimal("0.00"),
+        closing_cash_expected=None,
+        closing_cash_counted=None,
+        difference_amount=None,
+        status="open",
+        opened_by=actor_id,
+        closed_by=None,
+        opened_at=datetime.now(timezone.utc),
+        closed_at=None,
+    )
+    db_session.add(session)
+    db_session.commit()
+    return session
+
+
 def test_create_sale_with_multiple_payments_and_audit(client, db_session):
     actor, company, _, customer, method_cash, method_transfer = _seed_core(db_session)
+    _open_cash_session(db_session, actor_id=actor.id, session_date=date(2026, 4, 30))
 
     app.dependency_overrides[require_user] = lambda: actor
     try:
@@ -179,6 +203,7 @@ def test_create_sale_rejects_inactive_payment_method(client, db_session):
 
 def test_create_sale_assigns_generic_customer_when_missing(client, db_session):
     actor, company, customer_generic, _, method_cash, _ = _seed_core(db_session)
+    _open_cash_session(db_session, actor_id=actor.id, session_date=date(2026, 4, 30))
     app.dependency_overrides[require_user] = lambda: actor
     try:
         response = client.post(
@@ -354,6 +379,7 @@ def test_get_sale_by_id_not_found(client, db_session):
 
 def test_create_sale_fails_when_generic_customer_missing(client, db_session):
     actor, company, customer_generic, _, method_cash, _ = _seed_core(db_session)
+    _open_cash_session(db_session, actor_id=actor.id, session_date=date(2026, 4, 30))
     db_session.delete(customer_generic)
     db_session.commit()
 
@@ -375,3 +401,25 @@ def test_create_sale_fails_when_generic_customer_missing(client, db_session):
 
     assert response.status_code == 409
     assert response.json()["detail"] == "No existe un cliente genérico activo configurado."
+
+
+def test_create_sale_with_cash_requires_open_session(client, db_session):
+    actor, company, _, _, method_cash, _ = _seed_core(db_session)
+    app.dependency_overrides[require_user] = lambda: actor
+    try:
+        response = client.post(
+            "/api/sales",
+            json={
+                "company_id": company.id,
+                "transaction_date": date(2026, 5, 1).isoformat(),
+                "document_number": "REF-CAJA-001",
+                "description": "Venta efectivo sin caja abierta",
+                "total_amount": "1000.00",
+                "payments": [{"payment_method_id": method_cash.id, "amount": "1000.00"}],
+            },
+        )
+    finally:
+        app.dependency_overrides.pop(require_user, None)
+
+    assert response.status_code == 409
+    assert response.json()["detail"] == "No existe una caja abierta para la fecha de la venta en efectivo."

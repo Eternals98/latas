@@ -34,7 +34,24 @@ Luego aplicar `supabase/schema.sql`.
 
 ## Variables de entorno
 
-### Backend (`backend/.env`)
+### Local - Backend (`backend/.env`)
+
+```env
+APP_ENV=local
+APP_HOST=0.0.0.0
+APP_PORT=8000
+DATABASE_URL=sqlite:///./ventas.db
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_ANON_KEY=<anon-key-opcional-fallback-auth>
+SUPABASE_JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
+SUPABASE_JWT_ISSUER=https://<project-ref>.supabase.co/auth/v1
+SUPABASE_JWT_AUDIENCE=authenticated
+SUPABASE_JWKS_CACHE_TTL_SECONDS=300
+SUPABASE_SERVICE_ROLE_KEY=<service-role-key-opcional-fallback-auth>
+```
+
+### Producción - Backend Render (`backend/.env`)
 
 ```env
 APP_ENV=production
@@ -43,14 +60,44 @@ APP_PORT=10000
 DATABASE_URL=postgresql+psycopg://postgres:<password>@<host>:5432/postgres?sslmode=require
 CORS_ORIGINS=http://localhost:3000,https://<frontend>.vercel.app
 SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_ANON_KEY=<anon-key-opcional-fallback-auth>
 SUPABASE_JWKS_URL=https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json
+SUPABASE_JWT_ISSUER=https://<project-ref>.supabase.co/auth/v1
+SUPABASE_JWT_AUDIENCE=authenticated
+SUPABASE_JWKS_CACHE_TTL_SECONDS=300
 SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 ```
 
-### Frontend (`web/.env.local`)
+### Frontend Vercel (`web/.env.local`)
 
 ```env
 BACKEND_API_URL=https://<backend>.onrender.com
 SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_ANON_KEY=<anon-key>
 ```
+
+### Supabase Project Settings
+
+- `JWT issuer`: `https://<project-ref>.supabase.co/auth/v1`
+- `JWKS endpoint`: `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json`
+- Claves usadas por backend/frontend: `anon` y `service_role`.
+
+## Runbook base de datos
+
+### Reinicio local SQLite
+
+1. Detener backend.
+2. Borrar `backend/ventas.db`.
+3. Ejecutar:
+   - `cd backend`
+   - `python -m src.db.init_db`
+
+Nota: `init_db` solo crea tablas en SQLite local.
+
+### Reset Supabase (entorno remoto)
+
+1. Ejecutar limpieza legacy (bloque `drop table ...` de este README).
+2. Aplicar `supabase/schema.sql` desde SQL Editor.
+3. Verificar tablas y policies con `supabase/verify_rls_sales.sql`.
+
+Nota: no ejecutar `Base.metadata.create_all` contra Supabase/Postgres.

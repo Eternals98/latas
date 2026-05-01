@@ -17,6 +17,9 @@ python -m src.db.init_db
 python scripts/check_schema.py
 ```
 
+`init_db` solo ejecuta `create_all` cuando `DATABASE_URL` es SQLite local.  
+En Supabase/Postgres las tablas/policies se gestionan por `supabase/schema.sql`.
+
 ## Ejecutar API
 
 ```bash
@@ -190,3 +193,15 @@ npm run dev
 ```bash
 pytest
 ```
+
+## Caja (Fase 3, stack nuevo)
+
+Endpoints nuevos:
+
+- `POST /api/cash/open`
+- `POST /api/cash/delivery`
+- `POST /api/cash/vault-withdrawal`
+- `POST /api/cash/adjustment`
+- `POST /api/cash/close`
+- `GET /api/cash/today`
+- `GET /api/cash/history`

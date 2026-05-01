@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const supabase = createSupabaseClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.session?.access_token) {
-    return NextResponse.json({ detail: "Credenciales inválidas." }, { status: 401 });
+    return NextResponse.json({ detail: "Credenciales inválidas. Intente Nuevamente." }, { status: 401 });
   }
 
   const store = await cookies();

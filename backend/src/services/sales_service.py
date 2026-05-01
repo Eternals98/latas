@@ -15,12 +15,14 @@ from src.api.schemas.sales import (
     to_money,
 )
 from src.models.audit_log import AuditLog
+from src.models.cash_movement import CashMovement
 from src.models.company import Company
 from src.models.customer import Customer
 from src.models.payment_method import PaymentMethod
 from src.models.profile import Profile
 from src.models.transaction import Transaction
 from src.models.transaction_payment import TransactionPayment
+from src.services.cash_service import get_open_cash_session_by_date
 
 
 class SalesValidationError(Exception):
@@ -85,7 +87,7 @@ def _validate_customer_active(db: Session, customer_id: str) -> None:
         raise SalesValidationError("customer_id no corresponde a un cliente activo.")
 
 
-def _validate_payments(db: Session, payload: SaleCreateRequest) -> None:
+def _validate_payments(db: Session, payload: SaleCreateRequest) -> dict[str, PaymentMethod]:
     if not payload.payments:
         raise SalesValidationError("Debe enviar al menos un pago.")
 
@@ -95,7 +97,7 @@ def _validate_payments(db: Session, payload: SaleCreateRequest) -> None:
 
     found_methods = (
         db.execute(
-            select(PaymentMethod.id).where(
+            select(PaymentMethod).where(
                 PaymentMethod.id.in_(method_ids),
                 PaymentMethod.is_active.is_(True),
             )
@@ -109,6 +111,7 @@ def _validate_payments(db: Session, payload: SaleCreateRequest) -> None:
     payment_total = sum((to_money(payment.amount) for payment in payload.payments), start=Decimal("0.00"))
     if payment_total != to_money(payload.total_amount):
         raise SalesValidationError("La suma de pagos no coincide con total_amount.")
+    return {method.id: method for method in found_methods}
 
 
 def create_sale(
@@ -123,7 +126,17 @@ def create_sale(
         customer_id = _get_generic_customer_id(db)
     else:
         _validate_customer_active(db, customer_id)
-    _validate_payments(db, payload)
+    methods_map = _validate_payments(db, payload)
+    cash_total = sum(
+        (to_money(payment.amount) for payment in payload.payments if methods_map[payment.payment_method_id].affects_cash),
+        start=Decimal("0.00"),
+    )
+    linked_cash_session_id: str | None = None
+    if cash_total > 0:
+        session = get_open_cash_session_by_date(db, session_date=payload.transaction_date)
+        if session is None:
+            raise SalesConflictError("No existe una caja abierta para la fecha de la venta en efectivo.")
+        linked_cash_session_id = session.id
 
     transaction_id = str(uuid4())
     created_at = _now()
@@ -133,7 +146,7 @@ def create_sale(
             id=transaction_id,
             company_id=payload.company_id,
             customer_id=customer_id,
-            cash_session_id=None,
+            cash_session_id=linked_cash_session_id,
             transaction_date=payload.transaction_date,
             document_type="other",
             document_number=payload.document_number,
@@ -152,6 +165,7 @@ def create_sale(
             cancellation_reason=None,
         )
         db.add(transaction)
+        db.flush()
 
         for payment in payload.payments:
             db.add(
@@ -160,6 +174,21 @@ def create_sale(
                     transaction_id=transaction_id,
                     payment_method_id=payment.payment_method_id,
                     amount=to_money(payment.amount),
+                    created_at=created_at,
+                )
+            )
+
+        if cash_total > 0 and linked_cash_session_id is not None:
+            db.add(
+                CashMovement(
+                    id=str(uuid4()),
+                    transaction_id=transaction_id,
+                    cash_session_id=linked_cash_session_id,
+                    movement_date=payload.transaction_date,
+                    movement_type="cash_in",
+                    amount=to_money(cash_total),
+                    description=f"Ingreso por venta {payload.document_number or transaction_id}",
+                    created_by=actor.id,
                     created_at=created_at,
                 )
             )

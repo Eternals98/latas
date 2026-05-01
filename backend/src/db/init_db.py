@@ -19,8 +19,10 @@ def _is_sqlite(url: str) -> bool:
 
 
 def init_db() -> None:
-    # Nunca ejecutar create_all sobre Supabase/Postgres:
-    # crea tablas sin RLS/policies y puede reintroducir tablas legacy.
+    # Politica oficial:
+    # - Solo SQLite local puede inicializarse con create_all.
+    # - Supabase/Postgres se gestiona por SQL versionado (supabase/schema.sql).
+    # Nunca ejecutar create_all sobre Supabase/Postgres porque omite RLS/policies.
     if not _is_sqlite(settings.database_url):
         return
 

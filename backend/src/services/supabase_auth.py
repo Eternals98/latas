@@ -16,6 +16,14 @@ security = HTTPBearer(auto_error=False)
 _JWKS_CACHE: dict[str, Any] = {"keys": None, "expires_at": datetime.min.replace(tzinfo=UTC)}
 
 
+def _auth_401() -> HTTPException:
+    return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado.")
+
+
+def _auth_503() -> HTTPException:
+    return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Servicio de autenticación no disponible.")
+
+
 def _load_jwks() -> dict[str, Any]:
     now = datetime.now(UTC)
     cached_keys = _JWKS_CACHE.get("keys")
@@ -39,10 +47,7 @@ def _load_jwks() -> dict[str, Any]:
     except HTTPException:
         raise
     except Exception as exc:  # pragma: no cover
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="No se pudo cargar JWKS de autenticación.",
-        ) from exc
+        raise _auth_503() from exc
 
 
 def _decode_token_remote(token: str) -> dict[str, Any]:
@@ -63,17 +68,23 @@ def _decode_token_remote(token: str) -> dict[str, Any]:
             "apikey": api_key,
         }
         response = httpx.get(f"{supabase_url.rstrip('/')}/auth/v1/user", headers=headers, timeout=10.0)
-        if response.status_code == status.HTTP_401_UNAUTHORIZED:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado.")
+        if response.status_code in {status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN}:
+            raise _auth_401()
+        if response.status_code >= status.HTTP_500_INTERNAL_SERVER_ERROR:
+            raise _auth_503()
         response.raise_for_status()
         payload = response.json()
         if not isinstance(payload, dict):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado.")
+            raise _auth_401()
         return payload
+    except httpx.RequestError as exc:  # pragma: no cover
+        raise _auth_503() from exc
+    except httpx.HTTPError as exc:  # pragma: no cover
+        raise _auth_503() from exc
     except HTTPException:
         raise
     except Exception as exc:  # pragma: no cover
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se pudo validar token.") from exc
+        raise _auth_503() from exc
 
 
 def _decode_token(token: str) -> dict[str, Any]:
@@ -115,12 +126,14 @@ def _decode_token(token: str) -> dict[str, Any]:
         try:
             return _decode_token_remote(token)
         except HTTPException:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido o expirado.") from exc
+            raise _auth_401() from exc
     except Exception as exc:  # pragma: no cover
         try:
             return _decode_token_remote(token)
-        except HTTPException:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="No se pudo validar token.") from exc
+        except HTTPException as fallback_exc:
+            if fallback_exc.status_code >= status.HTTP_500_INTERNAL_SERVER_ERROR:
+                raise _auth_503() from exc
+            raise _auth_401() from exc
 
 
 def _display_name(payload: dict[str, Any]) -> str:

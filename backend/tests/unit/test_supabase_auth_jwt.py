@@ -36,6 +36,11 @@ def test_decode_token_rejects_when_kid_not_found(monkeypatch):
         "_load_jwks",
         lambda: {"keys": [{"kid": "kid-1", "alg": "RS256", "kty": "RSA"}]},
     )
+    monkeypatch.setattr(
+        supabase_auth,
+        "_decode_token_remote",
+        lambda token: (_ for _ in ()).throw(HTTPException(status_code=401, detail="Token inválido o expirado.")),
+    )
 
     with pytest.raises(HTTPException) as exc:
         supabase_auth._decode_token("token")
@@ -52,6 +57,11 @@ def test_decode_token_rejects_invalid_signature(monkeypatch):
         lambda: {"keys": [{"kid": "kid-1", "alg": "RS256", "kty": "RSA"}]},
     )
     monkeypatch.setattr(jwt, "PyJWK", type("PyJWK", (), {"from_dict": staticmethod(lambda jwk: type("K", (), {"key": "PUBLIC_KEY"})())}))
+    monkeypatch.setattr(
+        supabase_auth,
+        "_decode_token_remote",
+        lambda token: (_ for _ in ()).throw(HTTPException(status_code=401, detail="Token inválido o expirado.")),
+    )
 
     def _raise_invalid(*args, **kwargs):
         raise jwt.InvalidTokenError("invalid")

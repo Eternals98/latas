@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.routes.auth import router as auth_router
+from src.api.routes.cash import router as cash_router
 from src.api.routes.companies import router as companies_router
 from src.api.routes.customers import router as customers_router
 from src.api.routes.health import router as health_router
@@ -31,6 +32,7 @@ app.add_middleware(
 
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(cash_router)
 app.include_router(payment_methods_router)
 app.include_router(companies_router)
 app.include_router(customers_router)
