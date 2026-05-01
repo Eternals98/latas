@@ -1,16 +1,8 @@
 import "./globals.css";
-import Link from "next/link";
 import { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { AUTH_COOKIE } from "../lib/auth";
-import { LogoutButton } from "./LogoutButton";
-
-const links = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/registro", label: "Registro" },
-  { href: "/clientes", label: "Clientes" },
-  { href: "/reportes", label: "Reportes" },
-];
+import { AppShell } from "./AppShell";
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const cookieStore = await cookies();
@@ -24,24 +16,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
         />
       </head>
-      <body>
-        {authenticated && (
-          <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-            <nav className="mx-auto flex max-w-7xl items-center gap-4 overflow-x-auto px-4 py-3 text-sm font-medium text-slate-700">
-              {links.map((link) => (
-                <Link key={link.href} href={link.href} className="whitespace-nowrap rounded-md px-3 py-1.5 hover:bg-slate-100">
-                  {link.label}
-                </Link>
-              ))}
-              <span className="ml-auto whitespace-nowrap rounded-md bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700">
-                Sesión activa
-              </span>
-              <LogoutButton />
-            </nav>
-          </header>
-        )}
-        {children}
-      </body>
+      <body>{authenticated ? <AppShell>{children}</AppShell> : children}</body>
     </html>
   );
 }

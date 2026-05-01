@@ -55,7 +55,11 @@ function todayISO(): string {
 }
 
 function createPaymentRow(index: number): PaymentRow {
-  return { row_id: `payment-${Date.now()}-${index}`, payment_method_id: "", amount: "" };
+  return {
+    row_id: `payment-${Date.now()}-${index}`,
+    payment_method_id: "",
+    amount: "",
+  };
 }
 
 export default function RegistroPage() {
@@ -63,8 +67,12 @@ export default function RegistroPage() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [customerSearch, setCustomerSearch] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [customerSuggestions, setCustomerSuggestions] = useState<Customer[]>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [customerSuggestions, setCustomerSuggestions] = useState<Customer[]>(
+    [],
+  );
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null,
+  );
 
   const [companyId, setCompanyId] = useState("");
   const [transactionDate, setTransactionDate] = useState(todayISO());
@@ -72,11 +80,16 @@ export default function RegistroPage() {
   const [description, setDescription] = useState("");
   const [totalAmount, setTotalAmount] = useState("");
   const [payments, setPayments] = useState<PaymentRow[]>([createPaymentRow(0)]);
-  const [focusedMoneyField, setFocusedMoneyField] = useState<"total" | string | null>(null);
+  const [focusedMoneyField, setFocusedMoneyField] = useState<
+    "total" | string | null
+  >(null);
 
   const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   useEffect(() => {
     async function loadCatalogs() {
@@ -86,17 +99,30 @@ export default function RegistroPage() {
           fetch("/api/bff/companies", { cache: "no-store" }),
           fetch("/api/bff/payment-methods", { cache: "no-store" }),
         ]);
-        const [companiesBody, methodsBody] = await Promise.all([companiesRes.json(), methodsRes.json()]);
+        const [companiesBody, methodsBody] = await Promise.all([
+          companiesRes.json(),
+          methodsRes.json(),
+        ]);
         if (!companiesRes.ok) {
-          throw new Error(companiesBody.detail || "No fue posible cargar empresas.");
+          throw new Error(
+            companiesBody.detail || "No fue posible cargar empresas.",
+          );
         }
         if (!methodsRes.ok) {
-          throw new Error(methodsBody.detail || "No fue posible cargar métodos de pago.");
+          throw new Error(
+            methodsBody.detail || "No fue posible cargar métodos de pago.",
+          );
         }
         setCompanies(companiesBody as Company[]);
         setPaymentMethods(methodsBody as PaymentMethod[]);
       } catch (error) {
-        setMessage({ type: "error", text: error instanceof Error ? error.message : "Error cargando catálogos." });
+        setMessage({
+          type: "error",
+          text:
+            error instanceof Error
+              ? error.message
+              : "Error cargando catálogos.",
+        });
       } finally {
         setIsLoadingCatalogs(false);
       }
@@ -108,13 +134,19 @@ export default function RegistroPage() {
     const nameQuery = customerSearch.trim();
     const phoneQuery = customerPhone.trim();
     const query = phoneQuery.length >= 3 ? phoneQuery : nameQuery;
-    if (query.length < 2 || (selectedCustomer && selectedCustomer.name === customerSearch)) {
+    if (
+      query.length < 2 ||
+      (selectedCustomer && selectedCustomer.name === customerSearch)
+    ) {
       setCustomerSuggestions([]);
       return;
     }
     const timeout = window.setTimeout(async () => {
       try {
-        const response = await fetch(`/api/bff/customers?search=${encodeURIComponent(query)}`, { cache: "no-store" });
+        const response = await fetch(
+          `/api/bff/customers?search=${encodeURIComponent(query)}`,
+          { cache: "no-store" },
+        );
         const body = await response.json();
         if (!response.ok) {
           throw new Error(body.detail || "No fue posible buscar clientes.");
@@ -132,9 +164,17 @@ export default function RegistroPage() {
     [payments],
   );
 
-  const totalAmountValue = useMemo(() => parseMoney(totalAmount), [totalAmount]);
-  const isBalanced = totalAmountValue > 0 && Math.abs(paymentTotal - totalAmountValue) < 0.001;
-  const hasValidPayments = payments.some((row) => row.payment_method_id && parseMoney(row.amount) > 0);
+  const totalAmountValue = useMemo(
+    () => parseMoney(totalAmount),
+    [totalAmount],
+  );
+  const isBalanced =
+    totalAmountValue > 0 && Math.abs(paymentTotal - totalAmountValue) < 0.001;
+  const hasValidPayments = payments.some(
+    (row) => row.payment_method_id && parseMoney(row.amount) > 0,
+  );
+  const differenceAmount = paymentTotal - totalAmountValue;
+  const isDifferenceZero = Math.abs(differenceAmount) < 0.001;
   const canSubmit =
     !isSubmitting &&
     companyId &&
@@ -145,7 +185,9 @@ export default function RegistroPage() {
     isBalanced;
 
   function updatePayment(rowId: string, changes: Partial<PaymentRow>) {
-    setPayments((prev) => prev.map((row) => (row.row_id === rowId ? { ...row, ...changes } : row)));
+    setPayments((prev) =>
+      prev.map((row) => (row.row_id === rowId ? { ...row, ...changes } : row)),
+    );
   }
 
   function addPayment() {
@@ -176,7 +218,10 @@ export default function RegistroPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!canSubmit) {
-      setMessage({ type: "error", text: "Completa campos obligatorios y corrige el descuadre de pagos." });
+      setMessage({
+        type: "error",
+        text: "Completa campos obligatorios y corrige el descuadre de pagos.",
+      });
       return;
     }
 
@@ -212,7 +257,10 @@ export default function RegistroPage() {
     } catch (error) {
       setMessage({
         type: "error",
-        text: error instanceof Error ? error.message : "No fue posible registrar la venta.",
+        text:
+          error instanceof Error
+            ? error.message
+            : "No fue posible registrar la venta.",
       });
     } finally {
       setIsSubmitting(false);
@@ -220,233 +268,439 @@ export default function RegistroPage() {
   }
 
   return (
-    <main className="relative mx-auto min-h-screen w-full max-w-4xl bg-app-surface px-4 py-8 md:px-8">
-      <div className="pointer-events-none fixed -right-20 -top-20 h-56 w-56 rounded-full bg-blue-200/30 blur-3xl" />
-      <div className="pointer-events-none fixed -bottom-24 -left-12 h-52 w-52 rounded-full bg-orange-200/30 blur-3xl" />
-
-      <header className="mb-6">
-        <h1 className="font-manrope text-3xl font-extrabold text-slate-900">Registro de Ventas</h1>
-        <p className="mt-1 text-sm text-slate-600">Complete los detalles para registrar una nueva transacción.</p>
-        <div className="mt-2 flex gap-2 text-xs">
-          {isLoadingCatalogs && <span className="rounded bg-blue-100 px-2 py-1 text-blue-700">Cargando catálogos...</span>}
-          {isSubmitting && <span className="rounded bg-slate-200 px-2 py-1 text-slate-700">Guardando venta...</span>}
-        </div>
-      </header>
-
-      <form onSubmit={onSubmit} className="space-y-5">
-        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-semibold text-slate-700">Empresa</span>
-              <select
-                value={companyId}
-                onChange={(e) => setCompanyId(e.target.value)}
-                className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              >
-                <option value="">Seleccione empresa</option>
-                {companies.map((company) => (
-                  <option key={company.id} value={company.id}>
-                    {company.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-semibold text-slate-700">Fecha de Venta</span>
-              <input
-                type="date"
-                value={transactionDate}
-                onChange={(e) => setTransactionDate(e.target.value)}
-                className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-            </label>
-
-            <label className="relative flex flex-col gap-1">
-              <span className="text-sm font-semibold text-slate-700">Cliente (opcional)</span>
-              <input
-                value={customerSearch}
-                onChange={(e) => {
-                  setCustomerSearch(e.target.value);
-                  if (selectedCustomer && selectedCustomer.name !== e.target.value) {
-                    setSelectedCustomer(null);
-                  }
-                }}
-                placeholder="Buscar por nombre o teléfono"
-                className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-              {customerSuggestions.length > 0 && (
-                <ul className="absolute top-[72px] z-20 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg">
-                  {customerSuggestions.map((customer) => (
-                    <li key={customer.id}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedCustomer(customer);
-                          setCustomerSearch(customer.name);
-                          setCustomerPhone(customer.phone?.replace(/[^\d]/g, "").slice(0, 10) ?? "");
-                          setCustomerSuggestions([]);
-                        }}
-                        className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-slate-50"
-                      >
-                        <span className="text-sm text-slate-800">{customer.name}</span>
-                        <span className="text-xs text-slate-500">{customer.phone || "Sin teléfono"}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-semibold text-slate-700">Teléfono</span>
-              <input
-                value={customerPhone}
-                onChange={(e) => {
-                  const sanitized = e.target.value.replace(/[^\d]/g, "").slice(0, 10);
-                  setCustomerPhone(sanitized);
-                }}
-                onBlur={() => {
-                  if (customerPhone.length > 0 && customerSearch.trim().length === 0) {
-                    setCustomerSearch(customerPhone);
-                  }
-                }}
-                placeholder="3001234567"
-                inputMode="numeric"
-                className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-semibold text-slate-700">Número de Referencia</span>
-              <input
-                value={documentNumber}
-                onChange={(e) => setDocumentNumber(e.target.value)}
-                placeholder="REF-00123"
-                className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-semibold text-slate-700">Valor Total</span>
-              <input
-                value={focusedMoneyField === "total" ? totalAmount : formatCop(totalAmount)}
-                onChange={(e) => setTotalAmount(sanitizeMoneyInput(e.target.value))}
-                onFocus={() => setFocusedMoneyField("total")}
-                onBlur={() => setFocusedMoneyField((current) => (current === "total" ? null : current))}
-                placeholder="COP 0"
-                inputMode="numeric"
-                className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-            </label>
-
-            <div className="md:col-span-2" />
-
-            <label className="flex flex-col gap-1 md:col-span-2">
-              <span className="text-sm font-semibold text-slate-700">Descripción</span>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                placeholder="Detalles adicionales de la venta..."
-                className="rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-              />
-            </label>
-          </div>
-        </section>
-
-        <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-manrope text-xl font-bold text-slate-900">Pagos</h2>
-            <button
-              type="button"
-              onClick={addPayment}
-              className="rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100"
-            >
-              Agregar pago
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {payments.map((row) => (
-              <div key={row.row_id} className="grid grid-cols-1 gap-3 rounded-lg border border-slate-200 p-3 md:grid-cols-[1fr_200px_44px]">
-                <select
-                  value={row.payment_method_id}
-                  onChange={(e) => updatePayment(row.row_id, { payment_method_id: e.target.value })}
-                  className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                >
-                  <option value="">Seleccione método de pago</option>
-                  {paymentMethods.map((method) => (
-                    <option key={method.id} value={method.id}>
-                      {method.name}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  value={focusedMoneyField === row.row_id ? row.amount : formatCop(row.amount)}
-                  onChange={(e) => updatePayment(row.row_id, { amount: sanitizeMoneyInput(e.target.value) })}
-                  onFocus={() => setFocusedMoneyField(row.row_id)}
-                  onBlur={() => setFocusedMoneyField((current) => (current === row.row_id ? null : current))}
-                  placeholder="COP 0"
-                  inputMode="numeric"
-                  className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                />
-                <button
-                  type="button"
-                  onClick={() => removePayment(row.row_id)}
-                  className="h-11 rounded-lg border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
-            <div className="flex justify-between text-slate-600">
-              <span>Total venta</span>
-              <span>{COP_FORMATTER.format(totalAmountValue)}</span>
-            </div>
-            <div className="mt-1 flex justify-between text-slate-600">
-              <span>Total pagos</span>
-              <span>{COP_FORMATTER.format(paymentTotal)}</span>
-            </div>
-            <div className={`mt-2 flex justify-between font-semibold ${isBalanced ? "text-emerald-700" : "text-rose-700"}`}>
-              <span>Diferencia</span>
-              <span>{COP_FORMATTER.format(paymentTotal - totalAmountValue)}</span>
-            </div>
-          </div>
-        </section>
+    <main className="h-[calc(100vh-56px)] overflow-hidden bg-[#f8fafc] px-4 py-4 text-gray-900">
+      <div className="mx-auto flex h-full w-full max-w-[1280px] flex-col overflow-hidden">
+        <h1 className="mb-3 text-2xl font-bold leading-8 text-gray-900">
+          Registro de Ventas
+        </h1>
 
         {message && (
           <div
-            className={`rounded-lg border px-4 py-3 text-sm ${
+            className={`mb-3 rounded border px-3 py-2 text-xs ${
               message.type === "success"
                 ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                : "border-rose-200 bg-rose-50 text-rose-700"
+                : "border-red-200 bg-red-50 text-red-700"
             }`}
           >
             {message.text}
           </div>
         )}
 
-        <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-          <button
-            type="button"
-            onClick={resetForm}
-            className="h-11 rounded-lg border border-slate-300 bg-white px-5 font-semibold text-slate-700 hover:bg-slate-100"
+        <div className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_320px] gap-4 overflow-hidden">
+          <form
+            onSubmit={onSubmit}
+            className="flex min-h-0 flex-col gap-4 overflow-hidden"
           >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className="h-11 rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-slate-300"
-          >
-            {isSubmitting ? "Guardando..." : "Registrar Venta"}
-          </button>
+            {/* DATOS DE LA VENTA */}
+            <section className="rounded border border-[#cbd5e1] bg-white p-4">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                {/* ENTIDAD DEL CLIENTE */}
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Cliente
+                  </span>
+
+                  <div className="relative">
+                    <span className="material-symbols-outlined pointer-events-none absolute left-2 top-[7px] text-[16px] text-gray-500">
+                      person_search
+                    </span>
+
+                    <input
+                      value={customerSearch}
+                      onChange={(e) => {
+                        setCustomerSearch(e.target.value);
+                        if (
+                          selectedCustomer &&
+                          selectedCustomer.name !== e.target.value
+                        ) {
+                          setSelectedCustomer(null);
+                        }
+                      }}
+                      placeholder="Acme Corporation Ltd."
+                      className="h-8 w-full rounded border border-[#cbd5e1] bg-white pl-8 pr-20 text-xs font-normal text-gray-900 outline-none focus:border-[#003D9B]"
+                    />
+
+                    {selectedCustomer && (
+                      <span className="absolute right-2 top-[5px] rounded border border-[#cbd5e1] bg-slate-50 px-1.5 py-0.5 text-[10px] leading-4 text-gray-700">
+                        ID: {selectedCustomer.id.slice(0, 6)}
+                      </span>
+                    )}
+
+                    {customerSuggestions.length > 0 && (
+                      <ul className="absolute left-0 top-9 z-20 max-h-40 w-full overflow-auto rounded border border-[#cbd5e1] bg-white shadow">
+                        {customerSuggestions.map((customer) => (
+                          <li
+                            key={customer.id}
+                            className="border-b border-slate-100 last:border-b-0"
+                          >
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedCustomer(customer);
+                                setCustomerSearch(customer.name);
+                                setCustomerPhone(
+                                  customer.phone
+                                    ?.replace(/[^\d]/g, "")
+                                    .slice(0, 10) ?? "",
+                                );
+                                setCustomerSuggestions([]);
+                              }}
+                              className="flex w-full justify-between px-3 py-2 text-left text-xs hover:bg-slate-50"
+                            >
+                              <span className="font-medium text-gray-900">
+                                {customer.name}
+                              </span>
+                              <span className="text-gray-500">
+                                {customer.phone || "Sin teléfono"}
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </label>
+
+                {/* TELÉFONO */}
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Teléfono del cliente
+                  </span>
+
+                  <input
+                    value={customerPhone}
+                    onChange={(e) => {
+                      const sanitized = e.target.value
+                        .replace(/[^\d]/g, "")
+                        .slice(0, 10);
+                      setCustomerPhone(sanitized);
+                    }}
+                    placeholder="3001234567"
+                    inputMode="numeric"
+                    className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-medium tracking-tight text-gray-900 outline-none focus:border-[#003D9B]"
+                  />
+                </label>
+
+                {/* SUCURSAL / EMPRESA */}
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Empresa
+                  </span>
+
+                  <select
+                    value={companyId}
+                    onChange={(e) => setCompanyId(e.target.value)}
+                    className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-normal leading-4 text-gray-900 outline-none focus:border-[#003D9B]"
+                  >
+                    <option value="">Seleccione empresa</option>
+                    {companies.map((company) => (
+                      <option key={company.id} value={company.id}>
+                        {company.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                {/* FECHA */}
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Fecha de registro
+                  </span>
+
+                  <input
+                    type="date"
+                    value={transactionDate}
+                    onChange={(e) => setTransactionDate(e.target.value)}
+                    className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-medium tracking-tight text-gray-900 outline-none focus:border-[#003D9B]"
+                  />
+                </label>
+
+                {/* REFERENCIA */}
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Referencia/Nota
+                  </span>
+
+                  <input
+                    value={documentNumber}
+                    onChange={(e) => setDocumentNumber(e.target.value)}
+                    placeholder="INV-2023-9942A"
+                    className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-medium tracking-tight text-gray-900 outline-none focus:border-[#003D9B]"
+                  />
+                </label>
+
+                {/* VALOR DE LA VENTA */}
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Total venta
+                  </span>
+
+                  <div className="relative">
+                    <span className="material-symbols-outlined pointer-events-none absolute left-2 top-[7px] text-[16px] text-gray-500">
+                      payments
+                    </span>
+
+                    <input
+                      value={
+                        focusedMoneyField === "total"
+                          ? totalAmount
+                          : formatCop(totalAmount).replace("COP", "").trim()
+                      }
+                      onChange={(e) =>
+                        setTotalAmount(sanitizeMoneyInput(e.target.value))
+                      }
+                      onFocus={() => setFocusedMoneyField("total")}
+                      onBlur={() =>
+                        setFocusedMoneyField((current) =>
+                          current === "total" ? null : current,
+                        )
+                      }
+                      placeholder="12,450.00"
+                      inputMode="numeric"
+                      className="h-8 w-full rounded border border-[#cbd5e1] bg-white pl-8 pr-3 text-xs font-medium tracking-tight text-gray-900 outline-none focus:border-[#003D9B]"
+                    />
+                  </div>
+                </label>
+
+                {/* NOTAS */}
+                <label className="col-span-2 flex flex-col gap-1">
+                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Notas internas / descripción
+                  </span>
+
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Ingrese detalles de la transacción..."
+                    rows={3}
+                    className="min-h-[64px] w-full resize-none rounded border border-[#cbd5e1] bg-white px-2 py-1.5 text-xs font-normal leading-4 text-gray-900 outline-none placeholder:text-gray-500 focus:border-[#003D9B]"
+                  />
+                </label>
+              </div>
+            </section>
+
+            {/* PAGOS */}
+            <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded border border-[#cbd5e1] bg-white">
+              {/* ALERTA */}
+              <div className="flex items-center gap-2 border-b border-rose-200 bg-rose-200 px-4 py-2 text-xs font-medium leading-4 text-red-800">
+                <span className="material-symbols-outlined text-[16px]">
+                  warning
+                </span>
+                Advertencia: La caja está cerrada actualmente. La asignación de
+                efectivo está bloqueada.
+              </div>
+
+              {/* HEADER PAGOS */}
+              <div className="flex items-center justify-between border-b border-[#cbd5e1] bg-slate-50 p-4">
+                <h2 className="text-lg font-semibold leading-6 text-gray-900">
+                  Asignación de Pago
+                </h2>
+
+                <button
+                  type="button"
+                  onClick={addPayment}
+                  className="flex items-center gap-1 text-xs font-bold uppercase leading-4 tracking-wide text-gray-700"
+                >
+                  <span className="material-symbols-outlined text-[15px]">
+                    add
+                  </span>
+                  Añadir fila
+                </button>
+              </div>
+
+              {/* TABLA HEADER */}
+              <div className="grid grid-cols-[1fr_260px_32px] border-b border-gray-500 bg-indigo-50">
+                <div className="p-2 text-xs font-semibold uppercase leading-4 tracking-wide text-gray-700">
+                  Método
+                </div>
+                <div className="p-2 text-right text-xs font-semibold uppercase leading-4 tracking-wide text-gray-700">
+                  Monto
+                </div>
+                <div />
+              </div>
+
+              {/* TABLA BODY */}
+              <div className="min-h-0 flex-1 overflow-auto">
+                {payments.map((row) => (
+                  <div
+                    key={row.row_id}
+                    className="grid grid-cols-[1fr_260px_32px] items-center gap-2 border-b border-slate-200 bg-white py-2 pl-2 pr-0"
+                  >
+                    <select
+                      value={row.payment_method_id}
+                      onChange={(e) =>
+                        updatePayment(row.row_id, {
+                          payment_method_id: e.target.value,
+                        })
+                      }
+                      className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-normal leading-4 text-gray-900 outline-none focus:border-[#003D9B]"
+                    >
+                      <option value="">Seleccione método de pago</option>
+                      {paymentMethods.map((method) => (
+                        <option key={method.id} value={method.id}>
+                          {method.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <input
+                      value={
+                        focusedMoneyField === row.row_id
+                          ? row.amount
+                          : formatCop(row.amount).replace("COP", "").trim()
+                      }
+                      onChange={(e) =>
+                        updatePayment(row.row_id, {
+                          amount: sanitizeMoneyInput(e.target.value),
+                        })
+                      }
+                      onFocus={() => setFocusedMoneyField(row.row_id)}
+                      onBlur={() =>
+                        setFocusedMoneyField((current) =>
+                          current === row.row_id ? null : current,
+                        )
+                      }
+                      placeholder="12,000.00"
+                      inputMode="numeric"
+                      className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-right text-xs font-medium tracking-tight text-gray-900 outline-none focus:border-[#003D9B]"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => removePayment(row.row_id)}
+                      className="flex h-8 w-6 items-center justify-center text-gray-700 hover:text-red-700"
+                      aria-label="Eliminar pago"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">
+                        close
+                      </span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* FOOTER PAGOS */}
+              <div className="flex justify-end border-t border-gray-500 bg-indigo-50 p-2 text-xs font-medium leading-4 tracking-tight text-gray-700">
+                PAGADO:{" "}
+                {formatCop(String(paymentTotal)).replace("COP", "").trim() ||
+                  "0.00"}
+              </div>
+            </section>
+          </form>
+
+          {/* RESUMEN + ACCIONES */}
+          <aside className="flex min-h-0 flex-col gap-4 overflow-hidden">
+            <section className="overflow-hidden rounded border border-[#cbd5e1] bg-white shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)]">
+              <div className="relative border-b border-slate-200 p-6">
+                <div className="absolute left-0 top-0 h-full w-1 bg-slate-300" />
+                <div className="pl-2">
+                  <p className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Total venta
+                  </p>
+                  <div className="mt-1 flex items-baseline gap-1">
+                    <span className="text-sm font-medium leading-5 text-gray-700">
+                      $
+                    </span>
+                    <span className="text-3xl font-bold leading-9 text-gray-900">
+                      {formatCop(String(totalAmountValue))
+                        .replace("COP", "")
+                        .trim() || "0"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative border-b border-slate-200 p-6">
+                <div className="absolute left-0 top-0 h-full w-1 bg-slate-200" />
+                <div className="pl-2">
+                  <p className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                    Monto pagado
+                  </p>
+                  <div className="mt-1 flex items-baseline gap-1">
+                    <span className="text-sm font-medium leading-5 text-gray-700">
+                      $
+                    </span>
+                    <span className="text-3xl font-bold leading-9 text-gray-900">
+                      {formatCop(String(paymentTotal))
+                        .replace("COP", "")
+                        .trim() || "0"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className={`relative p-6 ${
+                  isDifferenceZero ? "bg-emerald-50" : "bg-rose-200/20"
+                }`}
+              >
+                <div
+                  className={`absolute left-0 top-0 h-full w-1 ${
+                    isDifferenceZero ? "bg-emerald-600" : "bg-red-700"
+                  }`}
+                />
+
+                <div className="pl-2">
+                  <p
+                    className={`text-xs font-bold uppercase leading-4 tracking-wide ${
+                      isDifferenceZero ? "text-emerald-700" : "text-red-700"
+                    }`}
+                  >
+                    Diferencia
+                  </p>
+
+                  <div className="mt-1 flex items-baseline gap-1">
+                    <span
+                      className={`text-sm font-medium leading-5 ${
+                        isDifferenceZero ? "text-emerald-700" : "text-red-700"
+                      }`}
+                    >
+                      {differenceAmount < 0 ? "-$" : "$"}
+                    </span>
+
+                    <span
+                      className={`text-3xl font-bold leading-9 ${
+                        isDifferenceZero ? "text-emerald-700" : "text-red-700"
+                      }`}
+                    >
+                      {formatCop(String(Math.abs(differenceAmount)))
+                        .replace("COP", "")
+                        .trim() || "0"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="flex flex-col gap-3 pt-2">
+              <button
+                type="submit"
+                form=""
+                disabled={!canSubmit}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const form = document.querySelector("form");
+                  form?.requestSubmit();
+                }}
+                className="flex h-10 w-full items-center justify-center gap-2 rounded bg-[#003D9B] text-sm font-semibold leading-5 text-white opacity-70 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] transition hover:opacity-100 disabled:cursor-not-allowed disabled:bg-[#4C5D8D]"
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  save
+                </span>
+                Registrar Venta
+              </button>
+
+              <button
+                type="button"
+                onClick={resetForm}
+                className="flex h-8 w-full items-center justify-center rounded border border-gray-500 text-xs font-medium leading-4 text-gray-900"
+              >
+                Cancelar y Limpiar
+              </button>
+            </section>
+          </aside>
         </div>
-      </form>
+      </div>
     </main>
   );
 }
