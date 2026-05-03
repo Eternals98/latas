@@ -229,6 +229,8 @@ def _build_sales_query(filters: SaleListFilters):
         conditions.append(Transaction.transaction_date <= filters.date_to)
     if filters.company_id:
         conditions.append(Transaction.company_id == filters.company_id)
+    if filters.company_ids:
+        conditions.append(Transaction.company_id.in_(filters.company_ids))
     if filters.search:
         pattern = f"%{filters.search}%"
         conditions.append(
@@ -238,6 +240,13 @@ def _build_sales_query(filters: SaleListFilters):
                 Customer.phone.ilike(pattern),
             )
         )
+    if filters.payment_method_ids:
+        matching_transactions = (
+            select(TransactionPayment.transaction_id)
+            .where(TransactionPayment.payment_method_id.in_(filters.payment_method_ids))
+            .distinct()
+        )
+        conditions.append(Transaction.id.in_(matching_transactions))
 
     base = (
         select(

@@ -30,3 +30,34 @@ body {
     background: #F7F9FF;
   }
 }
+
+@layer components {
+  .app-select {
+    @apply flex w-full items-stretch rounded border border-gray-200 bg-white p-1;
+  }
+
+  .app-select:hover {
+    @apply bg-white;
+  }
+
+  .app-select:focus,
+  .app-select:focus-visible {
+    @apply outline-none;
+  }
+
+  .app-select-panel {
+    @apply absolute left-0 top-full z-40 mt-0 w-full overflow-hidden rounded border border-gray-200 bg-white shadow-lg;
+  }
+
+  .app-select-option {
+    @apply flex cursor-pointer items-center border-b border-gray-100 px-2 py-2 pl-2 text-sm text-gray-900 transition last:border-b-0;
+  }
+
+  .app-select-option:hover {
+    @apply bg-teal-100;
+  }
+
+  .app-select-option-selected {
+    @apply font-medium border-l-2 border-teal-600;
+  }
+}

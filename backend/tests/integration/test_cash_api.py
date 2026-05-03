@@ -6,12 +6,13 @@ from src.models.customer import Customer
 from src.models.payment_method import PaymentMethod
 from src.models.profile import Profile
 from src.services.supabase_auth import require_user
-from tests.helpers import set_request_user
+from tests.helpers import ensure_auth_user, set_request_user
 
 
 def _seed_core(db_session):
     admin = db_session.query(Profile).filter(Profile.id == "11111111-1111-1111-1111-111111111111").first()
     if admin is None:
+        ensure_auth_user(db_session, "11111111-1111-1111-1111-111111111111", "admin@example.com", "Admin")
         admin = Profile(
             id="11111111-1111-1111-1111-111111111111",
             full_name="Admin",
@@ -23,6 +24,7 @@ def _seed_core(db_session):
 
     cashier = db_session.query(Profile).filter(Profile.id == "22222222-2222-2222-2222-222222222222").first()
     if cashier is None:
+        ensure_auth_user(db_session, "22222222-2222-2222-2222-222222222222", "cashier@example.com", "Cajero")
         cashier = Profile(
             id="22222222-2222-2222-2222-222222222222",
             full_name="Cajero",

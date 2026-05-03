@@ -266,7 +266,7 @@ export default function CashManagementPage() {
     const totals = new Map<string, number>();
     for (const sale of sales) {
       for (const payment of sale.payments) {
-        if (payment.payment_method_name === "Efectivo") continue;
+        if (payment.payment_method_name === "EFECTIVO") continue;
         const current = totals.get(payment.payment_method_name) ?? 0;
         totals.set(payment.payment_method_name, current + Number(payment.amount));
       }
@@ -300,10 +300,10 @@ export default function CashManagementPage() {
   const cashMethodRows = useMemo(() => {
     return sales.map((sale) => {
       const cash = sale.payments
-        .filter((payment) => payment.payment_method_name === "Efectivo")
+        .filter((payment) => payment.payment_method_name === "EFECTIVO")
         .reduce((sum, payment) => sum + Number(payment.amount), 0);
       const other = sale.payments
-        .filter((payment) => payment.payment_method_name !== "Efectivo")
+        .filter((payment) => payment.payment_method_name !== "EFECTIVO")
         .reduce((sum, payment) => sum + Number(payment.amount), 0);
       return {
         id: sale.id,
@@ -516,7 +516,7 @@ export default function CashManagementPage() {
       }
       const response = await fetch("/api/bff/cash/close", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getCsrfHeaders() },
         body: JSON.stringify({ session_date: sessionDate, counted_cash: counted }),
       });
       const body = await parseResponseBody(response);

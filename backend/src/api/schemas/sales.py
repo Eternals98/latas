@@ -133,6 +133,8 @@ class SaleListFilters(BaseModel):
     date_from: date | None = None
     date_to: date | None = None
     company_id: str | None = None
+    company_ids: list[str] = Field(default_factory=list)
+    payment_method_ids: list[str] = Field(default_factory=list)
     search: str | None = None
     limit: int = 50
     offset: int = 0
@@ -144,6 +146,12 @@ class SaleListFilters(BaseModel):
             return None
         cleaned = value.strip()
         return cleaned or None
+
+    @field_validator("company_ids", "payment_method_ids")
+    @classmethod
+    def validate_id_lists(cls, value: list[str]) -> list[str]:
+        cleaned = [item.strip() for item in value if item and item.strip()]
+        return list(dict.fromkeys(cleaned))
 
     @field_validator("search")
     @classmethod

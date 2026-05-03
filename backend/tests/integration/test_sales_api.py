@@ -11,12 +11,13 @@ from src.models.profile import Profile
 from src.models.transaction import Transaction
 from src.models.transaction_payment import TransactionPayment
 from src.services.supabase_auth import require_user
-from tests.helpers import set_request_user
+from tests.helpers import ensure_auth_user, set_request_user
 
 
 def _seed_core(db_session):
     actor = db_session.query(Profile).filter(Profile.id == "11111111-1111-1111-1111-111111111111").first()
     if actor is None:
+        ensure_auth_user(db_session, "11111111-1111-1111-1111-111111111111", "admin@example.com", "Tester")
         actor = Profile(
             id="11111111-1111-1111-1111-111111111111",
             full_name="Tester",
