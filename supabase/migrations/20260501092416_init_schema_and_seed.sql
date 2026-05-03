@@ -60,6 +60,16 @@ create table if not exists public.cash_sessions (
   closed_at timestamptz
 );
 
+create table if not exists public.cash_events (
+  id uuid primary key default gen_random_uuid(),
+  cash_session_id uuid not null references public.cash_sessions(id) on delete cascade,
+  event_type text not null check (event_type in ('open', 'close', 'delivery', 'reopen')),
+  actor_id uuid not null references public.profiles(id),
+  event_at timestamptz not null default now(),
+  payload jsonb,
+  note text
+);
+
 create table if not exists public.transactions (
   id uuid primary key default gen_random_uuid(),
   company_id uuid not null references public.companies(id),
@@ -125,12 +135,15 @@ create index if not exists idx_transaction_payments_method on public.transaction
 create index if not exists idx_cash_movements_session on public.cash_movements(cash_session_id);
 create index if not exists idx_cash_movements_date on public.cash_movements(movement_date);
 create index if not exists idx_audit_logs_entity on public.audit_logs(entity_name, entity_id);
+create index if not exists idx_cash_events_session on public.cash_events(cash_session_id);
+create index if not exists idx_cash_events_event_at on public.cash_events(event_at);
 
 alter table public.profiles enable row level security;
 alter table public.companies enable row level security;
 alter table public.customers enable row level security;
 alter table public.payment_methods enable row level security;
 alter table public.cash_sessions enable row level security;
+alter table public.cash_events enable row level security;
 alter table public.transactions enable row level security;
 alter table public.transaction_payments enable row level security;
 alter table public.cash_movements enable row level security;
@@ -141,6 +154,7 @@ alter table public.companies force row level security;
 alter table public.customers force row level security;
 alter table public.payment_methods force row level security;
 alter table public.cash_sessions force row level security;
+alter table public.cash_events force row level security;
 alter table public.transactions force row level security;
 alter table public.transaction_payments force row level security;
 alter table public.cash_movements force row level security;
@@ -156,6 +170,20 @@ as $$
   where p.id = auth.uid();
 $$;
 
+create or replace function public.is_active_role(expected_role text)
+returns boolean
+language sql
+stable
+as $$
+  select exists (
+    select 1
+    from public.profiles p
+    where p.id = auth.uid()
+      and p.is_active = true
+      and p.role = expected_role
+  );
+$$;
+
 drop policy if exists profiles_self_select on public.profiles;
 create policy profiles_self_select
 on public.profiles
@@ -168,21 +196,78 @@ create policy companies_read_authenticated
 on public.companies
 for select
 to authenticated
-using (is_active = true);
+using (public.current_user_role() in ('admin', 'cashier') and is_active = true);
 
 drop policy if exists customers_read_authenticated on public.customers;
 create policy customers_read_authenticated
 on public.customers
 for select
 to authenticated
-using (is_active = true);
+using (public.current_user_role() in ('admin', 'cashier') and is_active = true);
 
 drop policy if exists payment_methods_read_authenticated on public.payment_methods;
 create policy payment_methods_read_authenticated
 on public.payment_methods
 for select
 to authenticated
-using (is_active = true);
+using (public.current_user_role() in ('admin', 'cashier') and is_active = true);
+
+drop policy if exists cash_sessions_select_admin_or_cashier on public.cash_sessions;
+create policy cash_sessions_select_admin_or_cashier
+on public.cash_sessions
+for select
+to authenticated
+using (public.current_user_role() in ('admin', 'cashier'));
+
+drop policy if exists cash_sessions_insert_admin_only on public.cash_sessions;
+create policy cash_sessions_insert_admin_only
+on public.cash_sessions
+for insert
+to authenticated
+with check (
+  public.current_user_role() = 'admin'
+  and opened_by = auth.uid()
+);
+
+drop policy if exists cash_sessions_update_admin_only on public.cash_sessions;
+create policy cash_sessions_update_admin_only
+on public.cash_sessions
+for update
+to authenticated
+using (public.current_user_role() = 'admin')
+with check (public.current_user_role() = 'admin');
+
+drop policy if exists cash_movements_select_admin_or_cashier on public.cash_movements;
+create policy cash_movements_select_admin_or_cashier
+on public.cash_movements
+for select
+to authenticated
+using (public.current_user_role() in ('admin', 'cashier'));
+
+drop policy if exists cash_movements_insert_admin_or_cashier on public.cash_movements;
+create policy cash_movements_insert_admin_or_cashier
+on public.cash_movements
+for insert
+to authenticated
+with check (
+  created_by = auth.uid()
+  and public.current_user_role() in ('admin', 'cashier')
+);
+
+drop policy if exists cash_movements_update_admin_only on public.cash_movements;
+create policy cash_movements_update_admin_only
+on public.cash_movements
+for update
+to authenticated
+using (public.current_user_role() = 'admin')
+with check (public.current_user_role() = 'admin');
+
+drop policy if exists cash_movements_delete_admin_only on public.cash_movements;
+create policy cash_movements_delete_admin_only
+on public.cash_movements
+for delete
+to authenticated
+using (public.current_user_role() = 'admin');
 
 drop policy if exists transactions_select_admin_or_cashier on public.transactions;
 create policy transactions_select_admin_or_cashier
@@ -300,6 +385,44 @@ for delete
 to authenticated
 using (public.current_user_role() = 'admin');
 
+drop policy if exists cash_events_select_admin_or_cashier on public.cash_events;
+create policy cash_events_select_admin_or_cashier
+on public.cash_events
+for select
+to authenticated
+using (public.current_user_role() in ('admin', 'cashier'));
+
+drop policy if exists cash_events_insert_admin_or_cashier on public.cash_events;
+create policy cash_events_insert_admin_or_cashier
+on public.cash_events
+for insert
+to authenticated
+with check (
+  actor_id = auth.uid()
+  and exists (
+    select 1
+    from public.profiles p
+    where p.id = auth.uid()
+      and p.is_active = true
+      and p.role in ('admin', 'cashier')
+  )
+);
+
+drop policy if exists cash_events_update_admin_only on public.cash_events;
+create policy cash_events_update_admin_only
+on public.cash_events
+for update
+to authenticated
+using (public.current_user_role() = 'admin')
+with check (public.current_user_role() = 'admin');
+
+drop policy if exists cash_events_delete_admin_only on public.cash_events;
+create policy cash_events_delete_admin_only
+on public.cash_events
+for delete
+to authenticated
+using (public.current_user_role() = 'admin');
+
 insert into public.companies(name)
 values ('Latas S.A.S'), ('Tomas Gomez'), ('Generico')
 on conflict (name) do nothing;
@@ -310,7 +433,7 @@ on conflict do nothing;
 
 insert into public.payment_methods(name, code, affects_cash, is_active)
 values
-  ('Efectivo', 'CASH', true, true),
+  ('EFECTIVO', 'CASH', true, true),
   ('ENTREGA', 'ENTREGA', true, true),
   ('TARJETA LATAS', 'TARJETA_LATAS', false, true),
   ('TARJETA TOMAS', 'TARJETA_TOMAS', false, true),

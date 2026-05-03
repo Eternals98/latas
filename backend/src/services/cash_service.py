@@ -8,6 +8,7 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.orm import Session
 
 from src.api.schemas.cash import CashMovementRecord, CashSessionRecord, to_money
+from src.models.cash_event import CashEvent
 from src.models.audit_log import AuditLog
 from src.models.cash_movement import CashMovement
 from src.models.cash_session import CashSession
@@ -33,6 +34,11 @@ def _now() -> datetime:
 def _require_admin(actor: Profile) -> None:
     if actor.role != "admin":
         raise CashValidationError("Operación permitida solo para administradores.")
+
+
+def _require_admin_or_cashier(actor: Profile) -> None:
+    if actor.role not in {"admin", "cashier"}:
+        raise CashValidationError("Operación no permitida para este usuario.")
 
 
 def _get_session_by_date(db: Session, session_date: date) -> CashSession | None:
@@ -75,6 +81,14 @@ def _compute_balances(db: Session, cash_session_id: str, opening_cash: Decimal) 
 
 def _session_to_record(db: Session, session: CashSession) -> CashSessionRecord:
     cash_balance, vault_balance = _compute_balances(db, session.id, to_money(session.opening_cash))
+    opened_by_label = None
+    closed_by_label = None
+    if session.opened_by is not None:
+        opened_profile = db.get(Profile, session.opened_by)
+        opened_by_label = opened_profile.full_name if opened_profile else None
+    if session.closed_by is not None:
+        closed_profile = db.get(Profile, session.closed_by)
+        closed_by_label = closed_profile.full_name if closed_profile else None
     return CashSessionRecord(
         id=session.id,
         session_date=session.session_date,
@@ -87,7 +101,9 @@ def _session_to_record(db: Session, session: CashSession) -> CashSessionRecord:
         vault_balance=vault_balance,
         total_operational_balance=to_money(cash_balance + vault_balance),
         opened_by=session.opened_by,
+        opened_by_label=opened_by_label,
         closed_by=session.closed_by,
+        closed_by_label=closed_by_label,
         opened_at=session.opened_at,
         closed_at=session.closed_at,
     )
@@ -114,6 +130,40 @@ def _log_audit(
             created_by=actor.id,
             created_at=_now(),
         )
+    )
+
+
+def _record_cash_event(
+    db: Session,
+    *,
+    cash_session_id: str,
+    event_type: str,
+    actor: Profile,
+    payload: dict | None = None,
+    note: str | None = None,
+) -> None:
+    db.add(
+        CashEvent(
+            id=str(uuid4()),
+            cash_session_id=cash_session_id,
+            event_type=event_type,
+            actor_id=actor.id,
+            event_at=_now(),
+            payload=payload,
+            note=note,
+        )
+    )
+
+
+def _first_event_by_type(db: Session, cash_session_id: str, event_type: str) -> CashEvent | None:
+    return (
+        db.execute(
+            select(CashEvent)
+            .where(CashEvent.cash_session_id == cash_session_id, CashEvent.event_type == event_type)
+            .order_by(CashEvent.event_at.asc(), CashEvent.id.asc())
+        )
+        .scalars()
+        .first()
     )
 
 
@@ -150,10 +200,35 @@ def open_cash_session(
     opening_cash: Decimal,
     actor: Profile,
 ) -> CashSessionRecord:
-    _require_admin(actor)
+    _require_admin_or_cashier(actor)
     existing = _get_session_by_date(db, session_date)
     if existing is not None:
-        raise CashConflictError("Ya existe una caja creada para la fecha indicada.")
+        if actor.role != "admin":
+            raise CashConflictError("Ya existe una caja creada para la fecha indicada.")
+        if existing.status == "open":
+            raise CashConflictError("La caja ya está abierta.")
+        existing.status = "open"
+        if existing.opened_at is None:
+            existing.opened_at = _now()
+        _record_cash_event(
+            db,
+            cash_session_id=existing.id,
+            event_type="reopen",
+            actor=actor,
+            payload={"session_date": session_date.isoformat(), "reopened_at": _now().isoformat()},
+            note="Reapertura de caja",
+        )
+        _log_audit(
+            db,
+            action="REOPEN_CASH_SESSION",
+            entity_id=existing.id,
+            actor=actor,
+            reason=None,
+            new_data={"session_date": session_date.isoformat()},
+        )
+        db.commit()
+        db.refresh(existing)
+        return _session_to_record(db, existing)
 
     opened_at = _now()
     session = CashSession(
@@ -171,6 +246,7 @@ def open_cash_session(
     )
     try:
         db.add(session)
+        db.flush()
         _log_audit(
             db,
             action="OPEN_CASH_SESSION",
@@ -178,6 +254,14 @@ def open_cash_session(
             actor=actor,
             reason=None,
             new_data={"session_date": session_date.isoformat(), "opening_cash": f"{to_money(opening_cash):.2f}"},
+        )
+        _record_cash_event(
+            db,
+            cash_session_id=session.id,
+            event_type="open",
+            actor=actor,
+            payload={"session_date": session_date.isoformat(), "opening_cash": f"{to_money(opening_cash):.2f}"},
+            note="Apertura de caja",
         )
         db.commit()
         db.refresh(session)
@@ -195,6 +279,7 @@ def register_cash_delivery(
     description: str | None,
     actor: Profile,
 ) -> CashSessionRecord:
+    _require_admin_or_cashier(actor)
     session = _get_open_session_or_raise(db, movement_date)
     session_record = _session_to_record(db, session)
     delivery_amount = to_money(amount)
@@ -228,46 +313,13 @@ def register_cash_delivery(
             reason=None,
             new_data={"amount": f"{delivery_amount:.2f}", "movement_date": movement_date.isoformat()},
         )
-        db.commit()
-        db.refresh(session)
-    except Exception:
-        db.rollback()
-        raise
-    return _session_to_record(db, session)
-
-
-def register_vault_withdrawal(
-    db: Session,
-    *,
-    movement_date: date,
-    amount: Decimal,
-    description: str | None,
-    actor: Profile,
-) -> CashSessionRecord:
-    _require_admin(actor)
-    session = _get_open_session_or_raise(db, movement_date)
-    session_record = _session_to_record(db, session)
-    withdrawal_amount = to_money(amount)
-    if session_record.vault_balance < withdrawal_amount:
-        raise CashConflictError("Saldo insuficiente en bóveda para registrar el retiro.")
-
-    try:
-        _create_movement(
+        _record_cash_event(
             db,
             cash_session_id=session.id,
-            movement_date=movement_date,
-            movement_type="vault_out",
-            amount=withdrawal_amount,
-            description=description or "Retiro de efectivo desde bóveda",
+            event_type="delivery",
             actor=actor,
-        )
-        _log_audit(
-            db,
-            action="CREATE_VAULT_WITHDRAWAL",
-            entity_id=session.id,
-            actor=actor,
-            reason=None,
-            new_data={"amount": f"{withdrawal_amount:.2f}", "movement_date": movement_date.isoformat()},
+            payload={"amount": f"{delivery_amount:.2f}", "movement_date": movement_date.isoformat()},
+            note=description or "Entrega de efectivo desde caja",
         )
         db.commit()
         db.refresh(session)
@@ -326,6 +378,55 @@ def register_manual_adjustment(
     return _session_to_record(db, session)
 
 
+def register_vault_withdrawal(
+    db: Session,
+    *,
+    movement_date: date,
+    amount: Decimal,
+    description: str | None,
+    actor: Profile,
+) -> CashSessionRecord:
+    _require_admin_or_cashier(actor)
+    session = _get_open_session_or_raise(db, movement_date)
+    session_record = _session_to_record(db, session)
+    withdrawal_amount = to_money(amount)
+    if session_record.vault_balance < withdrawal_amount:
+        raise CashConflictError("Saldo insuficiente en bóveda para registrar el retiro.")
+
+    try:
+        _create_movement(
+            db,
+            cash_session_id=session.id,
+            movement_date=movement_date,
+            movement_type="vault_out",
+            amount=withdrawal_amount,
+            description=description or "Retiro desde bóveda",
+            actor=actor,
+        )
+        _log_audit(
+            db,
+            action="CREATE_VAULT_WITHDRAWAL",
+            entity_id=session.id,
+            actor=actor,
+            reason=None,
+            new_data={"amount": f"{withdrawal_amount:.2f}", "movement_date": movement_date.isoformat()},
+        )
+        _record_cash_event(
+            db,
+            cash_session_id=session.id,
+            event_type="vault_out",
+            actor=actor,
+            payload={"amount": f"{withdrawal_amount:.2f}", "movement_date": movement_date.isoformat()},
+            note=description or "Retiro desde bóveda",
+        )
+        db.commit()
+        db.refresh(session)
+    except Exception:
+        db.rollback()
+        raise
+    return _session_to_record(db, session)
+
+
 def close_cash_session(
     db: Session,
     *,
@@ -333,9 +434,11 @@ def close_cash_session(
     counted_cash: Decimal,
     actor: Profile,
 ) -> CashSessionRecord:
-    _require_admin(actor)
+    _require_admin_or_cashier(actor)
     session = _get_open_session_or_raise(db, session_date)
     session_record = _session_to_record(db, session)
+    if actor.role == "cashier" and _first_event_by_type(db, session.id, "close") is not None:
+        raise CashConflictError("El usuario de caja ya cerró esta sesión.")
     expected = to_money(session_record.cash_balance)
     counted = to_money(counted_cash)
     difference = to_money(counted - expected)
@@ -347,7 +450,8 @@ def close_cash_session(
         session.difference_amount = difference
         session.status = "closed"
         session.closed_by = actor.id
-        session.closed_at = now
+        if session.closed_at is None:
+            session.closed_at = now
         _log_audit(
             db,
             action="CLOSE_CASH_SESSION",
@@ -359,6 +463,18 @@ def close_cash_session(
                 "counted": f"{counted:.2f}",
                 "difference": f"{difference:.2f}",
             },
+        )
+        _record_cash_event(
+            db,
+            cash_session_id=session.id,
+            event_type="close",
+            actor=actor,
+            payload={
+                "expected": f"{expected:.2f}",
+                "counted": f"{counted:.2f}",
+                "difference": f"{difference:.2f}",
+            },
+            note="Cierre de caja con diferencia" if difference != 0 else "Cierre de caja",
         )
         db.commit()
         db.refresh(session)
@@ -425,6 +541,32 @@ def list_cash_history(
     sessions = db.execute(query.order_by(CashSession.session_date.desc())).scalars().all()
     total = int(db.execute(count_query).scalar_one())
     return ([_session_to_record(db, item) for item in sessions], total)
+
+
+def list_cash_events(
+    db: Session,
+    *,
+    date_from: date | None,
+    date_to: date | None,
+) -> tuple[list[tuple[CashEvent, CashSession, Profile | None]], int]:
+    query = (
+        select(CashEvent, CashSession, Profile)
+        .join(CashSession, CashSession.id == CashEvent.cash_session_id)
+        .join(Profile, Profile.id == CashEvent.actor_id, isouter=True)
+    )
+    count_query = select(func.count()).select_from(CashEvent)
+    conditions = []
+    if date_from is not None:
+        conditions.append(CashSession.session_date >= date_from)
+    if date_to is not None:
+        conditions.append(CashSession.session_date <= date_to)
+    where_clause = and_(*conditions) if conditions else None
+    if where_clause is not None:
+        query = query.where(where_clause)
+        count_query = count_query.join(CashSession, CashSession.id == CashEvent.cash_session_id).where(where_clause)
+    rows = db.execute(query.order_by(CashSession.session_date.desc(), CashEvent.event_at.desc(), CashEvent.id.desc())).all()
+    total = int(db.execute(count_query).scalar_one())
+    return rows, total
 
 
 def get_open_cash_session_by_date(db: Session, *, session_date: date) -> CashSession | None:

@@ -108,6 +108,10 @@ def _validate_payments(db: Session, payload: SaleCreateRequest) -> dict[str, Pay
     if len(found_methods) != len(method_ids):
         raise SalesValidationError("Hay métodos de pago inexistentes, inactivos o faltantes en catálogo.")
 
+    for method in found_methods:
+        if method.name.strip().upper() == "ENTREGA":
+            raise SalesValidationError("El método de pago ENTREGA no se puede usar en una venta. Use el botón Entrega a bóveda.")
+
     payment_total = sum((to_money(payment.amount) for payment in payload.payments), start=Decimal("0.00"))
     if payment_total != to_money(payload.total_amount):
         raise SalesValidationError("La suma de pagos no coincide con total_amount.")
@@ -121,6 +125,9 @@ def create_sale(
     actor: Profile,
 ) -> SaleDetailRecord:
     _validate_company_active(db, payload.company_id)
+    session = get_open_cash_session_by_date(db, session_date=payload.transaction_date)
+    if session is None:
+        raise SalesConflictError("No se puede registrar la venta porque la caja está cerrada para la fecha indicada.")
     customer_id = payload.customer_id
     if customer_id is None:
         customer_id = _get_generic_customer_id(db)
@@ -131,12 +138,7 @@ def create_sale(
         (to_money(payment.amount) for payment in payload.payments if methods_map[payment.payment_method_id].affects_cash),
         start=Decimal("0.00"),
     )
-    linked_cash_session_id: str | None = None
-    if cash_total > 0:
-        session = get_open_cash_session_by_date(db, session_date=payload.transaction_date)
-        if session is None:
-            raise SalesConflictError("No existe una caja abierta para la fecha de la venta en efectivo.")
-        linked_cash_session_id = session.id
+    linked_cash_session_id: str | None = session.id if cash_total > 0 else None
 
     transaction_id = str(uuid4())
     created_at = _now()

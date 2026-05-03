@@ -8,7 +8,6 @@ venv/
 .env
 .env.*
 *.db
-*.sqlite3
 *.log*
 dist/
 build/

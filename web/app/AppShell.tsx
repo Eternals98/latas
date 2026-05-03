@@ -32,7 +32,7 @@ const MAIN_NAV: NavItem[] = [
   { href: "/salesRegister", label: "Registro de ventas", icon: "point_of_sale" },
   { href: "/transacciones", label: "Transacciones", icon: "receipt_long" },
   { href: "/reportes", label: "Reportes", icon: "analytics" },
-  { href: "/configuracion", label: "Administración", icon: "settings" },
+  { href: "/cash-management", label: "Gestión de caja", icon: "settings" },
   { href: "/clientes", label: "Clientes", icon: "groups" },
 ];
 

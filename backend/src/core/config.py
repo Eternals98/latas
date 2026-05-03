@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     app_env: str = "local"
     app_host: str = "0.0.0.0"
     app_port: int = 8000
-    database_url: str = "sqlite:///./ventas.db"
+    database_url: str = ""
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     supabase_url: str = ""
     supabase_anon_key: str = ""

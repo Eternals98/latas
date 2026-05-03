@@ -40,7 +40,7 @@ Luego aplicar `supabase/schema.sql`.
 APP_ENV=local
 APP_HOST=0.0.0.0
 APP_PORT=8000
-DATABASE_URL=sqlite:///./ventas.db
+DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/latas
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_ANON_KEY=<anon-key-opcional-fallback-auth>
@@ -84,7 +84,7 @@ SUPABASE_ANON_KEY=<anon-key>
 
 ## Runbook base de datos
 
-### Reinicio local SQLite
+### Reinicio local
 
 1. Detener backend.
 2. Borrar `backend/ventas.db`.
@@ -92,7 +92,7 @@ SUPABASE_ANON_KEY=<anon-key>
    - `cd backend`
    - `python -m src.db.init_db`
 
-Nota: `init_db` solo crea tablas en SQLite local.
+Nota: el esquema se gestiona por migraciones SQL versionadas.
 
 ### Reset Supabase (entorno remoto)
 

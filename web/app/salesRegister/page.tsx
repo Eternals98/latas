@@ -6,6 +6,18 @@ type Company = { id: string; name: string };
 type PaymentMethod = { id: string; name: string; affects_cash: boolean };
 type Customer = { id: string; name: string; phone: string | null };
 type PaymentRow = { row_id: string; payment_method_id: string; amount: string };
+type CashSessionStatus = {
+  id: string;
+  session_date: string;
+  status: string;
+  opening_cash: string;
+  closing_cash_expected: string | null;
+  closing_cash_counted: string | null;
+  difference_amount: string | null;
+  cash_balance: string;
+  vault_balance: string;
+  total_operational_balance: string;
+};
 
 type SalePayload = {
   company_id: string;
@@ -85,6 +97,8 @@ export default function RegistroPage() {
   >(null);
 
   const [isLoadingCatalogs, setIsLoadingCatalogs] = useState(false);
+  const [isLoadingCashStatus, setIsLoadingCashStatus] = useState(false);
+  const [cashSessionStatus, setCashSessionStatus] = useState<CashSessionStatus | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{
     type: "success" | "error";
@@ -131,6 +145,39 @@ export default function RegistroPage() {
   }, []);
 
   useEffect(() => {
+    async function loadCashStatus() {
+      setIsLoadingCashStatus(true);
+      try {
+        const response = await fetch(
+          `/api/bff/cash/today?session_date=${encodeURIComponent(transactionDate)}`,
+          { cache: "no-store" },
+        );
+        const body = await response.json();
+        if (!response.ok) {
+          if (response.status === 404) {
+            setCashSessionStatus(null);
+            return;
+          }
+          throw new Error(body.detail || "No fue posible consultar la caja.");
+        }
+        setCashSessionStatus((body as { session: CashSessionStatus }).session);
+      } catch (error) {
+        setCashSessionStatus(null);
+        setMessage({
+          type: "error",
+          text:
+            error instanceof Error
+              ? error.message
+              : "No fue posible consultar la caja.",
+        });
+      } finally {
+        setIsLoadingCashStatus(false);
+      }
+    }
+    loadCashStatus();
+  }, [transactionDate]);
+
+  useEffect(() => {
     const nameQuery = customerSearch.trim();
     const phoneQuery = customerPhone.trim();
     const query = phoneQuery.length >= 3 ? phoneQuery : nameQuery;
@@ -175,8 +222,10 @@ export default function RegistroPage() {
   );
   const differenceAmount = paymentTotal - totalAmountValue;
   const isDifferenceZero = Math.abs(differenceAmount) < 0.001;
+  const isCashOpen = cashSessionStatus?.status === "open";
   const canSubmit =
     !isSubmitting &&
+    isCashOpen &&
     companyId &&
     transactionDate &&
     description.trim().length > 0 &&
@@ -220,7 +269,9 @@ export default function RegistroPage() {
     if (!canSubmit) {
       setMessage({
         type: "error",
-        text: "Completa campos obligatorios y corrige el descuadre de pagos.",
+        text: !isCashOpen
+          ? "No se puede registrar la venta porque la caja está cerrada."
+          : "Completa campos obligatorios y corrige el descuadre de pagos.",
       });
       return;
     }
@@ -481,14 +532,7 @@ export default function RegistroPage() {
 
             {/* PAGOS */}
             <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded border border-[#cbd5e1] bg-white">
-              {/* ALERTA */}
-              <div className="flex items-center gap-2 border-b border-rose-200 bg-rose-200 px-4 py-2 text-xs font-medium leading-4 text-red-800">
-                <span className="material-symbols-outlined text-[16px]">
-                  warning
-                </span>
-                Advertencia: La caja está cerrada actualmente. La asignación de
-                efectivo está bloqueada.
-              </div>
+
 
               {/* HEADER PAGOS */}
               <div className="flex items-center justify-between border-b border-[#cbd5e1] bg-slate-50 p-4">
@@ -590,6 +634,31 @@ export default function RegistroPage() {
 
           {/* RESUMEN + ACCIONES */}
           <aside className="flex min-h-0 flex-col gap-4 overflow-hidden">
+
+            <div
+                className={`border-b border-slate-200 p-4 text-xs ${
+                  isCashOpen ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-bold uppercase tracking-wide">
+                    Estado de caja
+                  </span>
+                  <span className="font-semibold">
+                    {isLoadingCashStatus
+                      ? "Consultando..."
+                      : isCashOpen
+                        ? "Abierta"
+                        : "Cerrada"}
+                  </span>
+                </div>
+                <p className="mt-1 leading-4">
+                  {isCashOpen
+                    ? `Caja abierta para ${transactionDate}.`
+                    : `No se permite registrar ventas para ${transactionDate} porque la caja está cerrada o no existe apertura.`}
+                </p>
+              </div>
+              
             <section className="overflow-hidden rounded border border-[#cbd5e1] bg-white shadow-[0px_2px_4px_0px_rgba(0,0,0,0.05)]">
               <div className="relative border-b border-slate-200 p-6">
                 <div className="absolute left-0 top-0 h-full w-1 bg-slate-300" />
@@ -609,6 +678,8 @@ export default function RegistroPage() {
                   </div>
                 </div>
               </div>
+
+              
 
               <div className="relative border-b border-slate-200 p-6">
                 <div className="absolute left-0 top-0 h-full w-1 bg-slate-200" />
