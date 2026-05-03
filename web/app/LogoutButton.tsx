@@ -1,8 +1,10 @@
 "use client";
 
+import { getCsrfHeaders } from "../lib/csrf-client";
+
 export function LogoutButton() {
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST", headers: getCsrfHeaders() });
     window.location.assign("/login");
   }
 

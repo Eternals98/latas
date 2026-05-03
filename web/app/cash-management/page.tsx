@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { getCsrfHeaders } from "../../lib/csrf-client";
 
 type CashSessionResponse = {
   id: string;
@@ -491,7 +492,7 @@ export default function CashManagementPage() {
         }
         const deliveryResponse = await fetch("/api/bff/cash/delivery", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...getCsrfHeaders() },
           body: JSON.stringify({
             movement_date: sessionDate,
             amount,
@@ -569,7 +570,7 @@ export default function CashManagementPage() {
 
       const response = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getCsrfHeaders() },
         body: JSON.stringify(payload),
       });
       const body = await parseResponseBody(response);
@@ -599,7 +600,7 @@ export default function CashManagementPage() {
       try {
         const response = await fetch("/api/bff/cash/open", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...getCsrfHeaders() },
           body: JSON.stringify({
             session_date: sessionDate,
             opening_cash: Number(session.opening_cash ?? 0),

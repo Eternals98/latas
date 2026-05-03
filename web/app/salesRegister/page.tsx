@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { getCsrfHeaders } from "../../lib/csrf-client";
 
 type Company = { id: string; name: string };
 type PaymentMethod = { id: string; name: string; affects_cash: boolean };
@@ -294,11 +295,11 @@ export default function RegistroPage() {
     setIsSubmitting(true);
     setMessage(null);
     try {
-      const response = await fetch("/api/bff/sales", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+        const response = await fetch("/api/bff/sales", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...getCsrfHeaders() },
+          body: JSON.stringify(payload),
+        });
       const body = await response.json();
       if (!response.ok) {
         throw new Error(body.detail || "No fue posible registrar la venta.");

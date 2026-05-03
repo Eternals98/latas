@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE } from "../../../../lib/auth";
+import { requireCsrf } from "../../../../lib/csrf";
 
 function getBackendUrl(): string {
   const base = process.env.BACKEND_API_URL?.replace(/\/$/, "");
@@ -51,15 +52,24 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
 
 export async function POST(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path } = await context.params;
+  if (!requireCsrf(request)) {
+    return NextResponse.json({ detail: "CSRF inválido." }, { status: 403 });
+  }
   return proxy(request, "POST", path);
 }
 
 export async function PUT(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path } = await context.params;
+  if (!requireCsrf(request)) {
+    return NextResponse.json({ detail: "CSRF inválido." }, { status: 403 });
+  }
   return proxy(request, "PUT", path);
 }
 
 export async function DELETE(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path } = await context.params;
+  if (!requireCsrf(request)) {
+    return NextResponse.json({ detail: "CSRF inválido." }, { status: 403 });
+  }
   return proxy(request, "DELETE", path);
 }

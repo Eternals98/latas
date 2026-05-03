@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useMemo } from "react";
+import { getCsrfHeaders } from "../lib/csrf-client";
 
 /* =========================
    Tipos
@@ -19,7 +20,7 @@ type NavItem = {
 ========================= */
 function logoutAction() {
   return async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch("/api/auth/logout", { method: "POST", headers: getCsrfHeaders() });
     window.location.assign("/login");
   };
 }
@@ -30,9 +31,9 @@ function logoutAction() {
 const MAIN_NAV: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
   { href: "/salesRegister", label: "Registro de ventas", icon: "point_of_sale" },
+  { href: "/cash-management", label: "Gestión de caja", icon: "account_balance_wallet" },
   { href: "/transacciones", label: "Transacciones", icon: "receipt_long" },
   { href: "/reportes", label: "Reportes", icon: "analytics" },
-  { href: "/cash-management", label: "Gestión de caja", icon: "settings" },
   { href: "/clientes", label: "Clientes", icon: "groups" },
 ];
 

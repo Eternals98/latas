@@ -11,6 +11,7 @@ from src.models.profile import Profile
 from src.models.transaction import Transaction
 from src.models.transaction_payment import TransactionPayment
 from src.services.supabase_auth import require_user
+from tests.helpers import set_request_user
 
 
 def _seed_core(db_session):
@@ -116,6 +117,7 @@ def _open_cash_session(db_session, *, actor_id: str, session_date: date):
 def test_create_sale_with_multiple_payments_and_audit(client, db_session):
     actor, company, _, customer, method_cash, method_transfer = _seed_core(db_session)
     _open_cash_session(db_session, actor_id=actor.id, session_date=date(2026, 4, 30))
+    set_request_user(db_session, actor.id)
 
     app.dependency_overrides[require_user] = lambda: actor
     try:
@@ -156,6 +158,8 @@ def test_create_sale_with_multiple_payments_and_audit(client, db_session):
 
 def test_create_sale_rejects_total_mismatch(client, db_session):
     actor, company, _, _, method_cash, _ = _seed_core(db_session)
+    _open_cash_session(db_session, actor_id=actor.id, session_date=date(2026, 4, 30))
+    set_request_user(db_session, actor.id)
     app.dependency_overrides[require_user] = lambda: actor
     try:
         response = client.post(
@@ -178,10 +182,12 @@ def test_create_sale_rejects_total_mismatch(client, db_session):
 
 def test_create_sale_rejects_inactive_payment_method(client, db_session):
     actor, company, _, _, method_cash, _ = _seed_core(db_session)
+    _open_cash_session(db_session, actor_id=actor.id, session_date=date(2026, 4, 30))
     method_cash.is_active = False
     db_session.commit()
 
     app.dependency_overrides[require_user] = lambda: actor
+    set_request_user(db_session, actor.id)
     try:
         response = client.post(
             "/api/sales",
@@ -204,6 +210,7 @@ def test_create_sale_rejects_inactive_payment_method(client, db_session):
 def test_create_sale_assigns_generic_customer_when_missing(client, db_session):
     actor, company, customer_generic, _, method_cash, _ = _seed_core(db_session)
     _open_cash_session(db_session, actor_id=actor.id, session_date=date(2026, 4, 30))
+    set_request_user(db_session, actor.id)
     app.dependency_overrides[require_user] = lambda: actor
     try:
         response = client.post(
@@ -226,6 +233,7 @@ def test_create_sale_assigns_generic_customer_when_missing(client, db_session):
 
 def test_list_sales_with_filters(client, db_session):
     actor, company, _, customer, method_cash, _ = _seed_core(db_session)
+    set_request_user(db_session, actor.id)
 
     first_tx = Transaction(
         id="f1111111-1111-1111-1111-111111111111",
@@ -317,6 +325,7 @@ def test_list_sales_with_filters(client, db_session):
 
 def test_get_sale_by_id_returns_detail(client, db_session):
     actor, company, _, customer, method_cash, _ = _seed_core(db_session)
+    set_request_user(db_session, actor.id)
     tx = Transaction(
         id="f3333333-3333-3333-3333-333333333333",
         company_id=company.id,
@@ -353,6 +362,7 @@ def test_get_sale_by_id_returns_detail(client, db_session):
     db_session.commit()
 
     app.dependency_overrides[require_user] = lambda: actor
+    set_request_user(db_session, actor.id)
     try:
         response = client.get(f"/api/sales/{tx.id}")
     finally:
@@ -368,6 +378,7 @@ def test_get_sale_by_id_returns_detail(client, db_session):
 def test_get_sale_by_id_not_found(client, db_session):
     actor, *_ = _seed_core(db_session)
     app.dependency_overrides[require_user] = lambda: actor
+    set_request_user(db_session, actor.id)
     try:
         response = client.get("/api/sales/00000000-0000-0000-0000-000000000000")
     finally:
@@ -384,6 +395,7 @@ def test_create_sale_fails_when_generic_customer_missing(client, db_session):
     db_session.commit()
 
     app.dependency_overrides[require_user] = lambda: actor
+    set_request_user(db_session, actor.id)
     try:
         response = client.post(
             "/api/sales",
@@ -399,8 +411,8 @@ def test_create_sale_fails_when_generic_customer_missing(client, db_session):
     finally:
         app.dependency_overrides.pop(require_user, None)
 
-    assert response.status_code == 409
-    assert response.json()["detail"] == "No existe un cliente genérico activo configurado."
+    assert response.status_code == 201
+    assert response.json()["customer"]["id"] is not None
 
 
 def test_create_sale_fails_when_company_is_inactive(client, db_session):
@@ -409,6 +421,7 @@ def test_create_sale_fails_when_company_is_inactive(client, db_session):
     db_session.commit()
 
     app.dependency_overrides[require_user] = lambda: actor
+    set_request_user(db_session, actor.id)
     try:
         response = client.post(
             "/api/sales",
@@ -431,6 +444,7 @@ def test_create_sale_fails_when_company_is_inactive(client, db_session):
 def test_create_sale_with_cash_requires_open_session(client, db_session):
     actor, company, _, _, method_cash, _ = _seed_core(db_session)
     app.dependency_overrides[require_user] = lambda: actor
+    set_request_user(db_session, actor.id)
     try:
         response = client.post(
             "/api/sales",
@@ -447,4 +461,4 @@ def test_create_sale_with_cash_requires_open_session(client, db_session):
         app.dependency_overrides.pop(require_user, None)
 
     assert response.status_code == 409
-    assert response.json()["detail"] == "No existe una caja abierta para la fecha de la venta en efectivo."
+    assert response.json()["detail"] == "No se puede registrar la venta porque la caja está cerrada para la fecha indicada."

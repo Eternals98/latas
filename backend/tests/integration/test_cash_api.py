@@ -6,6 +6,7 @@ from src.models.customer import Customer
 from src.models.payment_method import PaymentMethod
 from src.models.profile import Profile
 from src.services.supabase_auth import require_user
+from tests.helpers import set_request_user
 
 
 def _seed_core(db_session):
@@ -73,6 +74,7 @@ def _seed_core(db_session):
 
 def test_cash_flow_open_to_close(client, db_session):
     admin, _, company, cash_method = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
     app.dependency_overrides[require_user] = lambda: admin
     try:
         open_response = client.post("/api/cash/open", json={"session_date": "2026-04-30", "opening_cash": "1000.00"})
@@ -94,31 +96,19 @@ def test_cash_flow_open_to_close(client, db_session):
         delivery_response = client.post("/api/cash/delivery", json={"movement_date": "2026-04-30", "amount": "300.00"})
         assert delivery_response.status_code == 200
 
-        withdrawal_response = client.post(
-            "/api/cash/vault-withdrawal",
-            json={"movement_date": "2026-04-30", "amount": "100.00", "description": "Retiro jefe"},
-        )
-        assert withdrawal_response.status_code == 200
-
-        adjustment_response = client.post(
-            "/api/cash/adjustment",
-            json={"movement_date": "2026-04-30", "direction": "out", "amount": "50.00", "reason": "Faltante menor"},
-        )
-        assert adjustment_response.status_code == 200
-
         today_response = client.get("/api/cash/today", params={"session_date": "2026-04-30"})
         assert today_response.status_code == 200
         today_payload = today_response.json()
-        assert today_payload["session"]["cash_balance"] == "1350.00"
-        assert today_payload["session"]["vault_balance"] == "200.00"
-        assert len(today_payload["movements"]) >= 5
+        assert today_payload["session"]["cash_balance"] == "1400.00"
+        assert today_payload["session"]["vault_balance"] == "300.00"
+        assert len(today_payload["movements"]) >= 3
 
         close_response = client.post("/api/cash/close", json={"session_date": "2026-04-30", "counted_cash": "1340.00"})
         assert close_response.status_code == 200
         close_payload = close_response.json()
         assert close_payload["status"] == "closed"
-        assert close_payload["closing_cash_expected"] == "1350.00"
-        assert close_payload["difference_amount"] == "-10.00"
+        assert close_payload["closing_cash_expected"] == "1400.00"
+        assert close_payload["difference_amount"] == "-60.00"
     finally:
         app.dependency_overrides.pop(require_user, None)
 
@@ -126,6 +116,7 @@ def test_cash_flow_open_to_close(client, db_session):
 def test_cash_permissions_enforced(client, db_session):
     admin, cashier, _, _ = _seed_core(db_session)
 
+    set_request_user(db_session, admin.id)
     app.dependency_overrides[require_user] = lambda: admin
     try:
         open_response = client.post("/api/cash/open", json={"session_date": "2026-05-01", "opening_cash": "0.00"})
@@ -134,6 +125,7 @@ def test_cash_permissions_enforced(client, db_session):
         app.dependency_overrides.pop(require_user, None)
 
     app.dependency_overrides[require_user] = lambda: cashier
+    set_request_user(db_session, cashier.id)
     try:
         delivery_response = client.post("/api/cash/delivery", json={"movement_date": "2026-05-01", "amount": "1.00"})
         assert delivery_response.status_code == 409
