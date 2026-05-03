@@ -83,7 +83,7 @@ export function MultiSelectCombobox({
   selectedIds,
   onChange,
   placeholder = "Seleccionar",
-  chipClassName = "border-blue-200 bg-blue-50 text-[#003D9B]",
+  chipClassName = "border-[#D6DDF5] bg-[#F7F9FF] text-[#003D9B]",
 }: Props) {
   const instanceId = useId();
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -198,9 +198,9 @@ export function MultiSelectCombobox({
   return (
     <div ref={rootRef} className="relative w-full overflow-visible font-sans">
       <div
-        className={`rounded-md border bg-white shadow-[0px_0px_15px_rgba(0,0,0,0.09)] transition-all duration-200 ease-out ${
+        className={`rounded-[4px] border bg-[#F7F9FF] shadow-[0px_0px_15px_rgba(0,0,0,0.09)] transition-all duration-200 ease-out ${
           open
-            ? "border-blue-300 ring-1 ring-blue-200"
+            ? "border-[#B8C7F0] ring-1 ring-[#D6DDF5]"
             : "border-slate-200 hover:border-slate-300"
         }`}
       >
@@ -225,7 +225,7 @@ export function MultiSelectCombobox({
                 {visibleSelectedOptions.map((option) => (
                   <span
                     key={option.id}
-                    className={`inline-flex h-5 max-w-full shrink-0 items-center gap-1 rounded-full border px-2 text-[11px] font-medium leading-none tracking-[-0.01em] ${chipClassName}`}
+                    className={`inline-flex h-5 max-w-full shrink-0 items-center gap-1 rounded-full border px-2 text-[14px] font-medium leading-none tracking-[-0.01em] ${chipClassName}`}
                   >
                     <span className="max-w-[150px] truncate">{option.name}</span>
 
@@ -245,13 +245,13 @@ export function MultiSelectCombobox({
                 ))}
 
                 {hiddenSelectedCount > 0 && (
-                  <span className="inline-flex h-5 shrink-0 items-center rounded-full border border-slate-200 bg-slate-50 px-2 text-[11px] font-medium leading-none text-slate-500">
+                  <span className="inline-flex h-5 shrink-0 items-center rounded-full border border-slate-200 bg-[#F7F9FF] px-2 text-[14px] font-medium leading-none text-slate-500">
                     +{hiddenSelectedCount}
                   </span>
                 )}
               </>
             ) : (
-              <span className="truncate text-[12px] font-medium leading-none tracking-[-0.01em] text-slate-400">
+              <span className="truncate text-[14px] font-medium leading-none tracking-[-0.01em] text-slate-400">
                 {placeholder}
               </span>
             )}
@@ -295,7 +295,7 @@ export function MultiSelectCombobox({
                   }}
                   className={`relative flex h-8 w-full select-none items-center rounded-lg pl-7 pr-9 text-left text-[13px] font-medium leading-none tracking-[-0.01em] outline-none transition-all duration-150 ease-out ${
                     selected
-                      ? "bg-blue-50 text-[#003D9B] ring-1 ring-blue-200"
+                      ? "bg-[#F7F9FF] text-[#003D9B] ring-1 ring-[#D6DDF5]"
                       : "text-slate-700 hover:scale-[1.01] hover:bg-slate-100 hover:text-slate-950 focus-visible:bg-slate-100 active:scale-[0.99] active:bg-slate-200"
                   }`}
                 >
@@ -303,7 +303,7 @@ export function MultiSelectCombobox({
 
                   {selected && (
                     <span className="absolute right-3 top-1/2 flex h-4 w-4 -translate-y-1/2 items-center justify-center text-[#003D9B]">
-                      <FeatherCheck className="h-3.5 w-3.5" />
+                      
                     </span>
                   )}
                 </button>

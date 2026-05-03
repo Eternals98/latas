@@ -8,10 +8,12 @@ from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import Session
 
 from src.api.schemas.sales import (
+    SaleCancelRequest,
     SaleCreateRequest,
     SaleDetailRecord,
     SaleListFilters,
     SalePaymentResponse,
+    SaleUpdateRequest,
     to_money,
 )
 from src.models.audit_log import AuditLog
@@ -34,6 +36,10 @@ class SalesConflictError(Exception):
 
 
 class SalesNotFoundError(Exception):
+    pass
+
+
+class SalesPermissionError(Exception):
     pass
 
 
@@ -371,3 +377,185 @@ def get_sale_by_id(db: Session, *, sale_id: str) -> SaleDetailRecord:
         created_at=row.created_at,
         payments=payments_map.get(row.id, []),
     )
+
+
+def _validate_admin_can_mutate(actor: Profile, transaction: Transaction) -> None:
+    if actor.role != "admin":
+        raise SalesPermissionError("Solo un administrador puede editar o anular transacciones.")
+    if transaction.status.lower() not in {"confirmed", "confirmada"}:
+        raise SalesValidationError("Solo se pueden mutar transacciones activas.")
+
+
+def _load_payment_methods(db: Session, payment_method_ids: list[str]) -> dict[str, PaymentMethod]:
+    found_methods = (
+        db.execute(
+            select(PaymentMethod).where(
+                PaymentMethod.id.in_(payment_method_ids),
+                PaymentMethod.is_active.is_(True),
+            )
+        )
+        .scalars()
+        .all()
+    )
+    if len(found_methods) != len(payment_method_ids):
+        raise SalesValidationError("Hay métodos de pago inexistentes, inactivos o faltantes en catálogo.")
+    return {method.id: method for method in found_methods}
+
+
+def _load_sale_transaction(db: Session, sale_id: str) -> Transaction:
+    transaction = db.get(Transaction, sale_id)
+    if transaction is None or transaction.transaction_type != "sale":
+        raise SalesNotFoundError("Venta no encontrada.")
+    return transaction
+
+
+def update_sale_with_payments(
+    db: Session,
+    *,
+    sale_id: str,
+    payload: SaleUpdateRequest,
+    actor: Profile,
+) -> SaleDetailRecord:
+    transaction = _load_sale_transaction(db, sale_id)
+    _validate_admin_can_mutate(actor, transaction)
+    _validate_company_active(db, payload.company_id)
+
+    methods_map = _load_payment_methods(db, [item.payment_method_id for item in payload.payments])
+
+    session = get_open_cash_session_by_date(db, session_date=payload.transaction_date)
+    if session is None:
+        raise SalesConflictError("No se puede editar la venta porque la caja está cerrada para la fecha indicada.")
+
+    payment_total = sum((to_money(item.amount) for item in payload.payments), start=Decimal("0.00"))
+    if payment_total <= Decimal("0.00"):
+        raise SalesValidationError("La venta debe conservar un total mayor a cero.")
+
+    cash_total = sum(
+        (to_money(item.amount) for item in payload.payments if methods_map[item.payment_method_id].affects_cash),
+        start=Decimal("0.00"),
+    )
+
+    transaction.company_id = payload.company_id
+    transaction.transaction_date = payload.transaction_date
+    transaction.description = payload.description
+    transaction.updated_by = actor.id
+    transaction.updated_at = _now()
+    transaction.cash_session_id = session.id if cash_total > 0 else None
+    transaction.total_amount = payment_total
+    transaction.status = "confirmed"
+
+    old_payments = (
+        db.execute(
+            select(TransactionPayment).where(TransactionPayment.transaction_id == sale_id)
+        )
+        .scalars()
+        .all()
+    )
+    for payment in old_payments:
+        db.delete(payment)
+    db.flush()
+
+    created_at = _now()
+    for item in payload.payments:
+        db.add(
+            TransactionPayment(
+                id=str(uuid4()),
+                transaction_id=sale_id,
+                payment_method_id=item.payment_method_id,
+                amount=to_money(item.amount),
+                created_at=created_at,
+            )
+        )
+
+    db.add(
+        AuditLog(
+            id=str(uuid4()),
+            entity_name="transactions",
+            entity_id=sale_id,
+            action="UPDATE_SALE",
+            old_data=None,
+            new_data={
+                "transaction_id": sale_id,
+                "company_id": payload.company_id,
+                "description": payload.description,
+                "transaction_date": payload.transaction_date.isoformat(),
+                "payment_count": len(payload.payments),
+                "total_amount": f"{payment_total:.2f}",
+            },
+            reason=None,
+            created_by=actor.id,
+            created_at=created_at,
+        )
+    )
+    db.commit()
+    return get_sale_by_id(db, sale_id=sale_id)
+
+
+def cancel_sale(
+    db: Session,
+    *,
+    sale_id: str,
+    payload: SaleCancelRequest,
+    actor: Profile,
+) -> SaleDetailRecord:
+    transaction = _load_sale_transaction(db, sale_id)
+    _validate_admin_can_mutate(actor, transaction)
+    opened_session = get_open_cash_session_by_date(db, session_date=transaction.transaction_date)
+    if opened_session is None:
+        raise SalesConflictError("No se puede anular la venta porque la caja está cerrada.")
+
+    payment_rows = (
+        db.execute(
+            select(TransactionPayment.amount, PaymentMethod.affects_cash)
+            .join(PaymentMethod, PaymentMethod.id == TransactionPayment.payment_method_id)
+            .where(TransactionPayment.transaction_id == sale_id)
+        )
+        .all()
+    )
+    cash_amount = sum(
+        (to_money(payment.amount) for payment in payment_rows if payment.affects_cash),
+        start=Decimal("0.00"),
+    )
+
+    transaction.status = "cancelled"
+    transaction.cancelled_by = actor.id
+    transaction.cancelled_at = _now()
+    transaction.cancellation_reason = payload.reason
+    transaction.updated_by = actor.id
+    transaction.updated_at = _now()
+
+    if payload.impact_cash and cash_amount > 0:
+        db.add(
+            CashMovement(
+                id=str(uuid4()),
+                transaction_id=sale_id,
+                cash_session_id=opened_session.id,
+                movement_date=transaction.transaction_date,
+                movement_type="cash_out",
+                amount=to_money(cash_amount),
+                description=f"Anulación de venta {transaction.document_number or sale_id}",
+                admin_reason=payload.reason,
+                created_by=actor.id,
+                created_at=_now(),
+            )
+        )
+
+    db.add(
+        AuditLog(
+            id=str(uuid4()),
+            entity_name="transactions",
+            entity_id=sale_id,
+            action="CANCEL_SALE",
+            old_data=None,
+            new_data={
+                "transaction_id": sale_id,
+                "reason": payload.reason,
+                "impact_cash": payload.impact_cash,
+            },
+            reason=payload.reason,
+            created_by=actor.id,
+            created_at=_now(),
+        )
+    )
+    db.commit()
+    return get_sale_by_id(db, sale_id=sale_id)

@@ -83,6 +83,52 @@ class SaleCreateRequest(BaseModel):
         return cleaned or None
 
 
+class SaleUpdateRequest(BaseModel):
+    description: str = Field(min_length=1)
+    transaction_date: date
+    company_id: str = Field(min_length=1)
+    payments: list[SalePaymentCreateRequest] = Field(min_length=1)
+
+    @field_validator("description")
+    @classmethod
+    def validate_description(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("description is required")
+        return cleaned
+
+    @field_validator("company_id")
+    @classmethod
+    def validate_company_id(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("company_id is required")
+        return cleaned
+
+    @field_validator("payments")
+    @classmethod
+    def validate_payments(cls, value: list[SalePaymentCreateRequest]) -> list[SalePaymentCreateRequest]:
+        if not value:
+            raise ValueError("payments is required")
+        method_ids = [item.payment_method_id for item in value]
+        if len(set(method_ids)) != len(method_ids):
+            raise ValueError("No se permiten métodos de pago repetidos en la misma venta.")
+        return value
+
+
+class SaleCancelRequest(BaseModel):
+    reason: str = Field(min_length=1)
+    impact_cash: bool = False
+
+    @field_validator("reason")
+    @classmethod
+    def validate_reason(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("reason is required")
+        return cleaned
+
+
 class SalePaymentResponse(BaseModel):
     id: str
     payment_method_id: str

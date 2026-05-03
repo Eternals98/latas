@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { getCsrfHeaders } from "../../lib/csrf-client";
 import { MultiSelectCombobox } from "../../components/combobox-multiselect";
 
 type SalePayment = {
@@ -32,6 +33,9 @@ type SaleListResponse = {
 
 type Company = { id: string; name: string };
 type PaymentMethod = { id: string; name: string };
+type EditPaymentLine = { payment_method_id: string; amount: string };
+type SessionInfo = { authenticated: boolean; role?: "admin" | "cashier" };
+type CashTodayResponse = { session?: { status?: string } };
 
 const COP_FORMATTER = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -64,6 +68,18 @@ function truncateDescription(description: string): string {
   return description.replace(/\s+/g, " ").trim();
 }
 
+function formatTransactionReference(reference: string | null | undefined): string {
+  if (!reference) return "Selecciona una transacción";
+  const trimmed = reference.trim();
+  if (!trimmed) return "Selecciona una transacción";
+  return trimmed.toUpperCase().split("-")[0] ?? trimmed.toUpperCase();
+}
+
+function isCashOpen(status?: string | null): boolean {
+  if (!status) return false;
+  return ["open", "opened", "open_session", "abierta", "active"].includes(status.toLowerCase());
+}
+
 function paymentMethodClass(name: string): string {
   const normalized = name.trim().toLowerCase();
   const knownStyles: Record<string, string> = {
@@ -83,6 +99,30 @@ function paymentMethodClass(name: string): string {
   return knownStyles[normalized] ?? PAYMENT_METHOD_STYLES[normalized.length % PAYMENT_METHOD_STYLES.length];
 }
 
+function saleStatusLabel(status: string): string {
+  const normalized = status.trim().toLowerCase();
+  const map: Record<string, string> = {
+    confirmed: "CONFIRMADA",
+    confirmada: "CONFIRMADA",
+    cancelled: "ANULADA",
+    anulada: "ANULADA",
+    canceled: "ANULADA",
+    cancelada: "ANULADA",
+  };
+  return map[normalized] ?? normalized.toUpperCase();
+}
+
+function saleStatusClass(status: string): string {
+  const normalized = status.trim().toLowerCase();
+  if (["anulada", "cancelada", "canceled", "cancelled"].includes(normalized)) {
+    return "bg-slate-100 text-slate-600 ring-slate-200";
+  }
+  if (["confirmed", "confirmada"].includes(normalized)) {
+    return "bg-emerald-100 text-emerald-700 ring-emerald-200";
+  }
+  return "bg-slate-100 text-slate-700 ring-slate-200";
+}
+
 export default function TransactionsPage() {
   const [dateFrom, setDateFrom] = useState(todayISO());
   const [dateTo, setDateTo] = useState(todayISO());
@@ -93,11 +133,22 @@ export default function TransactionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [role, setRole] = useState<"admin" | "cashier" | null>(null);
+  const [cashIsOpen, setCashIsOpen] = useState(false);
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [paymentMethodIds, setPaymentMethodIds] = useState<string[]>([]);
   const [selectedSaleId, setSelectedSaleId] = useState<string | null>(null);
   const [detail, setDetail] = useState<SaleItem | null>(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editTransactionDate, setEditTransactionDate] = useState("");
+  const [editCompanyId, setEditCompanyId] = useState("");
+  const [editPayments, setEditPayments] = useState<EditPaymentLine[]>([]);
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [cancelSubmitting, setCancelSubmitting] = useState(false);
 
   async function loadLookupData() {
     const [companyResponse, paymentMethodResponse] = await Promise.all([
@@ -110,6 +161,30 @@ export default function TransactionsPage() {
     ]);
     if (companyResponse.ok) setCompanies(companyBody as Company[]);
     if (paymentMethodResponse.ok) setPaymentMethods(paymentMethodBody as PaymentMethod[]);
+  }
+
+  async function loadSessionInfo() {
+    try {
+      const response = await fetch("/api/auth/session", { cache: "no-store" });
+      const body = (await response.json()) as SessionInfo;
+      if (response.ok && body.authenticated) setRole(body.role ?? null);
+    } catch {
+      setRole(null);
+    }
+  }
+
+  async function loadCashState() {
+    try {
+      const response = await fetch(
+        `/api/bff/cash/today?session_date=${encodeURIComponent(dateFrom)}`,
+        { cache: "no-store" },
+      );
+      if (!response.ok) return;
+      const body = (await response.json()) as CashTodayResponse;
+      setCashIsOpen(isCashOpen(body.session?.status ?? null));
+    } catch {
+      setCashIsOpen(false);
+    }
   }
 
   async function loadSales() {
@@ -144,8 +219,10 @@ export default function TransactionsPage() {
   }
 
   useEffect(() => {
+    loadSessionInfo().catch(() => undefined);
     loadLookupData().catch(() => undefined);
     loadSales();
+    loadCashState();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -156,6 +233,10 @@ export default function TransactionsPage() {
 
     return () => window.clearTimeout(handle);
   }, [dateFrom, dateTo, search, companyIds, paymentMethodIds]);
+
+  useEffect(() => {
+    loadCashState();
+  }, [dateFrom]);
 
   useEffect(() => {
     if (!selectedSaleId) {
@@ -201,268 +282,592 @@ export default function TransactionsPage() {
     setter(values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value]);
   }
 
+  const selectedSale = items.find((item) => item.id === selectedSaleId) ?? null;
+  const visibleDetail = detail ?? selectedSale;
+  const detailDocumentNumber = formatTransactionReference(
+    detail?.document_number ?? selectedSale?.document_number ?? selectedSaleId,
+  );
+  const canMutate = role === "admin" && cashIsOpen;
+
+  useEffect(() => {
+    if (!selectedSale) return;
+    setEditDescription(selectedSale.description);
+    setEditTransactionDate(selectedSale.transaction_date.slice(0, 16));
+    setEditCompanyId(selectedSale.company.id);
+    setEditPayments(
+      selectedSale.payments.map((payment) => ({
+        payment_method_id: payment.payment_method_id,
+        amount: payment.amount,
+      })),
+    );
+  }, [selectedSale]);
+
+  async function submitCancel() {
+    if (!selectedSaleId || !cancelReason.trim() || !canMutate) return;
+    setCancelSubmitting(true);
+    try {
+      const response = await fetch(`/api/bff/sales/${selectedSaleId}`, {
+        method: "DELETE",
+        headers: {
+          ...getCsrfHeaders(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          reason: cancelReason.trim(),
+          impact_cash: selectedSale?.payments.some((payment) =>
+            payment.payment_method_name.trim().toLowerCase().includes("efectivo"),
+          ),
+        }),
+      });
+      if (!response.ok) {
+        const fallback = await response.text().catch(() => "");
+        let detail = "No fue posible anular la transacción.";
+        try {
+          const parsed = fallback ? (JSON.parse(fallback) as { detail?: string }) : null;
+          if (parsed?.detail) detail = parsed.detail;
+        } catch {
+          if (fallback.trim()) detail = fallback.trim();
+        }
+        setError(detail);
+        return;
+      }
+      setShowCancelModal(false);
+      setCancelReason("");
+      setSelectedSaleId(null);
+      loadSales();
+      setError(null);
+    } finally {
+      setCancelSubmitting(false);
+    }
+  }
+
+  async function submitEdit() {
+    if (!selectedSaleId || !canMutate) return;
+    setEditSubmitting(true);
+    try {
+      const response = await fetch(`/api/bff/sales/${selectedSaleId}`, {
+        method: "PUT",
+        headers: {
+          ...getCsrfHeaders(),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          description: editDescription,
+          transaction_date: editTransactionDate,
+          company_id: editCompanyId,
+          payments: editPayments,
+        }),
+      });
+      if (!response.ok) {
+        const fallback = await response.text().catch(() => "");
+        let detail = "No fue posible editar la transacción.";
+        try {
+          const parsed = fallback ? (JSON.parse(fallback) as { detail?: string }) : null;
+          if (parsed?.detail) detail = parsed.detail;
+        } catch {
+          if (fallback.trim()) detail = fallback.trim();
+        }
+        setError(detail);
+        return;
+      }
+      setShowEditModal(false);
+      loadSales();
+      setError(null);
+    } finally {
+      setEditSubmitting(false);
+    }
+  }
+
   return (
-    <main className="min-h-[calc(100vh-56px)] bg-[#f4f6fb] px-3 py-3 text-slate-900">
-      <div className="mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-[1160px] flex-col gap-2">
-        <section className="rounded-xl border border-slate-300 bg-white px-3 py-2 shadow-[0_1px_0_rgba(15,23,42,0.02)]">
-          <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-2">
-            <h1 className="text-[24px] font-semibold leading-none tracking-tight text-slate-900">
-              Transacciones
-            </h1>
-            <div className="flex gap-2 text-xs text-slate-600">
-              <span className="rounded-full border border-slate-300 bg-white px-3 py-1">
-                {total} registros
-              </span>
-              <span className="rounded-full border border-slate-300 bg-white px-3 py-1">
-                {COP_FORMATTER.format(totalAmount)}
-              </span>
-            </div>
-          </div>
-
-          <div className="pt-3">
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-[156px_156px_1fr_auto]">
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="h-8 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-400"
-              />
-              <input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="h-8 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-400"
-              />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar por referencia, cliente o teléfono"
-                className="h-8 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-400"
-              />
+    <main className="min-h-[calc(100vh-56px)] bg-[#F7F9FF] px-3 py-2 text-slate-900">
+      <div className="mx-auto grid min-h-[calc(100vh-64px)] w-full max-w-[1400px] gap-3 xl:grid-cols-[minmax(0,1fr)_292px]">
+        <div className="flex min-w-0 flex-col gap-3">
+          <section className="rounded-[4px] border border-[#D6DDF5] bg-white px-3 py-2 shadow-[0_1px_0_rgba(15,23,42,0.02)]">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-200 pb-4 pt-4 ml-2">
+              <h1 className="text-[24px] font-semibold leading-none tracking-tight text-slate-900">
+                Transacciones
+              </h1>
             </div>
 
-            <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-[1fr_1fr]">
-              <MultiSelectCombobox
-                label="Empresas"
-                options={companies}
-                selectedIds={companyIds}
-                onChange={setCompanyIds}
-                placeholder="Todas las empresas"
-              />
-              <MultiSelectCombobox
-                label="Métodos de pago"
-                options={paymentMethods}
-                selectedIds={paymentMethodIds}
-                onChange={setPaymentMethodIds}
-                placeholder="Todos los métodos"
-                chipClassName="border-slate-300 bg-slate-100 text-slate-700"
-                
-              />
-            </div>
-          </div>
-        </section>
+            <div className="pt-4">
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-[156px_156px_1fr_auto]">
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="h-8 rounded-[4px] border border-[#D6DDF5] bg-[#F7F9FF] px-3 text-sm outline-none focus:border-[#B8C7F0]"
+                />
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="h-8 rounded-[4px] border border-[#D6DDF5] bg-[#F7F9FF] px-3 text-sm outline-none focus:border-[#B8C7F0]"
+                />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Buscar por referencia, cliente o teléfono"
+                  className="h-8 rounded-[4px] border border-[#D6DDF5] bg-[#F7F9FF] px-3 text-sm outline-none focus:border-[#B8C7F0]"
+                />
+              </div>
 
-        <section className="rounded-xl border border-slate-300 bg-white shadow-sm">
-          <div className="border-b border-slate-200 px-4 py-3 text-sm">
-            <div className="flex items-center justify-between gap-3">
-              <span className="text-slate-600">
-                {isLoading ? "Cargando..." : `${items.length} transacciones visibles`}
-              </span>
-              {error && <span className="text-rose-700">{error}</span>}
+              <div className="mt-4 mb-4 grid grid-cols-1 gap-2 md:grid-cols-[1fr_1fr]">
+                <MultiSelectCombobox
+                  label="Empresas"
+                  options={companies}
+                  selectedIds={companyIds}
+                  onChange={setCompanyIds}
+                  placeholder="Todas las empresas"
+                  chipClassName=" rounded-[4px]border-[#D6DDF5] bg-[#F7F9FF] text-[#003D9B]"
+                />
+                <MultiSelectCombobox
+                  label="Métodos de pago"
+                  options={paymentMethods}
+                  selectedIds={paymentMethodIds}
+                  onChange={setPaymentMethodIds}
+                  placeholder="Todos los métodos"
+                  chipClassName="border-[#D6DDF5] bg-[#F7F9FF] text-[#003D9B]"
+                />
+              </div>
             </div>
-            <div className="mt-2 flex gap-2 text-xs font-semibold text-slate-700">
-              <span className="rounded-full bg-slate-100 px-3 py-1">
-                Total listado: {COP_FORMATTER.format(totalAmount)}
-              </span>
-            </div>
-          </div>
+          </section>
 
-          <div className="overflow-auto">
-            <table className="w-full min-w-[980px] border-collapse text-sm">
-              <thead className="bg-slate-50 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-4 py-3">Fecha</th>
-                  <th className="px-4 py-3">Empresa</th>
-                  <th className="px-4 py-3">Cliente</th>
-                  <th className="px-4 py-3">Referencia</th>
-                  <th className="px-4 py-3">Descripción</th>
-                  <th className="px-4 py-3">Método de pago</th>
-                  <th className="px-4 py-3 text-right">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {!isLoading && items.length === 0 && (
+          <section className="rounded-xl border border-[#D6DDF5] bg-white shadow-sm">
+            <div className="border-b border-slate-200 px-4 py-3 text-sm">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-slate-600">
+                  {isLoading ? "Cargando..." : `${items.length} transacciones visibles`}
+                </span>
+                {error && <span className="text-rose-700">{error}</span>}
+              </div>
+              <div className="mt-2 flex gap-2 text-xs font-semibold text-slate-700">
+                <span className="rounded-full bg-slate-100 px-3 py-1">
+                  Total listado: {COP_FORMATTER.format(totalAmount)}
+                </span>
+              </div>
+            </div>
+
+            <div className="overflow-auto">
+              <table className="w-full min-w-[980px] border-collapse text-sm">
+                <thead className="bg-[#F7F9FF] text-left text-xs font-bold uppercase tracking-wide text-slate-500">
                   <tr>
-                    <td colSpan={7} className="px-4 py-10 text-center text-slate-500">
-                      No hay transacciones para estos filtros.
-                    </td>
+                    <th className="px-4 py-3">Fecha</th>
+                    <th className="px-4 py-3">Empresa</th>
+                    <th className="px-4 py-3">Cliente</th>
+                    <th className="px-4 py-3">Referencia</th>
+                    <th className="px-4 py-3">Descripción</th>
+                    <th className="px-4 py-3">Método de pago</th>
+                    <th className="px-4 py-3">Estado</th>
+                    <th className="px-4 py-3 text-right">Total</th>
                   </tr>
-                )}
-                {!isLoading &&
-                  items.map((item) => {
-                    const paymentLabel =
-                      item.payments.length === 0
-                        ? "-"
-                        : item.payments.length === 1
-                          ? item.payments[0]?.payment_method_name
-                          : "MULTIPLES";
-                    const paymentStyle =
-                      item.payments.length === 1
-                        ? paymentMethodClass(item.payments[0]?.payment_method_name ?? "")
-                        : "bg-slate-100 text-slate-700 ring-slate-200";
+                </thead>
+                <tbody>
+                  {!isLoading && items.length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="px-4 py-10 text-center text-slate-500">
+                        No hay transacciones para estos filtros.
+                      </td>
+                    </tr>
+                  )}
+                  {!isLoading &&
+                    items.map((item) => {
+                      const paymentLabel =
+                        item.payments.length === 0
+                          ? "-"
+                          : item.payments.length === 1
+                            ? item.payments[0]?.payment_method_name
+                            : "MULTIPLES";
+                      const paymentStyle =
+                        item.payments.length === 1
+                          ? paymentMethodClass(item.payments[0]?.payment_method_name ?? "")
+                          : "bg-slate-100 text-slate-700 ring-slate-200";
+                      const isAnnulled = ["anulada", "cancelada", "canceled", "cancelled"].includes(
+                        item.status.trim().toLowerCase(),
+                      );
+                      return (
+                        <tr
+                          key={item.id}
+                          onClick={() => setSelectedSaleId(item.id)}
+                          className={`group cursor-pointer border-t border-slate-100 transition hover:bg-[#F7F9FF] ${
+                            selectedSaleId === item.id ? "bg-[#F7F9FF]" : ""
+                          }`}
+                        >
+                          <td className="relative px-4 py-3">
+                            <span
+                              className={`absolute left-0 top-0 h-full w-1 ${
+                                selectedSaleId === item.id
+                                  ? "bg-[#003D9B]"
+                                  : "bg-transparent group-hover:bg-[#B8C7F0]"
+                              }`}
+                            />
+                            {formatDate(item.transaction_date)}
+                          </td>
+                          <td className="px-4 py-3">{item.company.name}</td>
+                          <td className="px-4 py-3">
+                            <div
+                              className="font-medium text-slate-900 transition group-hover:text-[#003D9B]"
+                            >
+                              {item.customer?.name ?? "Cliente genérico"}
+                            </div>
+                            <div className="text-xs text-slate-500">
+                              {item.customer?.phone ?? "Sin teléfono"}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">{item.document_number ?? "-"}</td>
+                          <td className="px-4 py-3">
+                            <div
+                              title={item.description}
+                              className="overflow-hidden text-ellipsis capitalize"
+                              style={{
+                                display: "-webkit-box",
+                                WebkitBoxOrient: "vertical",
+                                WebkitLineClamp: 2,
+                              }}
+                              >
+                              {truncateDescription(item.description)}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${paymentStyle} uppercase`}
+                            >
+                              {paymentLabel}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${saleStatusClass(
+                                item.status,
+                              )}`}
+                            >
+                              {saleStatusLabel(item.status)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-right font-semibold">
+                            {COP_FORMATTER.format(Number(item.total_amount || "0"))}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
 
-                    return (
-                      <tr
-                        key={item.id}
-                        onDoubleClick={() => setSelectedSaleId(item.id)}
-                        className="cursor-default border-t border-slate-100 transition hover:bg-slate-50/80"
-                      >
-                        <td className="px-4 py-3">{formatDate(item.transaction_date)}</td>
-                        <td className="px-4 py-3">{item.company.name}</td>
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-slate-900">
-                            {item.customer?.name ?? "Cliente genérico"}
-                          </div>
-                          <div className="text-xs text-slate-500">
-                            {item.customer?.phone ?? "Sin teléfono"}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">{item.document_number ?? "-"}</td>
-                        <td className="px-4 py-3">
-                          <div
-                            title={item.description}
-                            className="overflow-hidden text-ellipsis capitalize"
-                            style={{
-                              display: "-webkit-box",
-                              WebkitBoxOrient: "vertical",
-                              WebkitLineClamp: 2,
-                            }}
-                          >
-                            {truncateDescription(item.description)}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${paymentStyle} uppercase`}
-                          >
-                            {paymentLabel}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-right font-semibold">
-                          {COP_FORMATTER.format(Number(item.total_amount || "0"))}
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
+        <aside className="overflow-hidden rounded-xl border border-[#D6DDF5] bg-white shadow-[0_1px_0_rgba(15,23,42,0.02)] xl:sticky xl:top-2 xl:self-stretch">
+          <div className="flex h-full flex-col">
+            <div className="border-b border-[#D6DDF5] px-4 py-3">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[12px] font-semibold uppercase tracking-[0.038em] text-slate-500">
+                    Detalle de transacción
+                  </p>
+                  <h2 className="mt-1 text-2xl font-semibold text-slate-900">
+                    {detailDocumentNumber}
+                  </h2>
+                </div>
+                {selectedSaleId && (
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSaleId(null)}
+                    className="rounded-md px-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                    aria-label="Limpiar selección"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="flex-1 overflow-auto p-4">
+                {isDetailLoading && <p className="text-sm text-slate-600">Cargando detalle...</p>}
+                {!isDetailLoading && visibleDetail ? (
+                  <div className="space-y-4">
+                    <div className="rounded-[4px] border border-[#D6DDF5] bg-[#F7F9FF] p-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Monto total
+                      </p>
+                      <p className="mt-1 text-[32px] font-bold leading-tight text-slate-800">
+                        {COP_FORMATTER.format(Number(visibleDetail.total_amount || "0"))}
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 border-b border-[#E6EBFA] pb-4 text-sm">
+                      <div className="flex justify-between gap-4 border-b border-[#E6EBFA] pb-2">
+                        <span className="text-slate-500">Fecha</span>
+                        <span className="text-right font-medium text-slate-900">
+                          {visibleDetail.transaction_date.slice(0, 10)}{" "}
+                          {visibleDetail.transaction_date.slice(11, 16)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-4 border-b border-[#E6EBFA] pb-2">
+                        <span className="text-slate-500">Empresa</span>
+                        <span className="text-right font-medium text-slate-900">
+                          {visibleDetail.company.name}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-4 border-b border-[#E6EBFA] pb-2">
+                        <span className="text-slate-500">Cliente</span>
+                        <span className="max-w-[140px] text-right font-medium text-slate-900">
+                          {visibleDetail.customer?.name ?? "Cliente genérico"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="text-slate-500">Descripción</span>
+                        <span className="text-right font-medium text-slate-900">
+                          {visibleDetail.description}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Métodos de pago
+                      </p>
+                      <div className="overflow-hidden rounded-[4px] border border-[#D6DDF5]">
+                        <table className="w-full border-collapse text-sm">
+                          <thead className="bg-[#F7F9FF] text-left text-[11px] uppercase tracking-wide text-slate-500">
+                            <tr>
+                              <th className="px-3 py-2 font-semibold">Tipo</th>
+                              <th className="px-3 py-2 font-semibold text-right">Valor</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#E6EBFA]">
+                            {visibleDetail.payments.map((payment) => (
+                              <tr key={payment.id}>
+                                <td className="px-3 py-2">
+                                  <span
+                                    className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${paymentMethodClass(
+                                      payment.payment_method_name,
+                                    )}`}
+                                  >
+                                    {payment.payment_method_name}
+                                  </span>
+                                </td>
+                                <td className="px-3 py-2 text-right font-medium text-slate-900">
+                                  {COP_FORMATTER.format(Number(payment.amount || "0"))}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-dashed border-[#D6DDF5] bg-[#F7F9FF] p-4 text-sm text-slate-600">
+                    Selecciona una fila para ver el detalle en este panel.
+                  </div>
+                )}
+              </div>
+
+              <div className="border-t border-[#D6DDF5] p-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowEditModal(true)}
+                    disabled={!canMutate || !selectedSale}
+                    className="h-8 rounded-md border border-slate-300 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowCancelModal(true)}
+                    disabled={!canMutate || !selectedSale}
+                    className="h-8 rounded-md border border-red-300 bg-white text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Anular
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
-        </section>
+        </aside>
       </div>
 
-      {selectedSaleId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 py-6">
-          <div className="max-h-[92vh] w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl">
-            <div className="flex items-start justify-between border-b border-slate-200 px-5 py-4">
+      {showCancelModal && selectedSale && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4">
+          <div className="w-full max-w-xl rounded-2xl bg-white p-5 shadow-2xl">
+            <div className="flex items-start justify-between border-b border-slate-200 pb-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                  Detalle de transacción
-                </p>
-                <h2 className="text-lg font-black text-slate-900">
-                  {detail?.document_number ?? "Sin referencia"}
-                </h2>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Anular transacción</p>
+                <h3 className="text-xl font-semibold text-slate-900">{detailDocumentNumber}</h3>
               </div>
               <button
                 type="button"
-                onClick={() => setSelectedSaleId(null)}
-                className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                onClick={() => setShowCancelModal(false)}
+                className="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100"
               >
-                Cerrar
+                ×
               </button>
             </div>
+            <div className="mt-4 space-y-3">
+              <p className="text-sm text-slate-600">
+                La anulación requiere motivo para auditoría. Si esta transacción tiene efectivo,
+                el movimiento debe restar del flujo de caja.
+              </p>
+              <label className="block text-sm text-slate-700">
+                Razón de anulación
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  rows={4}
+                  className="mt-1 w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 outline-none focus:border-[#003D9B]"
+                />
+              </label>
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelModal(false)}
+                  className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={submitCancel}
+                  disabled={cancelSubmitting || !cancelReason.trim()}
+                  className="rounded-md bg-[#003D9B] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {cancelSubmitting ? "Anulando..." : "Confirmar anulación"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-            <div className="max-h-[calc(92vh-72px)] overflow-auto p-5">
-              {isDetailLoading && <p className="text-sm text-slate-600">Cargando detalle...</p>}
-              {!isDetailLoading && detail && (
-                <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                  <div className="space-y-4">
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                        Total
-                      </p>
-                      <p className="mt-1 text-3xl font-black text-slate-900">
-                        {COP_FORMATTER.format(Number(detail.total_amount || "0"))}
-                      </p>
-                    </div>
-                    <div className="grid gap-3 rounded-2xl border border-slate-200 p-4 text-sm">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                          Fecha
-                        </p>
-                        <p className="font-semibold text-slate-900">
-                          {formatDate(detail.transaction_date)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                          Empresa
-                        </p>
-                        <p className="font-semibold text-slate-900">{detail.company.name}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                          Cliente
-                        </p>
-                        <p className="font-semibold text-slate-900">
-                          {detail.customer?.name ?? "Cliente genérico"}
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          {detail.customer?.phone ?? "Sin teléfono"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                          Descripción
-                        </p>
-                        <p className="mt-1 whitespace-pre-wrap text-slate-700">
-                          {detail.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="rounded-2xl border border-slate-200">
-                      <div className="border-b border-slate-200 bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-500">
-                        Métodos de pago
-                      </div>
-                      <div className="divide-y divide-slate-100">
-                        {detail.payments.map((payment) => (
-                          <div key={payment.id} className="flex items-center justify-between px-4 py-3 text-sm">
-                            <div>
-                              <p
-                                className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${paymentMethodClass(
-                                  payment.payment_method_name,
-                                )}`}
-                              >
-                                {payment.payment_method_name}
-                              </p>
-                              <p className="text-xs text-slate-500">{payment.payment_method_id}</p>
-                            </div>
-                            <span className="font-semibold text-slate-900">
-                              {COP_FORMATTER.format(Number(payment.amount || "0"))}
-                            </span>
-                          </div>
+      {showEditModal && selectedSale && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 px-4">
+          <div className="w-full max-w-3xl rounded-2xl bg-white p-5 shadow-2xl">
+            <div className="flex items-start justify-between border-b border-slate-200 pb-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Editar transacción</p>
+                <h3 className="text-xl font-semibold text-slate-900">{detailDocumentNumber}</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEditModal(false)}
+                className="rounded-md px-2 py-1 text-slate-500 hover:bg-slate-100"
+              >
+                ×
+              </button>
+            </div>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <label className="block text-sm text-slate-700">
+                Fecha
+                <input
+                  value={editTransactionDate}
+                  onChange={(e) => setEditTransactionDate(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 outline-none focus:border-[#003D9B]"
+                />
+              </label>
+              <label className="block text-sm text-slate-700">
+                Empresa
+                <select
+                  value={editCompanyId}
+                  onChange={(e) => setEditCompanyId(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 outline-none focus:border-[#003D9B]"
+                >
+                  {companies.map((company) => (
+                    <option key={company.id} value={company.id}>
+                      {company.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm text-slate-700 md:col-span-2">
+                Descripción
+                <textarea
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  rows={4}
+                  className="mt-1 w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 outline-none focus:border-[#003D9B]"
+                />
+              </label>
+              <div className="md:col-span-2">
+                <p className="mb-2 text-sm text-slate-700">Métodos de pago</p>
+                <div className="space-y-3 rounded-lg border border-[#D6DDF5] p-3">
+                  {editPayments.map((payment, index) => (
+                    <div key={`${payment.payment_method_id}-${index}`} className="grid grid-cols-[1fr_140px_auto] gap-2">
+                      <select
+                        value={payment.payment_method_id}
+                        onChange={(e) =>
+                          setEditPayments((current) =>
+                            current.map((item, itemIndex) =>
+                              itemIndex === index ? { ...item, payment_method_id: e.target.value } : item,
+                            ),
+                          )
+                        }
+                        className="w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 text-sm outline-none focus:border-[#003D9B]"
+                      >
+                        {paymentMethods.map((method) => (
+                          <option key={method.id} value={method.id}>
+                            {method.name}
+                          </option>
                         ))}
-                      </div>
+                      </select>
+                      <input
+                        value={payment.amount}
+                        onChange={(e) =>
+                          setEditPayments((current) =>
+                            current.map((item, itemIndex) =>
+                              itemIndex === index ? { ...item, amount: e.target.value } : item,
+                            ),
+                          )
+                        }
+                        className="w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 text-sm outline-none focus:border-[#003D9B]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setEditPayments((current) => current.filter((_, itemIndex) => itemIndex !== index))
+                        }
+                        disabled={editPayments.length === 1}
+                        className="rounded-lg border border-rose-200 px-3 py-2 text-sm font-medium text-rose-600 disabled:cursor-not-allowed disabled:opacity-40"
+                      >
+                        Quitar
+                      </button>
                     </div>
-                  </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setEditPayments((current) => [
+                        ...current,
+                        { payment_method_id: paymentMethods[0]?.id ?? "", amount: "0" },
+                      ])
+                    }
+                    className="rounded-lg border border-dashed border-[#B8C7F0] px-3 py-2 text-sm font-medium text-[#003D9B]"
+                  >
+                    Agregar método
+                  </button>
                 </div>
-              )}
+              </div>
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowEditModal(false)}
+                className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={submitEdit}
+                disabled={editSubmitting}
+                className="rounded-md bg-[#003D9B] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {editSubmitting ? "Guardando..." : "Guardar cambios"}
+              </button>
             </div>
           </div>
         </div>
       )}
     </main>
-  );
+  )
 }

@@ -66,6 +66,7 @@ type SaleSummaryItem = {
   description: string;
   document_number: string | null;
   total_amount: string;
+  status: string;
   created_at: string;
   payments: SalePayment[];
 };
@@ -278,7 +279,11 @@ export default function CashManagementPage() {
 
   const metrics = useMemo(() => {
     const opening = Number(session?.opening_cash ?? 0);
-    const cashIn =  movements.filter((m) => m.movement_type === "cash_in").reduce((sum, m) => sum + Number(m.amount), 0);
+    const cashIn = movements.reduce((sum, m) => {
+      if (m.movement_type === "cash_in") return sum + Number(m.amount);
+      if (m.movement_type === "cash_out") return sum - Number(m.amount);
+      return sum;
+    }, 0);
     const cashOut = movements.filter((m) => m.movement_type === "cash_out").reduce((sum, m) => sum + Number(m.amount), 0);
     const vaultIn = movements.filter((m) => m.movement_type === "vault_in").reduce((sum, m) => sum + Number(m.amount), 0);
     return {
@@ -302,6 +307,7 @@ export default function CashManagementPage() {
       const cash = sale.payments
         .filter((payment) => payment.payment_method_name === "EFECTIVO")
         .reduce((sum, payment) => sum + Number(payment.amount), 0);
+      const sign = sale.status?.toLowerCase() === "cancelled" ? -1 : 1;
       const other = sale.payments
         .filter((payment) => payment.payment_method_name !== "EFECTIVO")
         .reduce((sum, payment) => sum + Number(payment.amount), 0);
@@ -311,7 +317,8 @@ export default function CashManagementPage() {
         type: "VENTA",
         description: sale.description,
         reference: sale.document_number ?? sale.id.slice(0, 8),
-        cashAmount: cash,
+        status: sale.status,
+        cashAmount: cash * sign,
         otherAmount: other,
         vaultAmount: 0,
       };
@@ -330,6 +337,7 @@ export default function CashManagementPage() {
       type: prettyType(movement.movement_type),
       description: movement.description ?? "-",
       reference: movement.transaction_id ? movement.transaction_id.slice(0, 8) : "N/A",
+      status: movement.movement_type === "cash_out" ? "cancelled" : "",
       cashAmount:
         movement.movement_type === "cash_in"
           ? Number(movement.amount)
@@ -1121,6 +1129,7 @@ export default function CashManagementPage() {
                 <tr>
                   <th className="px-5 py-3">Hora</th>
                   <th className="px-5 py-3">Tipo</th>
+                  <th className="px-5 py-3">Estado</th>
                   <th className="px-5 py-3">Descripción</th>
                   <th className="px-5 py-3">Ref / ID</th>
                   <th className="px-5 py-3 text-right">Efectivo</th>
@@ -1151,6 +1160,32 @@ export default function CashManagementPage() {
                         );
                       })()}
                     </td>
+                    <td className="px-5 py-3">
+                      {(() => {
+                        const normalized = String(row.status ?? "").toLowerCase();
+                        const isCancelled = ["cancelled", "canceled", "anulada", "cancelada"].includes(normalized);
+                        const isConfirmed = ["confirmed", "confirmada"].includes(normalized);
+                        const className = isCancelled
+                          ? "bg-rose-100 text-rose-700 ring-rose-200"
+                          : isConfirmed
+                            ? "bg-emerald-100 text-emerald-700 ring-emerald-200"
+                            : "bg-slate-100 text-slate-600 ring-slate-200";
+                        const label = isCancelled
+                          ? "ANULADA"
+                          : isConfirmed
+                            ? "CONFIRMADA"
+                            : row.status
+                              ? String(row.status).toUpperCase()
+                              : "-";
+                        return (
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.5px] ring-1 ring-inset ${className}`}
+                          >
+                            {label}
+                          </span>
+                        );
+                      })()}
+                    </td>
                     <td className="px-5 py-3 text-[#003D9B] capitalize tracking-[0.26px]">
                       <div
                         title={row.description}
@@ -1173,7 +1208,7 @@ export default function CashManagementPage() {
                 ))}
                 {!movementPagination.visibleRows.length && (
                   <tr>
-                    <td className="px-5 py-10 text-center text-sm text-slate-500" colSpan={7}>
+                      <td className="px-5 py-10 text-center text-sm text-slate-500" colSpan={8}>
                       No hay movimientos para esta fecha.
                     </td>
                   </tr>
