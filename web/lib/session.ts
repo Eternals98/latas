@@ -1,59 +1,41 @@
-import crypto from "crypto";
+import { redirect } from "next/navigation";
+import { getAccessTokenFromCookies } from "./auth";
 
-const SESSION_COOKIE = "latas_session";
-type UserRole = "admin" | "vendedor";
+export type UserRole = "admin" | "cashier";
 
-export interface SessionUser {
-  username: string;
+export type SessionUser = {
+  id: string;
+  full_name: string;
   role: UserRole;
-}
-
-function secret(): string {
-  const value = process.env.SESSION_SECRET;
-  if (!value) {
-    throw new Error("SESSION_SECRET is required");
-  }
-  return value;
-}
-
-export function signSession(value: string): string {
-  const signature = crypto.createHmac("sha256", secret()).update(value).digest("hex");
-  return `${value}.${signature}`;
-}
-
-export function verifySession(raw: string | undefined): boolean {
-  if (!raw) return false;
-  const [value, signature] = raw.split(".");
-  if (!value || !signature) return false;
-  const expected = crypto.createHmac("sha256", secret()).update(value).digest("hex");
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-
-export const SESSION = {
-  cookieName: SESSION_COOKIE
 };
 
-export function parseSessionValue(raw: string | undefined): string | null {
-  if (!raw) return null;
-  const [value] = raw.split(".");
-  return value || null;
+function backendUrl(): string {
+  const base = (process.env.BACKEND_API_URL || "").replace(/\/$/, "");
+  if (!base) throw new Error("BACKEND_API_URL is required");
+  return base;
 }
 
-export function encodeSessionUser(user: SessionUser): string {
-  return `${user.username}:${user.role}`;
+export async function getSessionUser(): Promise<SessionUser | null> {
+  const token = await getAccessTokenFromCookies();
+  if (!token) return null;
+
+  const response = await fetch(`${backendUrl()}/api/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+
+  if (!response.ok) return null;
+
+  return (await response.json()) as SessionUser;
 }
 
-export function decodeSessionUser(raw: string | undefined): SessionUser | null {
-  if (!verifySession(raw)) {
-    return null;
+export async function requireAdminSession(): Promise<SessionUser> {
+  const session = await getSessionUser();
+  if (!session) {
+    redirect("/login");
   }
-  const payload = parseSessionValue(raw);
-  if (!payload) {
-    return null;
+  if (session.role !== "admin") {
+    redirect("/dashboard");
   }
-  const [username, role] = payload.split(":");
-  if (!username || (role !== "admin" && role !== "vendedor")) {
-    return null;
-  }
-  return { username, role };
+  return session;
 }

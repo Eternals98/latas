@@ -4,8 +4,10 @@ from sqlalchemy.orm import Session
 
 from src.api.schemas.sales import (
     ErrorResponse,
+    SaleCancelRequest,
     SaleCreateRequest,
     SaleListFilters,
+    SaleUpdateRequest,
     SaleResponse,
     SalesListResponse,
     sale_record_to_response,
@@ -15,12 +17,15 @@ from src.models.profile import Profile
 from src.services.sales_service import (
     SalesConflictError,
     SalesNotFoundError,
+    SalesPermissionError,
     SalesValidationError,
+    cancel_sale,
     create_sale,
     get_sale_by_id,
     list_sales,
+    update_sale_with_payments,
 )
-from src.services.supabase_auth import require_user
+from src.services.supabase_auth import require_admin, require_user
 
 router = APIRouter(prefix="/api/sales", tags=["Sales"])
 
@@ -57,6 +62,8 @@ def list_sales_route(
     date_from: date | None = Query(default=None),
     date_to: date | None = Query(default=None),
     company_id: str | None = Query(default=None),
+    company_ids: list[str] | None = Query(default=None),
+    payment_method_ids: list[str] | None = Query(default=None),
     search: str | None = Query(default=None),
     limit: int = Query(default=50),
     offset: int = Query(default=0),
@@ -68,6 +75,8 @@ def list_sales_route(
             date_from=date_from,
             date_to=date_to,
             company_id=company_id,
+            company_ids=company_ids or [],
+            payment_method_ids=payment_method_ids or [],
             search=search,
             limit=limit,
             offset=offset,
@@ -105,4 +114,62 @@ def get_sale_route(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     except SalesValidationError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    return sale_record_to_response(record)
+
+
+@router.put(
+    "/{sale_id}",
+    response_model=SaleResponse,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+        status.HTTP_403_FORBIDDEN: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+        status.HTTP_409_CONFLICT: {"model": ErrorResponse},
+    },
+)
+def update_sale_route(
+    sale_id: str,
+    payload: SaleUpdateRequest,
+    actor: Profile = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> SaleResponse:
+    try:
+        record = update_sale_with_payments(db, sale_id=sale_id, payload=payload, actor=actor)
+    except SalesPermissionError as exc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
+    except SalesValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    except SalesConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except SalesNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    return sale_record_to_response(record)
+
+
+@router.delete(
+    "/{sale_id}",
+    response_model=SaleResponse,
+    responses={
+        status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse},
+        status.HTTP_403_FORBIDDEN: {"model": ErrorResponse},
+        status.HTTP_404_NOT_FOUND: {"model": ErrorResponse},
+        status.HTTP_409_CONFLICT: {"model": ErrorResponse},
+    },
+)
+def cancel_sale_route(
+    sale_id: str,
+    payload: SaleCancelRequest,
+    actor: Profile = Depends(require_admin),
+    db: Session = Depends(get_db),
+) -> SaleResponse:
+    try:
+        record = cancel_sale(db, sale_id=sale_id, payload=payload, actor=actor)
+    except SalesPermissionError as exc:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
+    except SalesValidationError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    except SalesConflictError as exc:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    except SalesNotFoundError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     return sale_record_to_response(record)

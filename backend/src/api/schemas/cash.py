@@ -104,7 +104,9 @@ class CashSessionResponse(BaseModel):
     vault_balance: Decimal
     total_operational_balance: Decimal
     opened_by: str | None
+    opened_by_label: str | None = None
     closed_by: str | None
+    closed_by_label: str | None = None
     opened_at: str
     closed_at: str | None
 
@@ -134,6 +136,23 @@ class CashHistoryResponse(BaseModel):
     total: int
 
 
+class CashEventItem(BaseModel):
+    id: str
+    cash_session_id: str | None
+    event_type: str
+    event_label: str
+    actor_id: str
+    actor_label: str | None = None
+    event_at: str
+    payload: dict | None = None
+    note: str | None = None
+
+
+class CashEventHistoryResponse(BaseModel):
+    items: list[CashEventItem]
+    total: int
+
+
 class CashSessionRecord(BaseModel):
     id: str
     session_date: date
@@ -146,7 +165,9 @@ class CashSessionRecord(BaseModel):
     vault_balance: Decimal
     total_operational_balance: Decimal
     opened_by: str | None
+    opened_by_label: str | None = None
     closed_by: str | None
+    closed_by_label: str | None = None
     opened_at: datetime
     closed_at: datetime | None
 
@@ -162,6 +183,17 @@ class CashMovementRecord(BaseModel):
     created_at: datetime
 
 
+class CashEventRecord(BaseModel):
+    id: str
+    cash_session_id: str | None
+    event_type: str
+    actor_id: str
+    actor_label: str | None = None
+    event_at: datetime
+    payload: dict | None = None
+    note: str | None = None
+
+
 def cash_session_record_to_response(record: CashSessionRecord) -> CashSessionResponse:
     return CashSessionResponse(
         id=record.id,
@@ -175,7 +207,9 @@ def cash_session_record_to_response(record: CashSessionRecord) -> CashSessionRes
         vault_balance=to_money(record.vault_balance),
         total_operational_balance=to_money(record.total_operational_balance),
         opened_by=record.opened_by,
+        opened_by_label=record.opened_by_label,
         closed_by=record.closed_by,
+        closed_by_label=record.closed_by_label,
         opened_at=record.opened_at.isoformat(),
         closed_at=record.closed_at.isoformat() if record.closed_at else None,
     )
@@ -191,4 +225,28 @@ def cash_movement_record_to_response(record: CashMovementRecord) -> CashMovement
         description=record.description,
         created_by=record.created_by,
         created_at=record.created_at.isoformat(),
+    )
+
+
+def cash_event_label(value: str) -> str:
+    labels = {
+        "open": "Apertura",
+        "close": "Cierre",
+        "delivery": "Entrega a Bóveda",
+        "reopen": "Reapertura",
+    }
+    return labels.get(value, value.replace("_", " ").title())
+
+
+def cash_event_record_to_response(record: CashEventRecord) -> CashEventItem:
+    return CashEventItem(
+        id=record.id,
+        cash_session_id=record.cash_session_id,
+        event_type=record.event_type,
+        event_label=cash_event_label(record.event_type),
+        actor_id=record.actor_id,
+        actor_label=record.actor_label,
+        event_at=record.event_at.isoformat(),
+        payload=record.payload,
+        note=record.note,
     )

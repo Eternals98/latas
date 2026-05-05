@@ -35,7 +35,7 @@ class SalePaymentCreateRequest(BaseModel):
 
 class SaleCreateRequest(BaseModel):
     company_id: str = Field(min_length=1)
-    transaction_date: date
+    transaction_date: datetime
     document_number: str | None = None
     description: str = Field(min_length=1)
     total_amount: Decimal
@@ -81,6 +81,52 @@ class SaleCreateRequest(BaseModel):
             return None
         cleaned = value.strip()
         return cleaned or None
+
+
+class SaleUpdateRequest(BaseModel):
+    description: str = Field(min_length=1)
+    transaction_date: datetime
+    company_id: str = Field(min_length=1)
+    payments: list[SalePaymentCreateRequest] = Field(min_length=1)
+
+    @field_validator("description")
+    @classmethod
+    def validate_description(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("description is required")
+        return cleaned
+
+    @field_validator("company_id")
+    @classmethod
+    def validate_company_id(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("company_id is required")
+        return cleaned
+
+    @field_validator("payments")
+    @classmethod
+    def validate_payments(cls, value: list[SalePaymentCreateRequest]) -> list[SalePaymentCreateRequest]:
+        if not value:
+            raise ValueError("payments is required")
+        method_ids = [item.payment_method_id for item in value]
+        if len(set(method_ids)) != len(method_ids):
+            raise ValueError("No se permiten métodos de pago repetidos en la misma venta.")
+        return value
+
+
+class SaleCancelRequest(BaseModel):
+    reason: str = Field(min_length=1)
+    impact_cash: bool = False
+
+    @field_validator("reason")
+    @classmethod
+    def validate_reason(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("reason is required")
+        return cleaned
 
 
 class SalePaymentResponse(BaseModel):
@@ -133,6 +179,8 @@ class SaleListFilters(BaseModel):
     date_from: date | None = None
     date_to: date | None = None
     company_id: str | None = None
+    company_ids: list[str] = Field(default_factory=list)
+    payment_method_ids: list[str] = Field(default_factory=list)
     search: str | None = None
     limit: int = 50
     offset: int = 0
@@ -144,6 +192,12 @@ class SaleListFilters(BaseModel):
             return None
         cleaned = value.strip()
         return cleaned or None
+
+    @field_validator("company_ids", "payment_method_ids")
+    @classmethod
+    def validate_id_lists(cls, value: list[str]) -> list[str]:
+        cleaned = [item.strip() for item in value if item and item.strip()]
+        return list(dict.fromkeys(cleaned))
 
     @field_validator("search")
     @classmethod
@@ -187,7 +241,7 @@ class SaleDetailRecord(BaseModel):
     customer_id: str | None
     customer_name: str | None
     customer_phone: str | None
-    transaction_date: date
+    transaction_date: datetime
     document_number: str | None
     description: str
     total_amount: Decimal

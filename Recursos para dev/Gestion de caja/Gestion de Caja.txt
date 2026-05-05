@@ -1,0 +1,442 @@
+<div className="w-[1280px] pl-60 pt-14 relative bg-slate-50 inline-flex flex-col justify-start items-start">
+  <div className="self-stretch min-h-[968px] px-6 pt-6 pb-80 flex flex-col justify-start items-start gap-4">
+    <div className="self-stretch pb-4 flex flex-col justify-start items-start">
+      <div className="self-stretch inline-flex justify-between items-end">
+        <div className="inline-flex flex-col justify-start items-start gap-1">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="w-32 h-8 justify-center text-blue-900 text-2xl font-semibold font-['Inter'] leading-8">Caja Diaria</div>
+          </div>
+          <div className="self-stretch inline-flex justify-start items-center">
+            <div className="px-2 py-1 flex justify-start items-center gap-2">
+              <div className="inline-flex flex-col justify-start items-center">
+                <div className="w-3 h-3.5 bg-blue-900" />
+              </div>
+              <div className="inline-flex flex-col justify-start items-center">
+                <div className="w-20 h-4 text-center justify-center text-gray-900 text-xs font-medium font-['Inter'] leading-4">Oct 24, 2023</div>
+              </div>
+              <div className="inline-flex flex-col justify-start items-center">
+                <div className="w-2 h-[4.93px] bg-gray-700" />
+              </div>
+              <div className="w-20 h-4 pl-1" />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-start items-start gap-2">
+          <div className="h-8 px-4 bg-blue-900 rounded shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] flex justify-start items-center gap-2">
+            <div className="inline-flex flex-col justify-start items-center">
+              <div className="w-2.5 h-3.5 bg-white" />
+            </div>
+            <div className="w-16 h-4 text-center justify-center text-white text-xs font-medium font-['Inter'] leading-4 tracking-tight">Abrir Caja</div>
+          </div>
+          <div className="h-8 px-4 rounded outline outline-1 outline-offset-[-1px] outline-gray-500 flex justify-start items-center gap-2">
+            <div className="inline-flex flex-col justify-start items-center">
+              <div className="w-3.5 h-2.5 bg-gray-900" />
+            </div>
+            <div className="w-32 h-4 text-center justify-center text-gray-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">Entrega de Efectivo</div>
+          </div>
+          <div className="h-8 px-4 rounded outline outline-1 outline-offset-[-1px] outline-gray-500 flex justify-start items-center gap-2">
+            <div className="inline-flex flex-col justify-start items-center">
+              <div className="w-3.5 h-3.5 bg-gray-900" />
+            </div>
+            <div className="w-28 h-4 text-center justify-center text-gray-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">Retiro de Bóveda</div>
+          </div>
+          <div className="h-8 px-4 rounded outline outline-1 outline-offset-[-1px] outline-red-700 flex justify-start items-center gap-2">
+            <div className="inline-flex flex-col justify-start items-center">
+              <div className="w-2.5 h-3.5 bg-red-700" />
+            </div>
+            <div className="w-20 h-4 text-center justify-center text-red-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">Cerrar Caja</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="self-stretch inline-flex flex-col justify-start items-start">
+      <div className="self-stretch p-4 bg-white border-l-4 border-r border-t border-b border-slate-200 inline-flex flex-col justify-center items-start">
+        <div className="self-stretch pb-1 flex flex-col justify-start items-start">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Status Operativo</div>
+          </div>
+        </div>
+        <div className="self-stretch inline-flex justify-start items-center gap-2">
+          <div className="inline-flex flex-col justify-start items-start">
+            <div className="w-5 h-5 bg-emerald-500" />
+          </div>
+          <div className="pr-16 inline-flex flex-col justify-start items-start">
+            <div className="w-24 h-16 justify-center text-blue-900 text-2xl font-bold font-['Inter'] leading-9">CAJA<br/>ABIERTA</div>
+          </div>
+        </div>
+      </div>
+      <div className="self-stretch h-32 px-4 py-4 bg-white outline outline-1 outline-offset-[-1px] outline-slate-200 inline-flex justify-between items-center">
+        <div className="w-48 inline-flex flex-col justify-start items-start">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="w-32 h-4 justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Operador Responsable</div>
+          </div>
+          <div className="self-stretch pt-1 flex flex-col justify-start items-start">
+            <div className="self-stretch flex flex-col justify-start items-start">
+              <div className="self-stretch justify-center text-blue-900 text-sm font-medium font-['Inter'] leading-5">Maria Gonzalez (ID: 4920)</div>
+            </div>
+          </div>
+        </div>
+        <div className="w-px h-8 bg-slate-200" />
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="w-14 h-4 justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Apertura</div>
+          </div>
+          <div className="self-stretch pt-1 flex flex-col justify-start items-start">
+            <div className="w-20 flex flex-col justify-start items-start">
+              <div className="self-stretch justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">08:14:22 AM</div>
+            </div>
+          </div>
+        </div>
+        <div className="w-px h-8 bg-slate-200" />
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="w-12 h-4 justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Cierre</div>
+          </div>
+          <div className="w-16 pt-1 flex flex-col justify-start items-start">
+            <div className="self-stretch flex flex-col justify-start items-start">
+              <div className="self-stretch justify-center text-blue-900 text-sm font-medium font-['Inter'] leading-5">Pendiente</div>
+            </div>
+          </div>
+        </div>
+        <div className="w-px h-8 bg-slate-200" />
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="self-stretch flex flex-col justify-start items-end">
+            <div className="w-36 h-4 text-right justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Total Acumulado</div>
+          </div>
+          <div className="self-stretch pt-1 flex flex-col justify-start items-start">
+            <div className="self-stretch flex flex-col justify-start items-end">
+              <div className="w-28 h-7 text-right justify-center text-blue-900 text-lg font-bold font-['Inter'] leading-7 tracking-tight">$14,250.00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="self-stretch pt-2 flex flex-col justify-start items-start">
+      <div className="self-stretch inline-flex flex-col justify-start items-start">
+        <div className="self-stretch p-5 relative bg-white outline outline-1 outline-offset-[-1px] outline-slate-200 inline-flex flex-col justify-start items-start gap-2 overflow-hidden">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Fondo de Apertura</div>
+          </div>
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-blue-900 text-3xl font-bold font-['Inter'] leading-9">$5,000.00</div>
+          </div>
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-normal font-['Inter'] leading-4">Verificado a las 08:15 AM</div>
+          </div>
+          <div className="w-0.5 h-32 left-[1px] top-[1px] absolute bg-slate-400" />
+        </div>
+        <div className="self-stretch p-5 relative bg-white outline outline-1 outline-offset-[-1px] outline-slate-200 inline-flex flex-col justify-start items-start gap-2 overflow-hidden">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Ingresos - Efectivo</div>
+          </div>
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-blue-900 text-3xl font-bold font-['Inter'] leading-9">$12,450.00</div>
+          </div>
+          <div className="self-stretch inline-flex justify-start items-center gap-1">
+            <div className="inline-flex flex-col justify-start items-start">
+              <div className="w-3 h-1.5 bg-emerald-500" />
+            </div>
+            <div className="w-28 h-4 justify-center text-emerald-500 text-xs font-normal font-['Inter'] leading-4">+45 transacciones</div>
+          </div>
+          <div className="w-0.5 h-32 left-[1px] top-[1px] absolute bg-slate-400" />
+        </div>
+        <div className="self-stretch p-5 relative bg-white outline outline-1 outline-offset-[-1px] outline-slate-200 inline-flex flex-col justify-start items-start gap-2 overflow-hidden">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Retiros Efectivo</div>
+          </div>
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-blue-900 text-3xl font-bold font-['Inter'] leading-9">-$3,200.00</div>
+          </div>
+          <div className="self-stretch inline-flex justify-start items-center gap-1">
+            <div className="inline-flex flex-col justify-start items-start">
+              <div className="w-3 h-1.5 bg-red-700" />
+            </div>
+            <div className="w-28 h-4 justify-center text-red-700 text-xs font-normal font-['Inter'] leading-4">2 retiros a bóveda</div>
+          </div>
+          <div className="w-0.5 h-32 left-[1px] top-[1px] absolute bg-slate-400" />
+        </div>
+        <div className="self-stretch p-5 relative bg-white outline outline-1 outline-offset-[-1px] outline-slate-200 inline-flex flex-col justify-start items-start gap-2 overflow-hidden">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-bold font-['Inter'] leading-4 tracking-wide">Efectivo en Caja</div>
+          </div>
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-blue-900 text-3xl font-black font-['Inter'] leading-9">$14,250.00</div>
+          </div>
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-normal font-['Inter'] leading-4">Calculado en tiempo real</div>
+          </div>
+          <div className="w-0.5 h-32 left-[1px] top-[1px] absolute bg-blue-900" />
+        </div>
+      </div>
+    </div>
+    <div className="self-stretch pt-4 flex flex-col justify-start items-start">
+      <div className="self-stretch bg-white outline outline-1 outline-offset-[-1px] outline-slate-200 flex flex-col justify-start items-start overflow-hidden">
+        <div className="self-stretch px-5 py-4 bg-slate-50 border-b border-slate-200 inline-flex justify-between items-center">
+          <div className="inline-flex flex-col justify-start items-start">
+            <div className="w-52 h-6 justify-center text-blue-900 text-lg font-semibold font-['Inter'] leading-6">Registro de Movimientos</div>
+          </div>
+          <div className="flex justify-start items-start gap-2">
+            <div className="h-7 px-3 rounded outline outline-1 outline-offset-[-1px] outline-gray-500 flex justify-start items-center gap-1">
+              <div className="inline-flex flex-col justify-start items-center">
+                <div className="w-2.5 h-1.5 bg-gray-900" />
+              </div>
+              <div className="w-9 h-4 text-center justify-center text-gray-900 text-xs font-normal font-['Inter'] leading-4">Filtrar</div>
+            </div>
+            <div className="h-7 px-3 rounded outline outline-1 outline-offset-[-1px] outline-gray-500 flex justify-start items-center gap-1">
+              <div className="inline-flex flex-col justify-start items-center">
+                <div className="w-2.5 h-2.5 bg-gray-900" />
+              </div>
+              <div className="w-14 h-4 text-center justify-center text-gray-900 text-xs font-normal font-['Inter'] leading-4">Exportar</div>
+            </div>
+          </div>
+        </div>
+        <div className="self-stretch flex flex-col justify-start items-start overflow-hidden">
+          <div className="self-stretch bg-white border-b border-slate-300 inline-flex justify-center items-start">
+            <div className="w-24 px-5 py-px inline-flex flex-col justify-start items-start">
+              <div className="w-7 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] leading-4 tracking-wide">Hora</div>
+            </div>
+            <div className="w-32 px-5 py-px inline-flex flex-col justify-start items-start">
+              <div className="w-6 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] leading-4 tracking-wide">Tipo</div>
+            </div>
+            <div className="w-96 px-5 py-px inline-flex flex-col justify-start items-start">
+              <div className="w-16 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] leading-4 tracking-wide">Descripción</div>
+            </div>
+            <div className="w-32 px-5 py-px inline-flex flex-col justify-start items-start">
+              <div className="w-11 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] leading-4 tracking-wide">Ref / ID</div>
+            </div>
+            <div className="w-32 px-5 py-px inline-flex flex-col justify-start items-end">
+              <div className="w-9 h-4 text-right justify-center text-gray-700 text-xs font-semibold font-['Inter'] leading-4 tracking-wide">Monto</div>
+            </div>
+            <div className="w-32 px-5 py-px inline-flex flex-col justify-start items-end">
+              <div className="w-12 h-4 text-right justify-center text-gray-700 text-xs font-semibold font-['Inter'] leading-4 tracking-wide">Balance</div>
+            </div>
+          </div>
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch border-b border-slate-100 inline-flex justify-center items-start">
+              <div className="w-24 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-14 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">10:45:12</div>
+              </div>
+              <div className="w-32 px-5 py-[1.50px] inline-flex flex-col justify-start items-start">
+                <div className="px-2 py-0.5 bg-slate-100 rounded-sm inline-flex justify-start items-center gap-1">
+                  <div className="inline-flex flex-col justify-start items-start">
+                    <div className="w-2.5 h-2 bg-slate-700" />
+                  </div>
+                  <div className="w-9 h-4 justify-center text-slate-700 text-[10px] font-bold font-['Inter'] uppercase leading-4 tracking-wide">VENTA</div>
+                </div>
+              </div>
+              <div className="w-96 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-32 h-4 justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">Pago Factura #8992</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-14 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">TX-4091</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-16 h-4 text-right justify-center text-emerald-500 text-xs font-medium font-['Inter'] leading-4 tracking-tight">+ $450.00</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-20 h-4 text-right justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">$14,250.00</div>
+              </div>
+            </div>
+            <div className="self-stretch border-b border-slate-100 inline-flex justify-center items-start">
+              <div className="w-24 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-14 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">10:12:05</div>
+              </div>
+              <div className="w-32 px-5 py-[1.50px] inline-flex flex-col justify-start items-start">
+                <div className="px-2 py-0.5 bg-blue-50 rounded-sm inline-flex justify-start items-center gap-1">
+                  <div className="inline-flex flex-col justify-start items-start">
+                    <div className="w-2.5 h-2.5 bg-blue-700" />
+                  </div>
+                  <div className="w-10 h-4 justify-center text-blue-700 text-[10px] font-bold font-['Inter'] uppercase leading-4 tracking-wide">RETIRO</div>
+                </div>
+              </div>
+              <div className="w-96 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-44 h-4 justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">Traslado a Bóveda Principal</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-12 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">VB-102</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-20 h-4 text-right justify-center text-red-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">- $2,000.00</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-20 h-4 text-right justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">$13,800.00</div>
+              </div>
+            </div>
+            <div className="self-stretch border-b border-slate-100 inline-flex justify-center items-start">
+              <div className="w-24 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-16 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">09:30:44</div>
+              </div>
+              <div className="w-32 px-5 py-[1.50px] inline-flex flex-col justify-start items-start">
+                <div className="px-2 py-0.5 bg-slate-100 rounded-sm inline-flex justify-start items-center gap-1">
+                  <div className="inline-flex flex-col justify-start items-start">
+                    <div className="w-2.5 h-2 bg-slate-700" />
+                  </div>
+                  <div className="w-9 h-4 justify-center text-slate-700 text-[10px] font-bold font-['Inter'] uppercase leading-4 tracking-wide">VENTA</div>
+                </div>
+              </div>
+              <div className="w-96 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-32 h-4 justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">Pago Factura #8991</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-14 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">TX-4090</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-20 h-4 text-right justify-center text-emerald-500 text-xs font-medium font-['Inter'] leading-4 tracking-tight">+ $1,200.00</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-20 h-4 text-right justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">$15,800.00</div>
+              </div>
+            </div>
+            <div className="self-stretch border-b border-slate-100 inline-flex justify-center items-start">
+              <div className="w-24 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-14 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">08:15:00</div>
+              </div>
+              <div className="w-32 px-5 py-[1.50px] inline-flex flex-col justify-start items-start">
+                <div className="px-2 py-0.5 bg-slate-800 rounded-sm inline-flex justify-start items-center gap-1">
+                  <div className="inline-flex flex-col justify-start items-start">
+                    <div className="w-2 h-2.5 bg-white" />
+                  </div>
+                  <div className="w-14 h-4 justify-center text-white text-[10px] font-bold font-['Inter'] uppercase leading-4 tracking-wide">APERTURA</div>
+                </div>
+              </div>
+              <div className="w-96 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-40 h-4 justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">Fondo de Caja Asignado</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-start">
+                <div className="w-14 h-4 justify-center text-gray-700 text-xs font-medium font-['Inter'] leading-4 tracking-tight">SYS-INIT</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-3 h-4 text-right justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">--</div>
+              </div>
+              <div className="w-32 px-5 py-1 inline-flex flex-col justify-start items-end">
+                <div className="w-16 h-4 text-right justify-center text-blue-900 text-xs font-medium font-['Inter'] leading-4 tracking-tight">$5,000.00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="self-stretch px-5 py-3 bg-slate-50 border-t border-slate-200 inline-flex justify-between items-center">
+          <div className="inline-flex flex-col justify-start items-start">
+            <div className="w-56 h-4 justify-center text-gray-700 text-xs font-normal font-['Inter'] leading-4">Mostrando 4 de 48 movimientos hoy</div>
+          </div>
+          <div className="flex justify-start items-start gap-1">
+            <div className="w-8 h-8 bg-white rounded outline outline-1 outline-offset-[-1px] outline-slate-200 flex justify-center items-center">
+              <div className="inline-flex flex-col justify-start items-center">
+                <div className="w-[4.93px] h-2 bg-slate-400" />
+              </div>
+            </div>
+            <div className="w-8 h-8 bg-white rounded outline outline-1 outline-offset-[-1px] outline-slate-200 flex justify-center items-center">
+              <div className="inline-flex flex-col justify-start items-center">
+                <div className="w-[4.93px] h-2 bg-blue-900" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className="w-60 h-[1024px] left-0 top-0 absolute bg-white border-r border-slate-300 flex flex-col justify-between items-start">
+    <div className="self-stretch p-6 border-b border-slate-300 inline-flex justify-start items-center gap-3">
+      <div className="w-8 h-8 bg-blue-900 rounded flex justify-center items-center">
+        <div className="w-5 h-5 text-center justify-center text-white text-sm font-bold font-['Inter'] leading-5">Ax</div>
+      </div>
+      <div className="w-32 h-9 relative">
+        <div className="w-32 left-0 top-[-1px] absolute inline-flex flex-col justify-start items-start">
+          <div className="w-32 h-4 justify-center text-gray-900 text-sm font-bold font-['Inter'] leading-4">Axentria</div>
+        </div>
+        <div className="w-32 pt-0.5 left-0 top-[17.50px] absolute inline-flex flex-col justify-start items-start">
+          <div className="self-stretch flex flex-col justify-start items-start">
+            <div className="self-stretch justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">Control de ventas</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div className="self-stretch flex-1 py-4 flex flex-col justify-start items-start gap-1 overflow-hidden">
+      <div className="self-stretch px-4 py-3 inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-3.5 h-3.5 bg-gray-700" />
+        </div>
+        <div className="w-32 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">PANEL DE CONTROL</div>
+      </div>
+      <div className="self-stretch px-4 py-3 inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-4 h-4 bg-gray-700" />
+        </div>
+        <div className="w-36 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">registro de ventas</div>
+      </div>
+      <div className="self-stretch px-4 py-3 inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-3.5 h-4 bg-gray-700" />
+        </div>
+        <div className="w-36 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">Transacciones</div>
+      </div>
+      <div className="self-stretch px-4 py-3 bg-blue-900 rounded-tr-[9999px] rounded-br-[9999px] inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-4 h-3.5 bg-white" />
+        </div>
+        <div className="w-36 h-4 justify-center text-white text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">Gestion de caja</div>
+      </div>
+      <div className="self-stretch px-4 py-3 inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-3.5 h-3.5 bg-gray-700" />
+        </div>
+        <div className="w-16 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">INFORMES</div>
+      </div>
+      <div className="self-stretch px-4 py-3 inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-3.5 h-5 bg-gray-700" />
+        </div>
+        <div className="w-28 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">ADMINISTRACIÓN</div>
+      </div>
+    </div>
+    <div className="self-stretch py-2 border-t border-slate-300 flex flex-col justify-start items-start">
+      <div className="self-stretch px-4 py-3 inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-3.5 h-4 bg-gray-700" />
+        </div>
+        <div className="w-16 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">SOPORTE</div>
+      </div>
+      <div className="self-stretch px-4 py-3 inline-flex justify-start items-center gap-3">
+        <div className="inline-flex flex-col justify-start items-start">
+          <div className="w-3.5 h-3.5 bg-gray-700" />
+        </div>
+        <div className="w-24 h-4 justify-center text-gray-700 text-xs font-semibold font-['Inter'] uppercase leading-4 tracking-wide">CERRAR SESIÓN</div>
+      </div>
+    </div>
+  </div>
+  <div className="w-[1024px] h-14 px-6 left-[240px] top-0 absolute bg-white border-b border-slate-300 inline-flex justify-between items-center">
+    <div className="flex-1 flex justify-start items-center gap-4">
+      <div className="w-16 h-6 relative" />
+    </div>
+    <div className="flex justify-start items-center gap-4">
+      <div className="h-8 px-4 py-1.5 bg-blue-900 rounded inline-flex flex-col justify-center items-center">
+        <div className="w-16 h-5 text-center justify-center text-white text-sm font-normal font-['Inter'] leading-5">Abrir Caja</div>
+      </div>
+      <div className="pl-2 inline-flex flex-col justify-start items-start">
+        <div className="inline-flex justify-start items-center gap-2">
+          <div className="w-8 h-8 rounded flex justify-center items-center">
+            <div className="inline-flex flex-col justify-start items-center">
+              <div className="w-3.5 h-4 bg-gray-700" />
+            </div>
+          </div>
+          <div className="w-8 h-8 rounded flex justify-center items-center">
+            <div className="inline-flex flex-col justify-start items-center">
+              <div className="w-4 h-4 bg-gray-700" />
+            </div>
+          </div>
+          <div className="w-8 h-8 rounded flex justify-center items-center">
+            <div className="inline-flex flex-col justify-start items-center">
+              <div className="w-4 h-4 bg-gray-700" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-10 h-8 pl-2 inline-flex flex-col justify-start items-start">
+        <div className="w-8 h-8 bg-slate-200 rounded-full outline outline-1 outline-offset-[-1px] outline-slate-300 inline-flex justify-center items-center overflow-hidden">
+          <div className="inline-flex flex-col justify-start items-start">
+            <div className="w-3.5 h-3.5 bg-gray-700" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

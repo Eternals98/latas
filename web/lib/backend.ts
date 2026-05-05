@@ -11,13 +11,16 @@ function requireBackendUrl(): string {
 
 export async function backendFetch(path: string, init?: RequestInit): Promise<Response> {
   const token = await getAccessTokenFromCookies();
+  const headers = new Headers(init?.headers || {});
+  if (!(init?.body instanceof FormData) && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
   return fetch(`${requireBackendUrl()}${path}`, {
     ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(init?.headers || {}),
-    },
+    headers,
     cache: "no-store",
   });
 }

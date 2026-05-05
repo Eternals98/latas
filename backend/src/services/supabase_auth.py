@@ -7,6 +7,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import InvalidTokenError
 from jwt.exceptions import MissingCryptographyError
+from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -132,6 +133,17 @@ def ensure_profile(db: Session, payload: dict[str, Any]) -> Profile:
         ) from exc
 
 
+def _set_request_context(db: Session, payload: dict[str, Any]) -> None:
+    user_id = payload.get("sub") or payload.get("id")
+    if not user_id:
+        return
+    db.execute(
+        text("select set_config('request.jwt.claim.sub', :user_id, true)"),
+        {"user_id": user_id},
+    )
+    db.execute(text("select set_config('request.jwt.claim.role', 'authenticated', true)"))
+
+
 def require_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(security),
     db: Session = Depends(get_db),
@@ -142,6 +154,7 @@ def require_user(
     payload = _decode_token(credentials.credentials)
     try:
         profile = ensure_profile(db, payload)
+        _set_request_context(db, payload)
     except SQLAlchemyError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

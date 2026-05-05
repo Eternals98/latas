@@ -1,5 +1,6 @@
 import { backendFetch } from "../../../../lib/backend";
-import { NextResponse } from "next/server";
+import { requireCsrf } from "../../../../lib/csrf";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { search } = new URL(request.url);
@@ -11,7 +12,10 @@ export async function GET(request: Request) {
   });
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  if (!requireCsrf(request)) {
+    return NextResponse.json({ detail: "CSRF inválido." }, { status: 403 });
+  }
   const payload = await request.text();
   const response = await backendFetch("/api/sales", {
     method: "POST",

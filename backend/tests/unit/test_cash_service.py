@@ -4,6 +4,7 @@ from decimal import Decimal
 import pytest
 
 from src.models.company import Company
+from src.models.audit_log import AuditLog
 from src.models.customer import Customer
 from src.models.payment_method import PaymentMethod
 from src.models.profile import Profile
@@ -18,6 +19,7 @@ from src.services.cash_service import (
 )
 from src.services.sales_service import SalesConflictError, create_sale
 from src.api.schemas.sales import SaleCreateRequest
+from tests.helpers import set_request_user
 
 
 def _seed_core(db_session):
@@ -80,6 +82,7 @@ def _seed_core(db_session):
 
 def test_open_cash_session_duplicate_same_day(db_session):
     admin, _, _, _ = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
     open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("0"), actor=admin)
 
     with pytest.raises(CashConflictError):
@@ -88,12 +91,14 @@ def test_open_cash_session_duplicate_same_day(db_session):
 
 def test_open_cash_session_rejects_cashier(db_session):
     _, cashier, _, _ = _seed_core(db_session)
-    with pytest.raises(CashValidationError):
-        open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("0"), actor=cashier)
+    set_request_user(db_session, cashier.id)
+    opened = open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("0"), actor=cashier)
+    assert opened.status == "open"
 
 
 def test_delivery_and_vault_withdrawal_insufficient_balance(db_session):
     admin, _, _, _ = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
     open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("100"), actor=admin)
 
     with pytest.raises(CashConflictError):
@@ -125,6 +130,7 @@ def test_delivery_and_vault_withdrawal_insufficient_balance(db_session):
 
 def test_adjustment_requires_admin_and_reason(db_session):
     admin, cashier, _, _ = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
     open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("50"), actor=admin)
 
     with pytest.raises(CashValidationError):
@@ -141,6 +147,7 @@ def test_adjustment_requires_admin_and_reason(db_session):
 
 def test_close_cash_session_calculates_difference(db_session):
     admin, _, _, _ = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
     open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("100"), actor=admin)
     register_manual_adjustment(
         db_session,
@@ -158,8 +165,61 @@ def test_close_cash_session_calculates_difference(db_session):
     assert closed.difference_amount == Decimal("-10.00")
 
 
+def test_cash_delivery_creates_audit_log(db_session):
+    admin, _, _, _ = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
+    open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("100"), actor=admin)
+
+    register_cash_delivery(
+        db_session,
+        movement_date=date(2026, 4, 30),
+        amount=Decimal("40"),
+        description="Entrega parcial",
+        actor=admin,
+    )
+
+    audit = (
+        db_session.query(AuditLog)
+        .filter(AuditLog.entity_name == "cash_sessions", AuditLog.action == "CREATE_CASH_DELIVERY")
+        .order_by(AuditLog.created_at.desc())
+        .first()
+    )
+    assert audit is not None
+    assert audit.entity_id is not None
+    assert audit.new_data["amount"] == "40.00"
+    assert audit.new_data["movement_date"] == "2026-04-30"
+
+
+def test_manual_adjustment_audit_captures_reason(db_session):
+    admin, _, _, _ = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
+    open_cash_session(db_session, session_date=date(2026, 4, 30), opening_cash=Decimal("100"), actor=admin)
+
+    register_manual_adjustment(
+        db_session,
+        movement_date=date(2026, 4, 30),
+        direction="in",
+        amount=Decimal("15"),
+        reason="Sobrante contado",
+        description=None,
+        actor=admin,
+    )
+
+    audit = (
+        db_session.query(AuditLog)
+        .filter(AuditLog.entity_name == "cash_sessions", AuditLog.action == "CREATE_MANUAL_ADJUSTMENT")
+        .order_by(AuditLog.created_at.desc())
+        .first()
+    )
+    assert audit is not None
+    assert audit.reason == "Sobrante contado"
+    assert audit.new_data["direction"] == "in"
+    assert audit.new_data["amount"] == "15.00"
+
+
 def test_create_sale_with_cash_requires_open_session(db_session):
     admin, _, company, cash_method = _seed_core(db_session)
+    set_request_user(db_session, admin.id)
     payload = SaleCreateRequest.model_validate(
         {
             "company_id": company.id,

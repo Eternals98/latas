@@ -1,9 +1,8 @@
 from sqlalchemy.orm import Session
 
-from src.core.config import settings
-from src.db.base import Base
-from src.db.session import SessionLocal, engine
+from src.db.session import SessionLocal
 from src.models.audit_log import AuditLog  # noqa: F401
+from src.models.cash_event import CashEvent  # noqa: F401
 from src.models.cash_movement import CashMovement  # noqa: F401
 from src.models.cash_session import CashSession  # noqa: F401
 from src.models.company import Company  # noqa: F401
@@ -14,19 +13,9 @@ from src.models.transaction import Transaction  # noqa: F401
 from src.models.transaction_payment import TransactionPayment  # noqa: F401
 
 
-def _is_sqlite(url: str) -> bool:
-    return url.startswith("sqlite")
-
-
 def init_db() -> None:
-    # Politica oficial:
-    # - Solo SQLite local puede inicializarse con create_all.
-    # - Supabase/Postgres se gestiona por SQL versionado (supabase/schema.sql).
-    # Nunca ejecutar create_all sobre Supabase/Postgres porque omite RLS/policies.
-    if not _is_sqlite(settings.database_url):
-        return
-
-    Base.metadata.create_all(bind=engine)
+    # Postgres/Supabase se gestiona con migraciones SQL versionadas.
+    # Este helper se conserva solo para compatibilidad local y no materializa el esquema.
     session: Session = SessionLocal()
     session.close()
 

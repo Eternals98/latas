@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { getCsrfHeaders } from "../../lib/csrf-client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ export default function LoginPage() {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getCsrfHeaders() },
         body: JSON.stringify({ email, password })
       });
       const payload = (await response.json().catch(() => null)) as { detail?: string } | null;
@@ -24,7 +25,9 @@ export default function LoginPage() {
         setError(payload?.detail || "Credenciales incorrectas. Intente nuevamente.");
         return;
       }
-      window.location.assign("/dashboard");
+      const sessionResponse = await fetch("/api/auth/session", { cache: "no-store" });
+      const session = (await sessionResponse.json().catch(() => null)) as { role?: "admin" | "cashier" } | null;
+      window.location.assign(session?.role === "cashier" ? "/salesRegister" : "/dashboard");
     } catch {
       setError("No se puede conectar al servidor. Intenta nuevamente más tarde.");
     } finally {

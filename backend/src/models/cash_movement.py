@@ -16,5 +16,6 @@ class CashMovement(Base):
     movement_type: Mapped[str] = mapped_column(String, nullable=False)
     amount: Mapped[float] = mapped_column(Numeric(14, 2), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=True)
+    admin_reason: Mapped[str] = mapped_column(Text, nullable=True)
     created_by: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("profiles.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

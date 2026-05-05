@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseClient } from "../../../../lib/supabase";
 import { AUTH_COOKIE, AUTH_EXPIRES_AT_COOKIE } from "../../../../lib/auth";
+import { CSRF_COOKIE, createCsrfToken } from "../../../../lib/csrf";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as { email?: string; password?: string };
@@ -19,6 +20,7 @@ export async function POST(request: Request) {
 
   const expiresIn = data.session.expires_in || 3600;
   const expiresAt = Math.floor(Date.now() / 1000) + expiresIn;
+  const csrfToken = createCsrfToken();
   const response = NextResponse.json({ ok: true });
   response.cookies.set(AUTH_COOKIE, data.session.access_token, {
     httpOnly: true,
@@ -29,6 +31,13 @@ export async function POST(request: Request) {
   });
   response.cookies.set(AUTH_EXPIRES_AT_COOKIE, String(expiresAt), {
     httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: expiresIn,
+  });
+  response.cookies.set(CSRF_COOKIE, csrfToken, {
+    httpOnly: false,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",

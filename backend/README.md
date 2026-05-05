@@ -17,8 +17,8 @@ python -m src.db.init_db
 python scripts/check_schema.py
 ```
 
-`init_db` solo ejecuta `create_all` cuando `DATABASE_URL` es SQLite local.  
-En Supabase/Postgres las tablas/policies se gestionan por `supabase/schema.sql`.
+`init_db` no materializa el esquema.  
+En Supabase/Postgres las tablas/policies se gestionan por `supabase/schema.sql` y migraciones.
 
 ## Ejecutar API
 
