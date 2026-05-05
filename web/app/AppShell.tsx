@@ -15,6 +15,11 @@ type NavItem = {
   onClick?: () => void;
 };
 
+type AppShellProps = {
+  children: ReactNode;
+  role?: "admin" | "cashier" | null;
+};
+
 /* =========================
    Acción logout
 ========================= */
@@ -34,8 +39,11 @@ const MAIN_NAV: NavItem[] = [
   { href: "/cash-management", label: "Gestión de caja", icon: "account_balance_wallet" },
   { href: "/transactions", label: "Transactions", icon: "receipt_long" },
   { href: "/reportes", label: "Reportes", icon: "analytics" },
+  { href: "/configuracion", label: "Configuración", icon: "settings" },
   { href: "/clientes", label: "Clientes", icon: "groups" },
 ];
+
+const ADMIN_ONLY_PATHS = new Set(["/dashboard", "/transactions", "/reportes", "/configuracion"]);
 
 const FOOTER_NAV: NavItem[] = [
   {
@@ -93,16 +101,17 @@ function NavLink({ item, active }: { item: NavItem; active: boolean }) {
 /* =========================
    AppShell
 ========================= */
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, role }: AppShellProps) {
   const pathname = usePathname();
+  const visibleNav = role === "admin" ? MAIN_NAV : MAIN_NAV.filter((item) => !item.href || !ADMIN_ONLY_PATHS.has(item.href));
 
   const activeIndex = useMemo(() => {
-    return MAIN_NAV.findIndex(
+    return visibleNav.findIndex(
       (i) =>
         i.href &&
         (pathname === i.href || pathname.startsWith(`${i.href}/`))
     );
-  }, [pathname]);
+  }, [pathname, visibleNav]);
 
   return (
     <div className="min-h-screen bg-[#f4f6fb] text-slate-900">
@@ -142,7 +151,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           )}
 
           {/* Items */}
-          {MAIN_NAV.map((item, i) => {
+          {visibleNav.map((item) => {
             const active =
               item.href &&
               (pathname === item.href ||

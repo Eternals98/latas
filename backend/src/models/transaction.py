@@ -1,5 +1,5 @@
-from datetime import date, datetime
-from sqlalchemy import Date, DateTime, ForeignKey, Numeric, String, Text
+from datetime import datetime
+from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -13,7 +13,7 @@ class Transaction(Base):
     company_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("companies.id"), nullable=False)
     customer_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("customers.id"), nullable=True)
     cash_session_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("cash_sessions.id"), nullable=True)
-    transaction_date: Mapped[date] = mapped_column(Date, nullable=False)
+    transaction_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     document_type: Mapped[str] = mapped_column(String, nullable=True)
     document_number: Mapped[str] = mapped_column(String, nullable=True)
     description: Mapped[str] = mapped_column(Text, nullable=True)

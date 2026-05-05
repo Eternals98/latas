@@ -35,7 +35,7 @@ class SalePaymentCreateRequest(BaseModel):
 
 class SaleCreateRequest(BaseModel):
     company_id: str = Field(min_length=1)
-    transaction_date: date
+    transaction_date: datetime
     document_number: str | None = None
     description: str = Field(min_length=1)
     total_amount: Decimal
@@ -85,7 +85,7 @@ class SaleCreateRequest(BaseModel):
 
 class SaleUpdateRequest(BaseModel):
     description: str = Field(min_length=1)
-    transaction_date: date
+    transaction_date: datetime
     company_id: str = Field(min_length=1)
     payments: list[SalePaymentCreateRequest] = Field(min_length=1)
 
@@ -241,7 +241,7 @@ class SaleDetailRecord(BaseModel):
     customer_id: str | None
     customer_name: str | None
     customer_phone: str | None
-    transaction_date: date
+    transaction_date: datetime
     document_number: str | None
     description: str
     total_amount: Decimal

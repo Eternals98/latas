@@ -47,7 +47,7 @@ begin
       raise exception 'Cash session must be open';
     end if;
 
-    if session_date_value is distinct from new.transaction_date then
+    if session_date_value is distinct from new.transaction_date::date then
       raise exception 'Transaction date must match cash session date';
     end if;
   end if;

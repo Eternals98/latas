@@ -64,7 +64,21 @@ function todayISO(): string {
   const y = now.getFullYear();
   const m = String(now.getMonth() + 1).padStart(2, "0");
   const d = String(now.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+  const hh = String(now.getHours()).padStart(2, "0");
+  const mm = String(now.getMinutes()).padStart(2, "0");
+  return `${y}-${m}-${d}T${hh}:${mm}`;
+}
+
+function formatDateTime(value: string): string {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+  return parsed.toLocaleString("es-CO", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function createPaymentRow(index: number): PaymentRow {
@@ -150,7 +164,7 @@ export default function RegistroPage() {
       setIsLoadingCashStatus(true);
       try {
         const response = await fetch(
-          `/api/bff/cash/today?session_date=${encodeURIComponent(transactionDate)}`,
+          `/api/bff/cash/today?session_date=${encodeURIComponent(transactionDate.slice(0, 10))}`,
           { cache: "no-store" },
         );
         const body = await response.json();
@@ -279,7 +293,7 @@ export default function RegistroPage() {
 
     const payload: SalePayload = {
       company_id: companyId,
-      transaction_date: transactionDate,
+      transaction_date: new Date(transactionDate).toISOString(),
       document_number: documentNumber.trim() || null,
       description: description.trim(),
       total_amount: toMoneyString(totalAmount),
@@ -456,11 +470,11 @@ export default function RegistroPage() {
                 {/* FECHA */}
                 <label className="flex flex-col gap-1">
                   <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
-                    Fecha de registro
+                    Fecha y hora de registro
                   </span>
 
                   <input
-                    type="date"
+                    type="datetime-local"
                     value={transactionDate}
                     onChange={(e) => setTransactionDate(e.target.value)}
                     className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-medium tracking-tight text-gray-900 outline-none focus:border-[#003D9B]"

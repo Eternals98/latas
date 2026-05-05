@@ -25,7 +25,9 @@ export default function LoginPage() {
         setError(payload?.detail || "Credenciales incorrectas. Intente nuevamente.");
         return;
       }
-      window.location.assign("/dashboard");
+      const sessionResponse = await fetch("/api/auth/session", { cache: "no-store" });
+      const session = (await sessionResponse.json().catch(() => null)) as { role?: "admin" | "cashier" } | null;
+      window.location.assign(session?.role === "cashier" ? "/salesRegister" : "/dashboard");
     } catch {
       setError("No se puede conectar al servidor. Intenta nuevamente más tarde.");
     } finally {

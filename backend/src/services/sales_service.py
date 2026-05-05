@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from uuid import uuid4
 
@@ -131,7 +131,7 @@ def create_sale(
     actor: Profile,
 ) -> SaleDetailRecord:
     _validate_company_active(db, payload.company_id)
-    session = get_open_cash_session_by_date(db, session_date=payload.transaction_date)
+    session = get_open_cash_session_by_date(db, session_date=payload.transaction_date.date())
     if session is None:
         raise SalesConflictError("No se puede registrar la venta porque la caja está cerrada para la fecha indicada.")
     customer_id = payload.customer_id
@@ -192,7 +192,7 @@ def create_sale(
                     id=str(uuid4()),
                     transaction_id=transaction_id,
                     cash_session_id=linked_cash_session_id,
-                    movement_date=payload.transaction_date,
+                    movement_date=payload.transaction_date.date(),
                     movement_type="cash_in",
                     amount=to_money(cash_total),
                     description=f"Ingreso por venta {payload.document_number or transaction_id}",
@@ -232,7 +232,7 @@ def _build_sales_query(filters: SaleListFilters):
     if filters.date_from:
         conditions.append(Transaction.transaction_date >= filters.date_from)
     if filters.date_to:
-        conditions.append(Transaction.transaction_date <= filters.date_to)
+        conditions.append(Transaction.transaction_date < datetime.combine(filters.date_to + timedelta(days=1), datetime.min.time(), tzinfo=UTC))
     if filters.company_id:
         conditions.append(Transaction.company_id == filters.company_id)
     if filters.company_ids:
@@ -422,7 +422,7 @@ def update_sale_with_payments(
 
     methods_map = _load_payment_methods(db, [item.payment_method_id for item in payload.payments])
 
-    session = get_open_cash_session_by_date(db, session_date=payload.transaction_date)
+    session = get_open_cash_session_by_date(db, session_date=payload.transaction_date.date())
     if session is None:
         raise SalesConflictError("No se puede editar la venta porque la caja está cerrada para la fecha indicada.")
 
@@ -530,7 +530,7 @@ def cancel_sale(
                 id=str(uuid4()),
                 transaction_id=sale_id,
                 cash_session_id=opened_session.id,
-                movement_date=transaction.transaction_date,
+                movement_date=transaction.transaction_date.date(),
                 movement_type="cash_out",
                 amount=to_money(cash_amount),
                 description=f"Anulación de venta {transaction.document_number or sale_id}",

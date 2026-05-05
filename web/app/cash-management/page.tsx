@@ -368,6 +368,7 @@ export default function CashManagementPage() {
               type: "APERTURA",
               description: "Apertura de caja",
               reference: "N/A",
+              status: "open",
               cashAmount: Number(session.opening_cash ?? 0),
               otherAmount: 0,
               vaultAmount: 0,
@@ -1079,7 +1080,7 @@ export default function CashManagementPage() {
             <p className="pt-4 text-base text-slate-600">Calculado en tiempo real</p>
           </article>
           <article className="rounded border border-slate-200 bg-white p-5">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-700">Ingresos -  Solo fectivo</p>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-700">Balance de Caja</p>
             <p className="pt-4 text-5xl font-bold text-[#003D9B]">{money(metrics.cashIn)}</p>
             <p className="pt-4 text-base text-emerald-600">Ventas acumuladas y apertura</p>
           </article>
