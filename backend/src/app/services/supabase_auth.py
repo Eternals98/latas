@@ -11,9 +11,9 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from src.core.config import get_supabase_jwks_url, get_supabase_jwt_issuer, settings
-from src.db.session import get_db
-from src.models.profile import Profile
+from app.core.config import get_supabase_jwks_url, get_supabase_jwt_issuer, settings
+from app.core.database import get_db
+from app.models.profile import Profile
 
 security = HTTPBearer(auto_error=False)
 _JWKS_CACHE: dict[str, Any] = {"keys": None, "expires_at": datetime.min.replace(tzinfo=UTC)}

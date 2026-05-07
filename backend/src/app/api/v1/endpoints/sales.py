@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from datetime import date
 from sqlalchemy.orm import Session
 
-from src.api.schemas.sales import (
+from app.schemas.sales import (
     ErrorResponse,
     SaleCancelRequest,
     SaleCreateRequest,
@@ -12,9 +12,9 @@ from src.api.schemas.sales import (
     SalesListResponse,
     sale_record_to_response,
 )
-from src.db.session import get_db
-from src.models.profile import Profile
-from src.services.sales_service import (
+from app.core.database import get_db
+from app.models.profile import Profile
+from app.services.sales_service import (
     SalesConflictError,
     SalesNotFoundError,
     SalesPermissionError,
@@ -25,9 +25,9 @@ from src.services.sales_service import (
     list_sales,
     update_sale_with_payments,
 )
-from src.services.supabase_auth import require_admin, require_user
+from app.services.supabase_auth import require_admin, require_user
 
-router = APIRouter(prefix="/api/sales", tags=["Sales"])
+router = APIRouter(prefix="/sales", tags=["Sales"])
 
 
 @router.post(

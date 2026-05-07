@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
-from src.api.schemas.phase1 import CustomerResponse
-from src.db.session import get_db
-from src.models.customer import Customer
-from src.models.profile import Profile
-from src.services.supabase_auth import require_user
+from app.schemas.phase1 import CustomerResponse
+from app.core.database import get_db
+from app.models.customer import Customer
+from app.models.profile import Profile
+from app.services.supabase_auth import require_user
 
-router = APIRouter(prefix="/api/customers", tags=["Customers"])
+router = APIRouter(prefix="/customers", tags=["Customers"])
 
 
 @router.get("", response_model=list[CustomerResponse])

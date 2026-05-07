@@ -1,4 +1,12 @@
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _get_env_file() -> str:
+    env = os.getenv("APP_ENV", "local")
+    if env == "production":
+        return ".env.production"
+    return ".env"
 
 
 class Settings(BaseSettings):
@@ -15,7 +23,7 @@ class Settings(BaseSettings):
     supabase_jwks_cache_ttl_seconds: int = 300
     supabase_service_role_key: str = ""
 
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(env_file=_get_env_file(), env_file_encoding="utf-8", extra="ignore")
 
 
 settings = Settings()

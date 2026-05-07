@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from src.api.schemas.phase1 import CompanyResponse
-from src.db.session import get_db
-from src.models.company import Company
-from src.models.profile import Profile
-from src.services.supabase_auth import require_user
+from app.schemas.phase1 import CompanyResponse
+from app.core.database import get_db
+from app.models.company import Company
+from app.models.profile import Profile
+from app.services.supabase_auth import require_user
 
-router = APIRouter(prefix="/api/companies", tags=["Companies"])
+router = APIRouter(prefix="/companies", tags=["Companies"])
 
 
 @router.get("", response_model=list[CompanyResponse])

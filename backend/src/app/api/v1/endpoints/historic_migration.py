@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
-from src.api.schemas.historic_migration import HistoricMigrationResponse
-from src.db.session import get_db
-from src.models.profile import Profile
-from src.services.historic_migration_service import HistoricMigrationError, migrate_historic_excel
-from src.services.supabase_auth import require_admin
+from app.schemas.historic_migration import HistoricMigrationResponse
+from app.core.database import get_db
+from app.models.profile import Profile
+from app.services.historic_migration_service import HistoricMigrationError, migrate_historic_excel
+from app.services.supabase_auth import require_admin
 
-router = APIRouter(prefix="/api/admin/historic-migration", tags=["HistoricMigration"])
+router = APIRouter(prefix="/admin/historic-migration", tags=["HistoricMigration"])
 
 
 @router.post(

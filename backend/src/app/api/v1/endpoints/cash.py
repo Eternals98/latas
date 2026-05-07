@@ -3,7 +3,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from src.api.schemas.cash import (
+from app.schemas.cash import (
     CashActionRequest,
     CashAdjustmentRequest,
     CashEventHistoryResponse,
@@ -19,9 +19,9 @@ from src.api.schemas.cash import (
     cash_event_record_to_response,
     cash_session_record_to_response,
 )
-from src.db.session import get_db
-from src.models.profile import Profile
-from src.services.cash_service import (
+from app.core.database import get_db
+from app.models.profile import Profile
+from app.services.cash_service import (
     CashConflictError,
     CashNotFoundError,
     CashValidationError,
@@ -33,9 +33,9 @@ from src.services.cash_service import (
     register_cash_delivery,
     register_manual_adjustment,
 )
-from src.services.supabase_auth import require_user
+from app.services.supabase_auth import require_user
 
-router = APIRouter(prefix="/api/cash", tags=["Cash"])
+router = APIRouter(prefix="/cash", tags=["Cash"])
 
 
 @router.post("/open", response_model=CashSessionResponse, responses={400: {"model": ErrorResponse}, 403: {"model": ErrorResponse}, 409: {"model": ErrorResponse}})
