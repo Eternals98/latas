@@ -6,7 +6,9 @@
       "Bash(Write-Output \"Deleted\")",
       "Bash(python -m pytest --co -q)",
       "Bash(npx tsc *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(python apply_migrations.py)",
+      "Bash(cd /mnt/f/Projects/latas/latas/backend && python apply_migrations.py)"
     ]
   }
 }

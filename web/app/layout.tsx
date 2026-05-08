@@ -13,7 +13,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
   return (
     <html lang="es">
-      <body>
+      <body suppressHydrationWarning>
         {authenticated ? <AppShell role={sessionUser?.role}>{children}</AppShell> : children}
         <Toaster richColors position="top-right" closeButton />
       </body>

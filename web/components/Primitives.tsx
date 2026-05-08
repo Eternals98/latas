@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useId } from 'react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import {
@@ -200,7 +200,7 @@ export const Input = ({
   className?: string
   [key: string]: any
 }) => {
-  const id = useRef(`in-${Math.random().toString(36).slice(2, 8)}`).current;
+  const id = useId();
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label && <label htmlFor={id} className="text-xs font-semibold text-ink-900">{label}</label>}
