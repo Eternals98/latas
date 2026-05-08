@@ -41,16 +41,19 @@ def _require_admin_or_cashier(actor: Profile) -> None:
         raise CashValidationError("Operación no permitida para este usuario.")
 
 
-def _get_session_by_date(db: Session, session_date: date) -> CashSession | None:
+def _get_session_by_date(db: Session, session_date: date, lock: bool = False) -> CashSession | None:
+    stmt = select(CashSession).where(CashSession.session_date == session_date)
+    if lock:
+        stmt = stmt.with_for_update()
     return (
-        db.execute(select(CashSession).where(CashSession.session_date == session_date))
+        db.execute(stmt)
         .scalars()
         .first()
     )
 
 
-def _get_open_session_or_raise(db: Session, session_date: date) -> CashSession:
-    session = _get_session_by_date(db, session_date)
+def _get_open_session_or_raise(db: Session, session_date: date, lock: bool = False) -> CashSession:
+    session = _get_session_by_date(db, session_date, lock=lock)
     if session is None:
         raise CashNotFoundError("No existe caja para la fecha indicada.")
     if session.status != "open":
@@ -192,6 +195,29 @@ def _create_movement(
     db.add(movement)
     return movement
 
+def record_cash_movement(
+    db: Session,
+    *,
+    cash_session_id: str,
+    movement_date: date,
+    movement_type: str,
+    amount: Decimal,
+    description: str | None,
+    actor: Profile,
+    transaction_id: str | None = None,
+) -> CashMovement:
+    """Public API to record a cash movement in the ledger."""
+    return _create_movement(
+        db,
+        cash_session_id=cash_session_id,
+        movement_date=movement_date,
+        movement_type=movement_type,
+        amount=amount,
+        description=description,
+        actor=actor,
+        transaction_id=transaction_id,
+    )
+
 
 def open_cash_session(
     db: Session,
@@ -280,7 +306,7 @@ def register_cash_delivery(
     actor: Profile,
 ) -> CashSessionRecord:
     _require_admin_or_cashier(actor)
-    session = _get_open_session_or_raise(db, movement_date)
+    session = _get_open_session_or_raise(db, movement_date, lock=True)
     session_record = _session_to_record(db, session)
     delivery_amount = to_money(amount)
     if session_record.cash_balance < delivery_amount:
@@ -340,7 +366,7 @@ def register_manual_adjustment(
     actor: Profile,
 ) -> CashSessionRecord:
     _require_admin(actor)
-    session = _get_open_session_or_raise(db, movement_date)
+    session = _get_open_session_or_raise(db, movement_date, lock=True)
     movement_type = "adjustment_in" if direction == "in" else "adjustment_out"
     adjustment_amount = to_money(amount)
     if movement_type == "adjustment_out":
@@ -387,7 +413,7 @@ def register_vault_withdrawal(
     actor: Profile,
 ) -> CashSessionRecord:
     _require_admin_or_cashier(actor)
-    session = _get_open_session_or_raise(db, movement_date)
+    session = _get_open_session_or_raise(db, movement_date, lock=True)
     session_record = _session_to_record(db, session)
     withdrawal_amount = to_money(amount)
     if session_record.vault_balance < withdrawal_amount:

@@ -1,3 +1,7 @@
+"""
+Companies endpoints.
+Provides access to the list of active organizational units.
+"""
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -9,11 +13,14 @@ from app.services.supabase_auth import require_user
 
 router = APIRouter(prefix="/companies", tags=["Companies"])
 
-
 @router.get("", response_model=list[CompanyResponse])
 def list_companies(
     _: Profile = Depends(require_user),
     db: Session = Depends(get_db),
 ) -> list[CompanyResponse]:
+    """
+    Retrieves a list of all registered companies.
+    Returns them sorted by name in ascending order.
+    """
     rows = db.query(Company).order_by(Company.name.asc()).all()
     return [CompanyResponse.model_validate(row, from_attributes=True) for row in rows]

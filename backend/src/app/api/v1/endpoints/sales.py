@@ -2,15 +2,16 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from datetime import date
 from sqlalchemy.orm import Session
 
-from app.schemas.sales import (
-    ErrorResponse,
-    SaleCancelRequest,
+from app.schemas.transactions.sales import (
     SaleCreateRequest,
-    SaleListFilters,
-    SaleUpdateRequest,
     SaleResponse,
-    SalesListResponse,
+    SaleListFilters,
     sale_record_to_response,
+)
+from app.schemas.transactions.base import (
+    TransactionCancelRequest,
+    TransactionListResponse,
+    ErrorResponse,
 )
 from app.core.database import get_db
 from app.models.profile import Profile
@@ -44,18 +45,13 @@ def create_sale_route(
     actor: Profile = Depends(require_user),
     db: Session = Depends(get_db),
 ) -> SaleResponse:
-    try:
-        record = create_sale(db, payload=payload, actor=actor)
-    except SalesValidationError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
-    except SalesConflictError as exc:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
+    record = create_sale(db, payload=payload, actor=actor)
     return sale_record_to_response(record)
 
 
 @router.get(
     "",
-    response_model=SalesListResponse,
+    response_model=TransactionListResponse,
     responses={status.HTTP_400_BAD_REQUEST: {"model": ErrorResponse}},
 )
 def list_sales_route(
@@ -69,25 +65,20 @@ def list_sales_route(
     offset: int = Query(default=0),
     _: Profile = Depends(require_user),
     db: Session = Depends(get_db),
-) -> SalesListResponse:
-    try:
-        filters = SaleListFilters(
-            date_from=date_from,
-            date_to=date_to,
-            company_id=company_id,
-            company_ids=company_ids or [],
-            payment_method_ids=payment_method_ids or [],
-            search=search,
-            limit=limit,
-            offset=offset,
-        )
-        items, total = list_sales(db, filters=filters)
-    except SalesValidationError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
-    except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+) -> TransactionListResponse:
+    filters = SaleListFilters(
+        date_from=date_from,
+        date_to=date_to,
+        company_id=company_id,
+        company_ids=company_ids or [],
+        payment_method_ids=payment_method_ids or [],
+        search=search,
+        limit=limit,
+        offset=offset,
+    )
+    items, total = list_sales(db, filters=filters)
 
-    return SalesListResponse(
+    return TransactionListResponse(
         items=[sale_record_to_response(item) for item in items],
         total=total,
         limit=filters.limit,
@@ -108,12 +99,7 @@ def get_sale_route(
     _: Profile = Depends(require_user),
     db: Session = Depends(get_db),
 ) -> SaleResponse:
-    try:
-        record = get_sale_by_id(db, sale_id=sale_id)
-    except SalesNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
-    except SalesValidationError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    record = get_sale_by_id(db, sale_id=sale_id)
     return sale_record_to_response(record)
 
 
@@ -133,16 +119,7 @@ def update_sale_route(
     actor: Profile = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> SaleResponse:
-    try:
-        record = update_sale_with_payments(db, sale_id=sale_id, payload=payload, actor=actor)
-    except SalesPermissionError as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
-    except SalesValidationError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
-    except SalesConflictError as exc:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
-    except SalesNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    record = update_sale_with_payments(db, sale_id=sale_id, payload=payload, actor=actor)
     return sale_record_to_response(record)
 
 
@@ -158,18 +135,9 @@ def update_sale_route(
 )
 def cancel_sale_route(
     sale_id: str,
-    payload: SaleCancelRequest,
+    payload: TransactionCancelRequest,
     actor: Profile = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> SaleResponse:
-    try:
-        record = cancel_sale(db, sale_id=sale_id, payload=payload, actor=actor)
-    except SalesPermissionError as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from exc
-    except SalesValidationError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
-    except SalesConflictError as exc:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(exc)) from exc
-    except SalesNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    record = cancel_sale(db, sale_id=sale_id, payload=payload, actor=actor)
     return sale_record_to_response(record)

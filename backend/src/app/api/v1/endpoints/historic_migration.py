@@ -1,3 +1,7 @@
+"""
+Historic Migration endpoints.
+Allows administrators to import legacy sales data from Excel files.
+"""
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
@@ -8,7 +12,6 @@ from app.services.historic_migration_service import HistoricMigrationError, migr
 from app.services.supabase_auth import require_admin
 
 router = APIRouter(prefix="/admin/historic-migration", tags=["HistoricMigration"])
-
 
 @router.post(
     "",
@@ -21,6 +24,10 @@ async def upload_historic_migration(
     actor: Profile = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> HistoricMigrationResponse:
+    """
+    Uploads and processes an Excel file containing legacy sales data.
+    Validates the file content and imports records into the transactions table.
+    """
     content = await file.read()
     try:
         return migrate_historic_excel(db, content=content, actor=actor, filename=file.filename, month=month)

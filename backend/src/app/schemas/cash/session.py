@@ -1,22 +1,20 @@
+"""
+Cash session schemas.
+Manages the lifecycle of a cash drawer session (opening, closing, and state).
+"""
 from __future__ import annotations
-
 from datetime import date, datetime
 from decimal import Decimal, ROUND_HALF_UP
-
 from pydantic import BaseModel, Field, field_serializer, field_validator
+from .movement import CashMovementItem
 
 MONEY_QUANT = Decimal("0.01")
-
 
 def to_money(value: Decimal | str | float | int) -> Decimal:
     return Decimal(str(value)).quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
 
-
-class ErrorResponse(BaseModel):
-    detail: str
-
-
 class CashOpenRequest(BaseModel):
+    """Request to open a new cash session."""
     session_date: date
     opening_cash: Decimal
 
@@ -28,43 +26,8 @@ class CashOpenRequest(BaseModel):
             raise ValueError("opening_cash must be greater than or equal to 0")
         return amount
 
-
-class CashActionRequest(BaseModel):
-    movement_date: date
-    amount: Decimal
-    description: str | None = None
-
-    @field_validator("amount")
-    @classmethod
-    def validate_amount(cls, value: Decimal) -> Decimal:
-        amount = to_money(value)
-        if amount <= 0:
-            raise ValueError("amount must be greater than 0")
-        return amount
-
-    @field_validator("description")
-    @classmethod
-    def validate_description(cls, value: str | None) -> str | None:
-        if value is None:
-            return None
-        cleaned = value.strip()
-        return cleaned or None
-
-
-class CashAdjustmentRequest(CashActionRequest):
-    direction: str = Field(pattern="^(in|out)$")
-    reason: str = Field(min_length=1)
-
-    @field_validator("reason")
-    @classmethod
-    def validate_reason(cls, value: str) -> str:
-        cleaned = value.strip()
-        if not cleaned:
-            raise ValueError("reason is required")
-        return cleaned
-
-
 class CashCloseRequest(BaseModel):
+    """Request to close an existing cash session."""
     session_date: date
     counted_cash: Decimal
 
@@ -76,23 +39,8 @@ class CashCloseRequest(BaseModel):
             raise ValueError("counted_cash must be greater than or equal to 0")
         return amount
 
-
-class CashMovementItem(BaseModel):
-    id: str
-    transaction_id: str | None
-    movement_date: str
-    movement_type: str
-    amount: Decimal
-    description: str | None
-    created_by: str | None
-    created_at: str
-
-    @field_serializer("amount", when_used="json")
-    def serialize_amount(self, value: Decimal) -> str:
-        return f"{to_money(value):.2f}"
-
-
 class CashSessionResponse(BaseModel):
+    """Response detailing the state and totals of a cash session."""
     id: str
     session_date: str
     status: str
@@ -125,35 +73,18 @@ class CashSessionResponse(BaseModel):
             return None
         return f"{to_money(value):.2f}"
 
-
 class CashSessionDetailResponse(BaseModel):
+    """Detail view of a cash session, including all associated movements."""
     session: CashSessionResponse
     movements: list[CashMovementItem]
 
-
 class CashHistoryResponse(BaseModel):
+    """Paginated history of cash sessions."""
     items: list[CashSessionResponse]
     total: int
 
-
-class CashEventItem(BaseModel):
-    id: str
-    cash_session_id: str | None
-    event_type: str
-    event_label: str
-    actor_id: str
-    actor_label: str | None = None
-    event_at: str
-    payload: dict | None = None
-    note: str | None = None
-
-
-class CashEventHistoryResponse(BaseModel):
-    items: list[CashEventItem]
-    total: int
-
-
 class CashSessionRecord(BaseModel):
+    """Internal record representation of a cash session for mapping."""
     id: str
     session_date: date
     status: str
@@ -171,30 +102,8 @@ class CashSessionRecord(BaseModel):
     opened_at: datetime
     closed_at: datetime | None
 
-
-class CashMovementRecord(BaseModel):
-    id: str
-    transaction_id: str | None
-    movement_date: date
-    movement_type: str
-    amount: Decimal
-    description: str | None
-    created_by: str | None
-    created_at: datetime
-
-
-class CashEventRecord(BaseModel):
-    id: str
-    cash_session_id: str | None
-    event_type: str
-    actor_id: str
-    actor_label: str | None = None
-    event_at: datetime
-    payload: dict | None = None
-    note: str | None = None
-
-
 def cash_session_record_to_response(record: CashSessionRecord) -> CashSessionResponse:
+    """Maps a CashSessionRecord to a CashSessionResponse."""
     return CashSessionResponse(
         id=record.id,
         session_date=record.session_date.isoformat(),
@@ -212,41 +121,4 @@ def cash_session_record_to_response(record: CashSessionRecord) -> CashSessionRes
         closed_by_label=record.closed_by_label,
         opened_at=record.opened_at.isoformat(),
         closed_at=record.closed_at.isoformat() if record.closed_at else None,
-    )
-
-
-def cash_movement_record_to_response(record: CashMovementRecord) -> CashMovementItem:
-    return CashMovementItem(
-        id=record.id,
-        transaction_id=record.transaction_id,
-        movement_date=record.movement_date.isoformat(),
-        movement_type=record.movement_type,
-        amount=to_money(record.amount),
-        description=record.description,
-        created_by=record.created_by,
-        created_at=record.created_at.isoformat(),
-    )
-
-
-def cash_event_label(value: str) -> str:
-    labels = {
-        "open": "Apertura",
-        "close": "Cierre",
-        "delivery": "Entrega a Bóveda",
-        "reopen": "Reapertura",
-    }
-    return labels.get(value, value.replace("_", " ").title())
-
-
-def cash_event_record_to_response(record: CashEventRecord) -> CashEventItem:
-    return CashEventItem(
-        id=record.id,
-        cash_session_id=record.cash_session_id,
-        event_type=record.event_type,
-        event_label=cash_event_label(record.event_type),
-        actor_id=record.actor_id,
-        actor_label=record.actor_label,
-        event_at=record.event_at.isoformat(),
-        payload=record.payload,
-        note=record.note,
     )

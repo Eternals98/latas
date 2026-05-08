@@ -1,13 +1,20 @@
+"""
+TransactionPayment model representing the breakdown of payments for a transaction.
+Allows a single transaction to be paid with multiple payment methods.
+"""
 from datetime import datetime
 
 from sqlalchemy import DateTime, ForeignKey, Numeric
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.db.base import Base
-
+from app.core.base import Base
 
 class TransactionPayment(Base):
+    """
+    SQLAlchemy model for the 'transaction_payments' table.
+    Links a transaction to one or more payment methods and their respective amounts.
+    """
     __tablename__ = "transaction_payments"
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)

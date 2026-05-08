@@ -1,3 +1,7 @@
+"""
+Database initialization utility.
+Helper script to ensure connectivity or initialize the database schema locally.
+"""
 from sqlalchemy.orm import Session
 
 from app.core.database import SessionLocal
@@ -12,13 +16,13 @@ from app.models.profile import Profile  # noqa: F401
 from app.models.transaction import Transaction  # noqa: F401
 from app.models.transaction_payment import TransactionPayment  # noqa: F401
 
-
 def init_db() -> None:
-    # Postgres/Supabase se gestiona con migraciones SQL versionadas.
-    # Este helper se conserva solo para compatibilidad local y no materializa el esquema.
+    """
+    Initializes the database session.
+    Note: In production, schema changes are managed via SQL migrations.
+    """
     session: Session = SessionLocal()
     session.close()
-
 
 if __name__ == "__main__":
     init_db()

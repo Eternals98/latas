@@ -1,12 +1,19 @@
+"""
+Transaction model representing financial business events.
+Acts as the primary ledger for sales, returns, payments, and cash movements.
+"""
 from datetime import datetime
 from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.db.base import Base
-
+from app.core.base import Base
 
 class Transaction(Base):
+    """
+    SQLAlchemy model for the 'transactions' table.
+    Stores all financial movements regardless of type, facilitating a unified ledger.
+    """
     __tablename__ = "transactions"
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
@@ -14,12 +21,13 @@ class Transaction(Base):
     customer_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("customers.id"), nullable=True)
     cash_session_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("cash_sessions.id"), nullable=True)
     transaction_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    document_type: Mapped[str] = mapped_column(String, nullable=True)
     document_number: Mapped[str] = mapped_column(String, nullable=True)
     description: Mapped[str] = mapped_column(Text, nullable=True)
-    transaction_type: Mapped[str] = mapped_column(String, nullable=False)
+    transaction_type: Mapped[str] = mapped_column(String, nullable=False) # sale, movement, pay, return
+    parent_transaction_id: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("transactions.id"), nullable=True)
     total_amount: Mapped[float] = mapped_column(Numeric(14, 2), nullable=False)
-    status: Mapped[str] = mapped_column(String, nullable=False)
+    status: Mapped[str] = mapped_column(String, nullable=False) # confirmed, pending, cancelled
+    payment_terms: Mapped[str] = mapped_column(String, nullable=False) # Contado, Credito, boveda
     payment_difference_amount: Mapped[float] = mapped_column(Numeric(14, 2), nullable=False)
     payment_difference_reason: Mapped[str] = mapped_column(Text, nullable=True)
     created_by: Mapped[str] = mapped_column(UUID(as_uuid=False), ForeignKey("profiles.id"), nullable=True)

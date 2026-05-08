@@ -1,13 +1,20 @@
+"""
+Profile model representing users in the system.
+Synced from Supabase Auth and contains role-based access control information.
+"""
 from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.db.base import Base
-
+from app.core.base import Base
 
 class Profile(Base):
+    """
+    SQLAlchemy model for the 'profiles' table.
+    Stores user details and their role (admin, cashier) for authorization.
+    """
     __tablename__ = "profiles"
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)

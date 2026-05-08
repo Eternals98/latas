@@ -1,3 +1,7 @@
+"""
+FastAPI middleware configurations.
+Implements logging, CORS, GZip compression, and rate limiting.
+"""
 import logging
 import time
 
@@ -17,10 +21,14 @@ from app.core.config import get_cors_origins, settings
 
 logger = logging.getLogger(__name__)
 
+# Rate limiter configuration
 limiter = Limiter(key_func=get_remote_address)
 
-
 class LoggingMiddleware(BaseHTTPMiddleware):
+    """
+    HTTP middleware for logging request details.
+    Logs the method, path, status code, and response duration.
+    """
     async def dispatch(self, request: Request, call_next):
         start = time.time()
         response = await call_next(request)
@@ -32,9 +40,12 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         )
         return response
 
-
 def setup_middleware(app: FastAPI) -> None:
-    # CORS
+    """
+    Configures and adds all required middleware to the FastAPI application.
+    Sets up CORS, Compression, Trusted Hosts, Logging, and Rate Limiting.
+    """
+    # CORS: Configures cross-origin resource sharing
     app.add_middleware(
         CORSMiddleware,
         allow_origins=get_cors_origins(),
@@ -43,19 +54,19 @@ def setup_middleware(app: FastAPI) -> None:
         allow_headers=["*"],
     )
 
-    # Compresión
+    # Compression: Reduces response size for payloads > 1000 bytes
     app.add_middleware(GZipMiddleware, minimum_size=1000)
 
-    # Hosts permitidos
+    # Trusted Hosts: Prevents HTTP Host Header attacks
     allowed_hosts = ["localhost", "127.0.0.1"]
     if settings.app_env == "production":
         allowed_hosts = ["axentria.vercel.app", "localhost", "127.0.0.1"]
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
 
-    # Logging
+    # Logging: Adds request/response logging
     app.add_middleware(LoggingMiddleware)
 
-    # Rate limiting
+    # Rate limiting: Prevents API abuse using SlowAPI
     app.state.limiter = limiter
     app.add_exception_handler(
         RateLimitExceeded,

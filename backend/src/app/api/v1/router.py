@@ -1,3 +1,7 @@
+"""
+API Router orchestration.
+Aggregates all versioned endpoints into a single router for the FastAPI application.
+"""
 from fastapi import APIRouter
 
 from app.api.v1.endpoints.auth import router as auth_router

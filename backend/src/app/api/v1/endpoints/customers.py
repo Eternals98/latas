@@ -1,3 +1,7 @@
+"""
+Customers endpoints.
+Handles the retrieval and searching of registered customers.
+"""
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -10,13 +14,16 @@ from app.services.supabase_auth import require_user
 
 router = APIRouter(prefix="/customers", tags=["Customers"])
 
-
 @router.get("", response_model=list[CustomerResponse])
 def list_customers(
     search: str | None = Query(default=None),
     _: Profile = Depends(require_user),
     db: Session = Depends(get_db),
 ) -> list[CustomerResponse]:
+    """
+    Lists all active customers.
+    Supports optional searching by name or phone number.
+    """
     query = db.query(Customer).filter(Customer.is_active.is_(True))
     if search:
         pattern = f"%{search.strip()}%"

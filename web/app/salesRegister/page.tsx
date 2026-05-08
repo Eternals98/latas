@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { getCsrfHeaders } from "../../lib/csrf-client";
+import { t } from "../../lib/i18n";
 
 type Company = { id: string; name: string };
 type PaymentMethod = { id: string; name: string; affects_cash: boolean };
@@ -27,6 +28,8 @@ type SalePayload = {
   description: string;
   total_amount: string;
   customer_id: string | null;
+  payment_terms: "Contado" | "Credito";
+  status: "confirmed" | "pending";
   payments: { payment_method_id: string; amount: string }[];
 };
 
@@ -106,6 +109,8 @@ export default function RegistroPage() {
   const [documentNumber, setDocumentNumber] = useState("");
   const [description, setDescription] = useState("");
   const [totalAmount, setTotalAmount] = useState("");
+  const [paymentTerms, setPaymentTerms] = useState<"Contado" | "Credito">("Contado");
+  const [status, setStatus] = useState<"confirmed" | "pending">("confirmed");
   const [payments, setPayments] = useState<PaymentRow[]>([createPaymentRow(0)]);
   const [focusedMoneyField, setFocusedMoneyField] = useState<
     "total" | string | null
@@ -298,6 +303,8 @@ export default function RegistroPage() {
       description: description.trim(),
       total_amount: toMoneyString(totalAmount),
       customer_id: selectedCustomer?.id ?? null,
+      payment_terms: paymentTerms,
+      status: status,
       payments: payments
         .filter((row) => row.payment_method_id && parseMoney(row.amount) > 0)
         .map((row) => ({
@@ -448,24 +455,34 @@ export default function RegistroPage() {
                 </label>
 
                 {/* SUCURSAL / EMPRESA */}
-                <label className="flex flex-col gap-1">
-                  <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
-                    Empresa
-                  </span>
+                 <label className="flex flex-col gap-1">
+                   <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                     Términos de Pago
+                   </span>
+                   <select
+                     value={paymentTerms}
+                     onChange={(e) => setPaymentTerms(e.target.value as "Contado" | "Credito")}
+                     className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-normal leading-4 text-gray-900 outline-none focus:border-[#003D9B]"
+                   >
+                     <option value="Contado">Contado</option>
+                     <option value="Credito">Crédito</option>
+                   </select>
+                 </label>
+ 
+                 <label className="flex flex-col gap-1">
+                   <span className="text-xs font-bold uppercase leading-4 tracking-wide text-gray-700">
+                     Estado
+                   </span>
+                   <select
+                     value={status}
+                     onChange={(e) => setStatus(e.target.value as "confirmed" | "pending")}
+                     className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-normal leading-4 text-gray-900 outline-none focus:border-[#003D9B]"
+                   >
+                     <option value="confirmed">Confirmado</option>
+                     <option value="pending">Pendiente</option>
+                   </select>
+                 </label>
 
-                  <select
-                    value={companyId}
-                    onChange={(e) => setCompanyId(e.target.value)}
-                    className="h-8 w-full rounded border border-[#cbd5e1] bg-white px-2 text-xs font-normal leading-4 text-gray-900 outline-none focus:border-[#003D9B]"
-                  >
-                    <option value="">Seleccione empresa</option>
-                    {companies.map((company) => (
-                      <option key={company.id} value={company.id}>
-                        {company.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
 
                 {/* FECHA */}
                 <label className="flex flex-col gap-1">

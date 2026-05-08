@@ -1,12 +1,19 @@
+"""
+Customer model representing clients in the system.
+Supports both specific customers and generic profiles for quick sales.
+"""
 from datetime import datetime
 from sqlalchemy import Boolean, DateTime, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.db.base import Base
-
+from app.core.base import Base
 
 class Customer(Base):
+    """
+    SQLAlchemy model for the 'customers' table.
+    Stores customer contact info and flags for generic usage.
+    """
     __tablename__ = "customers"
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, server_default=text("gen_random_uuid()"))

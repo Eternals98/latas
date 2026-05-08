@@ -61,7 +61,7 @@ type SalePayment = {
   amount: string;
 };
 
-type SaleSummaryItem = {
+type TransactionSummaryItem = {
   id: string;
   description: string;
   document_number: string | null;
@@ -72,7 +72,7 @@ type SaleSummaryItem = {
 };
 
 type SalesListResponse = {
-  items: SaleSummaryItem[];
+  items: TransactionSummaryItem[];
   total: number;
   limit: number;
   offset: number;
@@ -124,12 +124,16 @@ async function parseResponseBody(response: Response): Promise<{ detail?: string 
 
 function prettyType(value: string): string {
   const map: Record<string, string> = {
+    sale: "VENTA",
+    movement: "MOVIMIENTO",
+    pay: "PAGO",
+    return: "DEVOLUCIÓN",
     open: "APERTURA",
     close: "CIERRE",
-    cash_in: "VENTA",
+    cash_in: "INGRESO",
     cash_out: "SALIDA",
-    vault_in: "BÓVEDA",
-    vault_out: "BÓVEDA",
+    vault_in: "BÓVEDA IN",
+    vault_out: "BÓVEDA OUT",
     adjustment_in: "AJUSTE +",
     adjustment_out: "AJUSTE -",
   };
@@ -148,15 +152,20 @@ function typeMeta(value: string) {
       icon: "payments",
       className: "bg-green-100 text-green-700 border-green-200",
     },
-    SALIDA: {
-      label: "RETIRO",
-      icon: "account_balance",
+    MOVIMIENTO: {
+      label: "MOVIMIENTO",
+      icon: "swap_horiz",
       className: "bg-blue-50 text-blue-700 border-blue-100",
     },
-    BÓVEDA: {
-      label: "BÓVEDA",
-      icon: "account_balance",
-      className: "bg-blue-50 text-blue-700 border-blue-100",
+    PAGO: {
+      label: "PAGO",
+      icon: "money_off",
+      className: "bg-orange-50 text-orange-700 border-orange-100",
+    },
+    DEVOLUCIÓN: {
+      label: "DEVOLUCIÓN",
+      icon: "assignment_return",
+      className: "bg-rose-50 text-rose-700 border-rose-100",
     },
     CIERRE: {
       label: "CIERRE",
@@ -164,7 +173,7 @@ function typeMeta(value: string) {
       className: "bg-slate-100 text-slate-700 border-slate-200",
     },
   };
-
+  
   return (
     map[value] ?? {
       label: value,
@@ -173,6 +182,7 @@ function typeMeta(value: string) {
     }
   );
 }
+
 
 export default function CashManagementPage() {
   const [sessionDate, setSessionDate] = useState(todayISO());
@@ -569,8 +579,16 @@ export default function CashManagementPage() {
         if (requestedAmount > metrics.cashBalance) {
           throw new Error(`La entrega no puede ser mayor al efectivo en caja (${money(metrics.cashBalance)}).`);
         }
-        endpoint = "/api/bff/cash/delivery";
-        payload = { movement_date: sessionDate, amount: requestedAmount, description: movementDescription || "Entrega de efectivo" };
+        endpoint = "/api/bff/transactions/movement";
+        payload = { 
+          company_id: session?.opened_by ?? "", // Simplified for now, usually comes from session/user
+          transaction_date: sessionDate, 
+          description: movementDescription || "Entrega de efectivo", 
+          total_amount: requestedAmount,
+          payment_terms: "Contado",
+          status: "confirmed",
+          payments: [{ payment_method_id: "CASH_ID", amount: requestedAmount }] // Replace CASH_ID with real ID
+        };
       }
       if (action === "close") {
         endpoint = "/api/bff/cash/close";

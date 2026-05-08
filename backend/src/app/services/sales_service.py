@@ -7,15 +7,17 @@ from uuid import uuid4
 from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import Session
 
-from src.api.schemas.sales import (
-    SaleCancelRequest,
+from src.app.schemas.transactions.sales import (
     SaleCreateRequest,
+    SaleResponse,
     SaleDetailRecord,
     SaleListFilters,
-    SalePaymentResponse,
-    SaleUpdateRequest,
-    to_money,
 )
+from src.app.schemas.transactions.base import (
+    TransactionCancelRequest,
+    to_money
+)
+from src.app.services.transaction_service import create_transaction, cancel_transaction
 from src.models.audit_log import AuditLog
 from src.models.cash_movement import CashMovement
 from src.models.company import Company
@@ -134,97 +136,29 @@ def create_sale(
     session = get_open_cash_session_by_date(db, session_date=payload.transaction_date.date())
     if session is None:
         raise SalesConflictError("No se puede registrar la venta porque la caja está cerrada para la fecha indicada.")
+    
     customer_id = payload.customer_id
     if customer_id is None:
         customer_id = _get_generic_customer_id(db)
     else:
         _validate_customer_active(db, customer_id)
-    methods_map = _validate_payments(db, payload)
-    cash_total = sum(
-        (to_money(payment.amount) for payment in payload.payments if methods_map[payment.payment_method_id].affects_cash),
-        start=Decimal("0.00"),
+        
+    _validate_payments(db, payload)
+    
+    transaction = create_transaction(
+        db,
+        payload=payload,
+        transaction_type="sale",
+        actor=actor,
+        customer_id=customer_id,
+        document_number=payload.document_number,
+        cash_session_id=session.id if any(
+            # Check if any payment method affects cash
+            db.get(PaymentMethod, p.payment_method_id).affects_cash for p in payload.payments
+        ) else None,
     )
-    linked_cash_session_id: str | None = session.id if cash_total > 0 else None
-
-    transaction_id = str(uuid4())
-    created_at = _now()
-
-    try:
-        transaction = Transaction(
-            id=transaction_id,
-            company_id=payload.company_id,
-            customer_id=customer_id,
-            cash_session_id=linked_cash_session_id,
-            transaction_date=payload.transaction_date,
-            document_type="other",
-            document_number=payload.document_number,
-            description=payload.description,
-            transaction_type="sale",
-            total_amount=to_money(payload.total_amount),
-            status="confirmed",
-            payment_difference_amount=Decimal("0.00"),
-            payment_difference_reason=None,
-            created_by=actor.id,
-            updated_by=actor.id,
-            cancelled_by=None,
-            created_at=created_at,
-            updated_at=created_at,
-            cancelled_at=None,
-            cancellation_reason=None,
-        )
-        db.add(transaction)
-        db.flush()
-
-        for payment in payload.payments:
-            db.add(
-                TransactionPayment(
-                    id=str(uuid4()),
-                    transaction_id=transaction_id,
-                    payment_method_id=payment.payment_method_id,
-                    amount=to_money(payment.amount),
-                    created_at=created_at,
-                )
-            )
-
-        if cash_total > 0 and linked_cash_session_id is not None:
-            db.add(
-                CashMovement(
-                    id=str(uuid4()),
-                    transaction_id=transaction_id,
-                    cash_session_id=linked_cash_session_id,
-                    movement_date=payload.transaction_date.date(),
-                    movement_type="cash_in",
-                    amount=to_money(cash_total),
-                    description=f"Ingreso por venta {payload.document_number or transaction_id}",
-                    created_by=actor.id,
-                    created_at=created_at,
-                )
-            )
-
-        db.add(
-            AuditLog(
-                id=str(uuid4()),
-                entity_name="transactions",
-                entity_id=transaction_id,
-                action="CREATE_SALE",
-                old_data=None,
-                new_data={
-                    "transaction_id": transaction_id,
-                    "company_id": payload.company_id,
-                    "total_amount": f"{to_money(payload.total_amount):.2f}",
-                    "payment_count": len(payload.payments),
-                },
-                reason=None,
-                created_by=actor.id,
-                created_at=created_at,
-            )
-        )
-        db.commit()
-    except Exception:
-        db.rollback()
-        raise
-
-    return get_sale_by_id(db, sale_id=transaction_id)
+    
+    return get_sale_by_id(db, sale_id=transaction.id)
 
 
 def _build_sales_query(filters: SaleListFilters):
@@ -495,7 +429,7 @@ def cancel_sale(
     db: Session,
     *,
     sale_id: str,
-    payload: SaleCancelRequest,
+    payload: TransactionCancelRequest,
     actor: Profile,
 ) -> SaleDetailRecord:
     transaction = _load_sale_transaction(db, sale_id)
@@ -503,59 +437,14 @@ def cancel_sale(
     opened_session = get_open_cash_session_by_date(db, session_date=transaction.transaction_date)
     if opened_session is None:
         raise SalesConflictError("No se puede anular la venta porque la caja está cerrada.")
-
-    payment_rows = (
-        db.execute(
-            select(TransactionPayment.amount, PaymentMethod.affects_cash)
-            .join(PaymentMethod, PaymentMethod.id == TransactionPayment.payment_method_id)
-            .where(TransactionPayment.transaction_id == sale_id)
-        )
-        .all()
+    
+    cancel_transaction(
+        db,
+        transaction_id=sale_id,
+        reason=payload.reason,
+        impact_cash=payload.impact_cash,
+        actor=actor,
+        cash_session_id=opened_session.id,
     )
-    cash_amount = sum(
-        (to_money(payment.amount) for payment in payment_rows if payment.affects_cash),
-        start=Decimal("0.00"),
-    )
-
-    transaction.status = "cancelled"
-    transaction.cancelled_by = actor.id
-    transaction.cancelled_at = _now()
-    transaction.cancellation_reason = payload.reason
-    transaction.updated_by = actor.id
-    transaction.updated_at = _now()
-
-    if payload.impact_cash and cash_amount > 0:
-        db.add(
-            CashMovement(
-                id=str(uuid4()),
-                transaction_id=sale_id,
-                cash_session_id=opened_session.id,
-                movement_date=transaction.transaction_date.date(),
-                movement_type="cash_out",
-                amount=to_money(cash_amount),
-                description=f"Anulación de venta {transaction.document_number or sale_id}",
-                admin_reason=payload.reason,
-                created_by=actor.id,
-                created_at=_now(),
-            )
-        )
-
-    db.add(
-        AuditLog(
-            id=str(uuid4()),
-            entity_name="transactions",
-            entity_id=sale_id,
-            action="CANCEL_SALE",
-            old_data=None,
-            new_data={
-                "transaction_id": sale_id,
-                "reason": payload.reason,
-                "impact_cash": payload.impact_cash,
-            },
-            reason=payload.reason,
-            created_by=actor.id,
-            created_at=_now(),
-        )
-    )
-    db.commit()
+    
     return get_sale_by_id(db, sale_id=sale_id)

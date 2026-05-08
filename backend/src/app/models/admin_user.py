@@ -1,22 +1,20 @@
-from datetime import datetime
-
-from sqlalchemy import Boolean, DateTime, String
+"""
+Admin User model for internal system administration.
+Distinguishes administrative users from standard operational profiles.
+"""
+from sqlalchemy import Boolean, String, text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.db.base import Base
-
+from app.core.base import Base
 
 class AdminUser(Base):
-    __tablename__ = "admin_user"
+    """
+    SQLAlchemy model for the 'admin_users' table.
+    Stores administrative privileges and metadata for system managers.
+    """
+    __tablename__ = "admin_users"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    username: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
-        nullable=False,
-    )
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True)
+    profile_id: Mapped[str] = mapped_column(UUID(as_uuid=False), nullable=False)
+    is_superadmin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False, server_default=text("false"))

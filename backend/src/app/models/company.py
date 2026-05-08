@@ -1,13 +1,20 @@
+"""
+Company model representing organizational units in the system.
+Ensures data isolation and categorization per company.
+"""
 from datetime import datetime
 
 from sqlalchemy import Boolean, DateTime, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.db.base import Base
-
+from app.core.base import Base
 
 class Company(Base):
+    """
+    SQLAlchemy model for the 'companies' table.
+    Defines the companies operating within the system.
+    """
     __tablename__ = "companies"
 
     id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, server_default=text("gen_random_uuid()"))
