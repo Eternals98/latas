@@ -1,0 +1,353 @@
+{
+  "nodes": [
+    {
+      "id": "migrations_002",
+      "label": "002_search_indexes_and_db_invariants.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_fn_enforce_transaction_invariants",
+      "label": "fn_enforce_transaction_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_fn_enforce_cash_movement_invariants",
+      "label": "fn_enforce_cash_movement_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_trg_enforce_transaction_invariants",
+      "label": "trg_enforce_transaction_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_trg_enforce_cash_movement_invariants",
+      "label": "trg_enforce_cash_movement_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_003",
+      "label": "003_seed_profiles_from_auth_users.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/003_seed_profiles_from_auth_users.sql"
+    },
+    {
+      "id": "migrations_004",
+      "label": "004_enforce_rls_and_cash_permissions.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_current_user_role",
+      "label": "current_user_role",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_is_active_role",
+      "label": "is_active_role",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_profiles_self_select",
+      "label": "profiles_self_select",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_companies_read_authenticated",
+      "label": "companies_read_authenticated",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_customers_read_authenticated",
+      "label": "customers_read_authenticated",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_payment_methods_read_authenticated",
+      "label": "payment_methods_read_authenticated",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_sessions_select_admin_or_cashier",
+      "label": "cash_sessions_select_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_sessions_insert_admin_only",
+      "label": "cash_sessions_insert_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_sessions_update_admin_only",
+      "label": "cash_sessions_update_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_select_admin_or_cashier",
+      "label": "cash_movements_select_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_insert_admin_or_cashier",
+      "label": "cash_movements_insert_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_update_admin_only",
+      "label": "cash_movements_update_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_delete_admin_only",
+      "label": "cash_movements_delete_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "web_proxy",
+      "label": "proxy.ts",
+      "file_type": "code",
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "web_proxy_proxy",
+      "label": "proxy",
+      "file_type": "code",
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "web_app_AppShell",
+      "label": "AppShell.tsx",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_AppShell_AppShell",
+      "label": "AppShell",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_AppShell_NavLink",
+      "label": "NavLink",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_AppShell_logoutAction",
+      "label": "logoutAction",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_layout",
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "id": "web_app_layout_RootLayout",
+      "label": "RootLayout",
+      "file_type": "code",
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "id": "web_app_LogoutButton",
+      "label": "LogoutButton.tsx",
+      "file_type": "code",
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "id": "web_app_LogoutButton_LogoutButton",
+      "label": "LogoutButton",
+      "file_type": "code",
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "id": "web_app_page",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "web/app/page.tsx"
+    },
+    {
+      "id": "web_app_page_HomePage",
+      "label": "HomePage",
+      "file_type": "code",
+      "source_file": "web/app/page.tsx"
+    }
+  ],
+  "edges": [
+    {
+      "source": "migrations_002_trg_enforce_transaction_invariants",
+      "target": "migrations_002_fn_enforce_transaction_invariants",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migrations_002_trg_enforce_cash_movement_invariants",
+      "target": "migrations_002_fn_enforce_cash_movement_invariants",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migrations_002_fn_enforce_cash_movement_invariants",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migrations_004_companies_read_authenticated",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_customers_read_authenticated",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_payment_methods_read_authenticated",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_sessions_select_admin_or_cashier",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_sessions_insert_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_sessions_update_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_select_admin_or_cashier",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_insert_admin_or_cashier",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_update_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_delete_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "web_app_layout_RootLayout",
+      "target": "web_app_AppShell_AppShell",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "source": "web_app_AppShell_AppShell",
+      "target": "web_app_AppShell_NavLink",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "source": "web_app_AppShell_AppShell",
+      "target": "web_app_AppShell_logoutAction",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/AppShell.tsx"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "cash_permissions_system",
+      "label": "Cash Permissions System",
+      "nodes": [
+        "migrations_004_current_user_role",
+        "migrations_004_is_active_role",
+        "migrations_004_profiles_self_select",
+        "migrations_004_companies_read_authenticated",
+        "migrations_004_customers_read_authenticated",
+        "migrations_004_payment_methods_read_authenticated",
+        "migrations_004_cash_sessions_select_admin_or_cashier",
+        "migrations_004_cash_sessions_insert_admin_only",
+        "migrations_004_cash_sessions_update_admin_only",
+        "migrations_004_cash_movements_select_admin_or_cashier",
+        "migrations_004_cash_movements_insert_admin_or_cashier",
+        "migrations_004_cash_movements_update_admin_only",
+        "migrations_004_cash_movements_delete_admin_only"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

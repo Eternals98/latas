@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.schemas.transactions.sales import (
     SaleCreateRequest,
+    SaleUpdateRequest,
     SaleResponse,
     SaleListFilters,
     sale_record_to_response,

@@ -1,0 +1,142 @@
+{
+  "nodes": [
+    {
+      "id": "web_app_clientes_page_ClientesPage",
+      "label": "ClientesPage",
+      "file_type": "code",
+      "source_file": "web/app/clientes/page.tsx"
+    },
+    {
+      "id": "web_app_configuracion_ConfigurationClientPage_ConfigurationClientPage",
+      "label": "ConfigurationClientPage",
+      "file_type": "code",
+      "source_file": "web/app/configuracion/ConfigurationClientPage.tsx"
+    },
+    {
+      "id": "web_app_configuracion_page_ConfigurationPage",
+      "label": "ConfigurationPage",
+      "file_type": "code",
+      "source_file": "web/app/configuracion/page.tsx"
+    },
+    {
+      "id": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "label": "DashboardClientPage",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "id": "web_app_dashboard_DashboardClientPage_MetricCard",
+      "label": "MetricCard",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "id": "web_app_dashboard_DashboardClientPage_TableShell",
+      "label": "TableShell",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "id": "web_app_dashboard_page_DashboardRoutePage",
+      "label": "DashboardRoutePage",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/page.tsx"
+    },
+    {
+      "id": "web_app_login_page_LoginPage",
+      "label": "LoginPage",
+      "file_type": "code",
+      "source_file": "web/app/login/page.tsx"
+    },
+    {
+      "id": "web_app_reportes_page_ReportesPage",
+      "label": "ReportesPage",
+      "file_type": "code",
+      "source_file": "web/app/reportes/page.tsx"
+    },
+    {
+      "id": "web_app_salesRegister_page_RegistroPage",
+      "label": "RegistroPage",
+      "file_type": "code",
+      "source_file": "web/app/salesRegister/page.tsx"
+    },
+    {
+      "id": "web_app_transactions_page_TransactionsPage",
+      "label": "TransactionsPage",
+      "file_type": "code",
+      "source_file": "web/app/transactions/page.tsx"
+    },
+    {
+      "id": "rationale_money_handling_pattern",
+      "label": "Currency Handling Pattern",
+      "file_type": "rationale",
+      "source_file": "web/app/salesRegister/page.tsx"
+    }
+  ],
+  "edges": [
+    {
+      "source": "web_app_configuracion_page_ConfigurationPage",
+      "target": "web_app_configuracion_ConfigurationClientPage_ConfigurationClientPage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/configuracion/page.tsx"
+    },
+    {
+      "source": "web_app_dashboard_page_DashboardRoutePage",
+      "target": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/dashboard/page.tsx"
+    },
+    {
+      "source": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "target": "web_app_dashboard_DashboardClientPage_MetricCard",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "source": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "target": "web_app_dashboard_DashboardClientPage_TableShell",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "source": "web_app_salesRegister_page_RegistroPage",
+      "target": "rationale_money_handling_pattern",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/salesRegister/page.tsx"
+    },
+    {
+      "source": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "target": "rationale_money_handling_pattern",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "sales_registration_flow",
+      "label": "Sales Registration Flow",
+      "nodes": [
+        "web_app_salesRegister_page_RegistroPage",
+        "rationale_money_handling_pattern"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "web/app/salesRegister/page.tsx"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

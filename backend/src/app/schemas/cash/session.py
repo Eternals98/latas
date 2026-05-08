@@ -17,6 +17,7 @@ class CashOpenRequest(BaseModel):
     """Request to open a new cash session."""
     session_date: date
     opening_cash: Decimal
+    reason: str | None = None  # Required for admin when session_date != today
 
     @field_validator("opening_cash")
     @classmethod
@@ -30,6 +31,7 @@ class CashCloseRequest(BaseModel):
     """Request to close an existing cash session."""
     session_date: date
     counted_cash: Decimal
+    reason: str | None = None  # Required for admin when session_date != today
 
     @field_validator("counted_cash")
     @classmethod

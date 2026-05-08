@@ -1,0 +1,254 @@
+{
+  "nodes": [
+    {
+      "id": "test_cash_service",
+      "label": "test_cash_service",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py"
+    },
+    {
+      "id": "test_supabase_auth_jwt",
+      "label": "test_supabase_auth_jwt",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py"
+    },
+    {
+      "id": "seed_sql",
+      "label": "seed_sql",
+      "file_type": "document",
+      "source_file": "supabase/seed.sql"
+    },
+    {
+      "id": "migration_001",
+      "label": "migration_001",
+      "file_type": "document",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql"
+    },
+    {
+      "id": "migration_002",
+      "label": "migration_002",
+      "file_type": "document",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migration_003",
+      "label": "migration_003",
+      "file_type": "document",
+      "source_file": "supabase/migrations/003_seed_profiles_from_auth_users.sql"
+    },
+    {
+      "id": "migration_004",
+      "label": "migration_004",
+      "file_type": "document",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "proxy_ts",
+      "label": "proxy_ts",
+      "file_type": "code",
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "app_shell",
+      "label": "app_shell",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "layout_tsx",
+      "label": "layout_tsx",
+      "file_type": "code",
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "id": "logout_button",
+      "label": "logout_button",
+      "file_type": "code",
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "id": "page_tsx",
+      "label": "page_tsx",
+      "file_type": "code",
+      "source_file": "web/app/page.tsx"
+    },
+    {
+      "id": "login_route",
+      "label": "login_route",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/login/route.ts"
+    },
+    {
+      "id": "logout_route",
+      "label": "logout_route",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/logout/route.ts"
+    },
+    {
+      "id": "session_route",
+      "label": "session_route",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/session/route.ts"
+    },
+    {
+      "id": "historic_migration_route",
+      "label": "historic_migration_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts"
+    },
+    {
+      "id": "dashboard_route",
+      "label": "dashboard_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/dashboard/route.ts"
+    },
+    {
+      "id": "sales_route",
+      "label": "sales_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/route.ts"
+    },
+    {
+      "id": "sales_id_route",
+      "label": "sales_id_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts"
+    },
+    {
+      "id": "bff_catchall_route",
+      "label": "bff_catchall_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "logout_button",
+      "target": "logout_route",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "source": "app_shell",
+      "target": "logout_route",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "source": "layout_tsx",
+      "target": "app_shell",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "source": "session_route",
+      "target": "bff_catchall_route",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/auth/session/route.ts"
+    },
+    {
+      "source": "historic_migration_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts"
+    },
+    {
+      "source": "dashboard_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/dashboard/route.ts"
+    },
+    {
+      "source": "sales_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/sales/route.ts"
+    },
+    {
+      "source": "sales_id_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts"
+    },
+    {
+      "source": "migration_002",
+      "target": "migration_001",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migration_004",
+      "target": "migration_001",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "auth_flow",
+      "label": "Authentication Flow",
+      "nodes": [
+        "login_route",
+        "logout_route",
+        "session_route",
+        "proxy_ts",
+        "page_tsx"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "bff_layer",
+      "label": "BFF Proxy Layer",
+      "nodes": [
+        "historic_migration_route",
+        "dashboard_route",
+        "sales_route",
+        "sales_id_route",
+        "bff_catchall_route"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts"
+    },
+    {
+      "id": "db_schema_evolution",
+      "label": "Database Schema Evolution",
+      "nodes": [
+        "migration_001",
+        "migration_002",
+        "migration_003",
+        "migration_004"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

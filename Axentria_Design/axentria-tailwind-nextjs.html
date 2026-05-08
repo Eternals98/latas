@@ -1,0 +1,77 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Axentria — Tailwind Migration</title>
+<style>
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #faf6ee; /* --paper-100 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    color: #0f1b2d; /* --ink-900 */
+  }
+  .status-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(15, 27, 45, 0.1);
+    text-align: center;
+    max-width: 500px;
+  }
+  .tech-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0f1b2d;
+    color: #faf6ee;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+  .check-icon {
+    width: 48px;
+    height: 48px;
+    background: #2f9e72;
+    color: white;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 24px;
+  }
+</style>
+</head>
+<body>
+  <div class="status-card">
+    <div class="check-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5" />
+      </svg>
+    </div>
+    <h1 style="font-size: 28px; margin: 0 0 12px;">Migración Exitosa</h1>
+    <p style="color: #64748b; line-height: 1.6;">La base del proyecto ha sido actualizada a Next.js y Tailwind CSS. Todos los componentes TSX ahora utilizan clases de utilidad para una mayor velocidad de desarrollo y coherencia visual.</p>
+    
+    <div style="display: flex; gap: 8px; justify-content: center;">
+      <div class="tech-pill">Next.js 14</div>
+      <div class="tech-pill" style="background: #38bdf8; color: #0f172a;">Tailwind CSS</div>
+      <div class="tech-pill" style="background: #3178c6; color: white;">TypeScript</div>
+    </div>
+
+    <div style="margin-top: 32px; text-align: left; background: #f8fafc; padding: 16px; border-radius: 12px; font-family: monospace; font-size: 12px;">
+      <div style="color: #94a3b8; margin-bottom: 8px;">// Archivos actualizados:</div>
+      <div>• tailwind.config.js</div>
+      <div>• src/styles/globals.css</div>
+      <div>• src/components/Primitives.tsx</div>
+      <div>• src/components/*Screen.tsx</div>
+    </div>
+  </div>
+</body>
+</html>

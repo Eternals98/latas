@@ -1,0 +1,1 @@
+{"nodes": [{"id": "tests_integration_test_cors_test_cors_preflight_allows_dashboard_from_vite_origin", "label": "test_cors_preflight_allows_dashboard_from_vite_origin", "file_type": "code", "source_file": "backend/tests/integration/test_cors.py", "source_location": "1", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

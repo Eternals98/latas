@@ -1,0 +1,1 @@
+{"nodes": [{"id": "tests_integration_test_health_test_health_endpoint", "label": "test_health_endpoint", "file_type": "code", "source_file": "backend/tests/integration/test_health.py", "source_location": "1", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

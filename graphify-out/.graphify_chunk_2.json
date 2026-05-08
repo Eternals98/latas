@@ -1,0 +1,422 @@
+{
+  "nodes": [
+    {
+      "id": "app_models_AdminUser",
+      "label": "AdminUser",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/admin_user.py"
+    },
+    {
+      "id": "app_models_AuditLog",
+      "label": "AuditLog",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/audit_log.py"
+    },
+    {
+      "id": "app_models_CashEvent",
+      "label": "CashEvent",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/cash_event.py"
+    },
+    {
+      "id": "app_models_CashMovement",
+      "label": "CashMovement",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "id": "app_models_CashSession",
+      "label": "CashSession",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/cash_session.py"
+    },
+    {
+      "id": "app_models_Company",
+      "label": "Company",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/company.py"
+    },
+    {
+      "id": "app_models_Customer",
+      "label": "Customer",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/customer.py"
+    },
+    {
+      "id": "app_models_PaymentMethod",
+      "label": "PaymentMethod",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/payment_method.py"
+    },
+    {
+      "id": "app_models_Profile",
+      "label": "Profile",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/profile.py"
+    },
+    {
+      "id": "app_models_Transaction",
+      "label": "Transaction",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "id": "app_models_TransactionPayment",
+      "label": "TransactionPayment",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/transaction_payment.py"
+    },
+    {
+      "id": "app_schemas_admin_AdminLoginRequest",
+      "label": "AdminLoginRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/admin.py"
+    },
+    {
+      "id": "app_schemas_admin_AdminTokenResponse",
+      "label": "AdminTokenResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/admin.py"
+    },
+    {
+      "id": "app_schemas_dashboard_VentasPorMesItem",
+      "label": "VentasPorMesItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_dashboard_VentasPorEmpresaItem",
+      "label": "VentasPorEmpresaItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_dashboard_MetodoPagoDashboardItem",
+      "label": "MetodoPagoDashboardItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_dashboard_DashboardResponse",
+      "label": "DashboardResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_health_HealthResponse",
+      "label": "HealthResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/health.py"
+    },
+    {
+      "id": "app_schemas_historic_migration_HistoricMigrationResponse",
+      "label": "HistoricMigrationResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/historic_migration.py"
+    },
+    {
+      "id": "app_schemas_phase1_CompanyResponse",
+      "label": "CompanyResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_phase1_CustomerResponse",
+      "label": "CustomerResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_phase1_PaymentMethodResponse",
+      "label": "PaymentMethodResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_phase1_ProfileResponse",
+      "label": "ProfileResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashActionRequest",
+      "label": "CashActionRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashAdjustmentRequest",
+      "label": "CashAdjustmentRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashMovementItem",
+      "label": "CashMovementItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashMovementRecord",
+      "label": "CashMovementRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashEventItem",
+      "label": "CashEventItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashEventHistoryResponse",
+      "label": "CashEventHistoryResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashEventRecord",
+      "label": "CashEventRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashOpenRequest",
+      "label": "CashOpenRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashCloseRequest",
+      "label": "CashCloseRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashSessionResponse",
+      "label": "CashSessionResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashSessionDetailResponse",
+      "label": "CashSessionDetailResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashHistoryResponse",
+      "label": "CashHistoryResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashSessionRecord",
+      "label": "CashSessionRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    }
+  ],
+  "edges": [
+    {
+      "source": "app_models_AdminUser",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/admin_user.py"
+    },
+    {
+      "source": "app_models_AuditLog",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/audit_log.py"
+    },
+    {
+      "source": "app_models_CashEvent",
+      "target": "app_models_CashSession",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_event.py"
+    },
+    {
+      "source": "app_models_CashEvent",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_event.py"
+    },
+    {
+      "source": "app_models_CashMovement",
+      "target": "app_models_Transaction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "source": "app_models_CashMovement",
+      "target": "app_models_CashSession",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "source": "app_models_CashMovement",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "source": "app_models_CashSession",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_session.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Company",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Customer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_CashSession",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Transaction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_TransactionPayment",
+      "target": "app_models_Transaction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction_payment.py"
+    },
+    {
+      "source": "app_models_TransactionPayment",
+      "target": "app_models_PaymentMethod",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction_payment.py"
+    },
+    {
+      "source": "app_schemas_cash_movement_CashAdjustmentRequest",
+      "target": "app_schemas_cash_movement_CashActionRequest",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "source": "app_schemas_cash_session_CashSessionDetailResponse",
+      "target": "app_schemas_cash_session_CashSessionResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "app_schemas_cash_session_CashSessionDetailResponse",
+      "target": "app_schemas_cash_movement_CashMovementItem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "app_schemas_cash_session_CashHistoryResponse",
+      "target": "app_schemas_cash_session_CashSessionResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "cash_lifecycle_flow",
+      "label": "Cash Session Lifecycle",
+      "nodes": [
+        "app_models_CashSession",
+        "app_models_CashMovement",
+        "app_models_CashEvent",
+        "app_schemas_cash_session_CashOpenRequest",
+        "app_schemas_cash_session_CashCloseRequest"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/models/cash_session.py"
+    },
+    {
+      "id": "financial_ledger_flow",
+      "label": "Core Sales Ledger",
+      "nodes": [
+        "app_models_Transaction",
+        "app_models_TransactionPayment",
+        "app_models_PaymentMethod",
+        "app_models_Company",
+        "app_models_Customer"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "id": "user_auth_flow",
+      "label": "User Auth and Roles",
+      "nodes": [
+        "app_models_Profile",
+        "app_models_AdminUser",
+        "app_schemas_admin_AdminLoginRequest",
+        "app_schemas_admin_AdminTokenResponse"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/models/profile.py"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

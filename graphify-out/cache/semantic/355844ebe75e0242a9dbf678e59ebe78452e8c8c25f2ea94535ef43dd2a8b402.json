@@ -1,0 +1,1 @@
+{"nodes": [{"id": "app_schemas_health_HealthResponse", "label": "HealthResponse", "file_type": "code", "source_file": "backend/src/app/schemas/health.py"}], "edges": [], "hyperedges": []}

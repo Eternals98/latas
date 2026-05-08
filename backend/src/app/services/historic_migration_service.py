@@ -9,17 +9,17 @@ from openpyxl import load_workbook
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from src.models.cash_event import CashEvent
-from src.models.cash_movement import CashMovement
-from src.models.cash_session import CashSession
-from src.models.company import Company
-from src.models.customer import Customer
-from src.models.payment_method import PaymentMethod
-from src.models.profile import Profile
-from src.models.transaction import Transaction
-from src.models.transaction_payment import TransactionPayment
-from src.api.schemas.sales import to_money
-from src.api.schemas.historic_migration import HistoricMigrationResponse
+from   app.models.cash_event import CashEvent
+from   app.models.cash_movement import CashMovement
+from   app.models.cash_session import CashSession
+from   app.models.company import Company
+from   app.models.customer import Customer
+from   app.models.payment_method import PaymentMethod
+from   app.models.profile import Profile
+from   app.models.transaction import Transaction
+from   app.models.transaction_payment import TransactionPayment
+from app.schemas.transactions.base import to_money
+from app.schemas.historic_migration import HistoricMigrationResponse
 
 
 class HistoricMigrationError(Exception):

@@ -1,0 +1,1 @@
+{"nodes": [{"id": "app_schemas_admin_AdminLoginRequest", "label": "AdminLoginRequest", "file_type": "code", "source_file": "backend/src/app/schemas/admin.py"}, {"id": "app_schemas_admin_AdminTokenResponse", "label": "AdminTokenResponse", "file_type": "code", "source_file": "backend/src/app/schemas/admin.py"}], "edges": [], "hyperedges": []}

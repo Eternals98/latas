@@ -3,12 +3,12 @@ from decimal import Decimal
 
 import pytest
 
-from src.models.company import Company
-from src.models.audit_log import AuditLog
-from src.models.customer import Customer
-from src.models.payment_method import PaymentMethod
-from src.models.profile import Profile
-from src.services.cash_service import (
+from app.models.company import Company
+from app.models.audit_log import AuditLog
+from app.models.customer import Customer
+from app.models.payment_method import PaymentMethod
+from app.models.profile import Profile
+from app.services.cash_service import (
     CashConflictError,
     CashValidationError,
     close_cash_session,
@@ -17,8 +17,8 @@ from src.services.cash_service import (
     register_manual_adjustment,
     register_vault_withdrawal,
 )
-from src.services.sales_service import SalesConflictError, create_sale
-from src.api.schemas.sales import SaleCreateRequest
+from app.services.sales_service import SalesConflictError, create_sale
+from app.schemas.transactions.sales import SaleCreateRequest
 from tests.helpers import set_request_user
 
 

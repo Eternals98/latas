@@ -6,8 +6,9 @@ import pytest
 from sqlalchemy import text
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+SRC = ROOT / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
 
 ENV_PATH = ROOT / ".env"
 if ENV_PATH.exists():
@@ -20,9 +21,9 @@ if ENV_PATH.exists():
 
 from fastapi.testclient import TestClient
 
-from src.api.main import app
-from src.db.session import SessionLocal, engine, get_db
-from src import models  # noqa: F401
+from app.main import app
+from app.core.database import SessionLocal, engine, get_db
+from app import models  # noqa: F401
 
 MIGRATIONS_DIR = ROOT.parent / "supabase" / "migrations"
 MIGRATION_FILES = [

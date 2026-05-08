@@ -1,0 +1,163 @@
+{
+  "nodes": [
+    {
+      "id": "TransactionsClientPage",
+      "label": "TransactionsClientPage",
+      "file_type": "code",
+      "source_file": "web/app/transactions/TransactionsClientPage.tsx"
+    },
+    {
+      "id": "MultiSelectCombobox",
+      "label": "MultiSelectCombobox",
+      "file_type": "code",
+      "source_file": "web/components/combobox-multiselect.tsx"
+    },
+    {
+      "id": "SearchModal",
+      "label": "SearchModal",
+      "file_type": "code",
+      "source_file": "web/components/input-text.tsx"
+    },
+    {
+      "id": "getCsrfHeaders",
+      "label": "getCsrfHeaders",
+      "file_type": "code",
+      "source_file": "web/lib/csrf-client.ts"
+    },
+    {
+      "id": "getAccessTokenFromCookies",
+      "label": "getAccessTokenFromCookies",
+      "file_type": "code",
+      "source_file": "web/lib/auth.ts"
+    },
+    {
+      "id": "backendFetch",
+      "label": "backendFetch",
+      "file_type": "code",
+      "source_file": "web/lib/backend.ts"
+    },
+    {
+      "id": "createCsrfToken",
+      "label": "createCsrfToken",
+      "file_type": "code",
+      "source_file": "web/lib/csrf.ts"
+    },
+    {
+      "id": "requireCsrf",
+      "label": "requireCsrf",
+      "file_type": "code",
+      "source_file": "web/lib/csrf.ts"
+    },
+    {
+      "id": "setLanguage",
+      "label": "setLanguage",
+      "file_type": "code",
+      "source_file": "web/lib/i18n.ts"
+    },
+    {
+      "id": "t",
+      "label": "t",
+      "file_type": "code",
+      "source_file": "web/lib/i18n.ts"
+    },
+    {
+      "id": "getSessionUser",
+      "label": "getSessionUser",
+      "file_type": "code",
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "id": "requireAdminSession",
+      "label": "requireAdminSession",
+      "file_type": "code",
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "id": "createSupabaseClient",
+      "label": "createSupabaseClient",
+      "file_type": "code",
+      "source_file": "web/lib/supabase.ts"
+    }
+  ],
+  "edges": [
+    {
+      "source": "TransactionsClientPage",
+      "target": "getCsrfHeaders",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/transactions/TransactionsClientPage.tsx"
+    },
+    {
+      "source": "TransactionsClientPage",
+      "target": "MultiSelectCombobox",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/transactions/TransactionsClientPage.tsx"
+    },
+    {
+      "source": "backendFetch",
+      "target": "getAccessTokenFromCookies",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/lib/backend.ts"
+    },
+    {
+      "source": "getSessionUser",
+      "target": "getAccessTokenFromCookies",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "source": "requireAdminSession",
+      "target": "getSessionUser",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "source": "SearchModal",
+      "target": "MultiSelectCombobox",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "web/components/input-text.tsx"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "auth_session_flow",
+      "label": "Authentication and Session Flow",
+      "nodes": [
+        "getAccessTokenFromCookies",
+        "getSessionUser",
+        "requireAdminSession",
+        "backendFetch"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "id": "csrf_protection_flow",
+      "label": "CSRF Protection Flow",
+      "nodes": [
+        "createCsrfToken",
+        "requireCsrf",
+        "getCsrfHeaders"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/lib/csrf.ts"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

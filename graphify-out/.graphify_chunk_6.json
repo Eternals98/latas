@@ -1,0 +1,518 @@
+{
+  "nodes": [
+    {
+      "id": "admin_auth_AdminAuthError",
+      "label": "AdminAuthError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth__hash_password",
+      "label": "_hash_password",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth__verify_password",
+      "label": "_verify_password",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_ensure_initial_admin_user",
+      "label": "ensure_initial_admin_user",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_validate_admin_credentials",
+      "label": "validate_admin_credentials",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_create_admin_token",
+      "label": "create_admin_token",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_verify_admin_token",
+      "label": "verify_admin_token",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_require_admin",
+      "label": "require_admin",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "bootstrap_service_ensure_phase1_seeds",
+      "label": "ensure_phase1_seeds",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/bootstrap_service.py"
+    },
+    {
+      "id": "cash_service_CashValidationError",
+      "label": "CashValidationError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_CashConflictError",
+      "label": "CashConflictError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_CashNotFoundError",
+      "label": "CashNotFoundError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__require_admin",
+      "label": "_require_admin",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__require_admin_or_cashier",
+      "label": "_require_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__get_session_by_date",
+      "label": "_get_session_by_date",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__get_open_session_or_raise",
+      "label": "_get_open_session_or_raise",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__compute_balances",
+      "label": "_compute_balances",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__session_to_record",
+      "label": "_session_to_record",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__log_audit",
+      "label": "_log_audit",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__record_cash_event",
+      "label": "_record_cash_event",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__first_event_by_type",
+      "label": "_first_event_by_type",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__create_movement",
+      "label": "_create_movement",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_record_cash_movement",
+      "label": "record_cash_movement",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_open_cash_session",
+      "label": "open_cash_session",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_register_cash_delivery",
+      "label": "register_cash_delivery",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_register_manual_adjustment",
+      "label": "register_manual_adjustment",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_register_vault_withdrawal",
+      "label": "register_vault_withdrawal",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_close_cash_session",
+      "label": "close_cash_session",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_get_today_cash_status",
+      "label": "get_today_cash_status",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_list_cash_history",
+      "label": "list_cash_history",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_list_cash_events",
+      "label": "list_cash_events",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_get_open_cash_session_by_date",
+      "label": "get_open_cash_session_by_date",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "dashboard_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service__month_range",
+      "label": "_month_range",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service__start_of_day",
+      "label": "_start_of_day",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service__start_of_next_day",
+      "label": "_start_of_next_day",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service_get_dashboard",
+      "label": "get_dashboard",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "historic_migration_service_HistoricMigrationError",
+      "label": "HistoricMigrationError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__sheet_timestamp",
+      "label": "_sheet_timestamp",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__row_timestamp",
+      "label": "_row_timestamp",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__normalize_text",
+      "label": "_normalize_text",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__normalize_key",
+      "label": "_normalize_key",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__as_decimal",
+      "label": "_as_decimal",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__is_method_marker",
+      "label": "_is_method_marker",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_company",
+      "label": "_resolve_company",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_customer",
+      "label": "_resolve_customer",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_payment_method",
+      "label": "_resolve_payment_method",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__sheet_is_consolidated",
+      "label": "_sheet_is_consolidated",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_sheet_month",
+      "label": "_resolve_sheet_month",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__payment_columns",
+      "label": "_payment_columns",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__collect_row_payments",
+      "label": "_collect_row_payments",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__row_error_context",
+      "label": "_row_error_context",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__create_cash_session",
+      "label": "_create_cash_session",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service_migrate_historic_excel",
+      "label": "migrate_historic_excel",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service_emit_transaction",
+      "label": "emit_transaction",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "sales_service_SalesValidationError",
+      "label": "SalesValidationError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_SalesConflictError",
+      "label": "SalesConflictError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_SalesNotFoundError",
+      "label": "SalesNotFoundError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_SalesPermissionError",
+      "label": "SalesPermissionError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__get_generic_customer_id",
+      "label": "_get_generic_customer_id",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_company_active",
+      "label": "_validate_company_active",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_customer_active",
+      "label": "_validate_customer_active",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_payments",
+      "label": "_validate_payments",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_create_sale",
+      "label": "create_sale",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__build_sales_query",
+      "label": "_build_sales_query",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__payments_for_transactions",
+      "label": "_payments_for_transactions",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_list_sales",
+      "label": "list_sales",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_get_sale_by_id",
+      "label": "get_sale_by_id",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_admin_can_mutate",
+      "label": "_validate_admin_can_mutate",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__load_payment_methods",
+      "label": "_load_payment_methods",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__load_sale_transaction",
+      "label": "_load_sale_transaction",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_update_sale_with_payments",
+      "label": "update_sale_with_payments",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_cancel_sale",
+      "label": "cancel_sale",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "supabase_auth__auth_401",
+      "label": "_auth_401",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__auth_503",
+      "label": "_auth_503",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__load_jwks",
+      "label": "_load_jwks",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__decode_token",
+      "label": "_decode_token",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__display_name",
+      "label": "_display_name",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth_ensure_profile",
+      "label": "ensure_profile",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__set_request_context",
+      "label": "_set_request_context",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth_require_user",
+      "label": "require_user",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth_require_admin",
+      "label": "require_admin",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    }
+  ],
+  "edges": [],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

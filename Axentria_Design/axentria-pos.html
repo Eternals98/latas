@@ -1,0 +1,107 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Axentria — Sistema de Ventas</title>
+<meta name="viewport" content="width=1280"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  html, body { margin: 0; height: 100%; background: var(--surface-app); overflow: hidden; }
+  #root { height: 100%; display: flex; flex-direction: column; }
+
+  /* Re-usable utility classes */
+  .num    { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .display{ font-family: var(--font-display); font-weight: 400; letter-spacing: -0.01em; }
+  .ovl    { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; color: var(--slate-500); }
+  .hairline { background: var(--border-default); height: 1px; }
+
+  /* Buttons */
+  .ax-btn { font-family: var(--font-sans); font-weight: 600; line-height: 1; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 9px 14px; font-size: 14px; border-radius: 6px;
+            transition: background var(--dur-2) var(--ease-standard), transform var(--dur-1) var(--ease-standard); }
+  .ax-btn[data-variant="primary"] { background: var(--ink-900); color: var(--paper-50); border:1px solid var(--ink-900); }
+  .ax-btn[data-variant="primary"]:hover { background: var(--ink-800); }
+  .ax-btn[data-variant="accent"]  { background: var(--brass-400); color: var(--ink-900); border:1px solid var(--brass-400); }
+  .ax-btn[data-variant="accent"]:hover  { background: var(--brass-500); }
+  .ax-btn[data-variant="ghost"]   { background: #fff; color: var(--ink-900); border: 1px solid var(--border-default); }
+  .ax-btn[data-variant="ghost"]:hover    { background: var(--paper-100); }
+  .ax-btn[data-variant="text"]    { background: transparent; color: var(--ink-900); border:1px solid transparent; }
+  .ax-btn[data-variant="text"]:hover     { color: var(--brass-600); }
+  .ax-btn[data-variant="danger"]  { background: var(--coral-500); color: white; border:1px solid var(--coral-500); }
+  .ax-btn[data-variant="danger"]:hover   { background: var(--coral-600); }
+  .ax-btn:active { transform: translateY(1px); }
+  .ax-btn:focus-visible { outline: none; box-shadow: var(--inset-focus); }
+
+  /* Inputs */
+  .ax-input { font-family: var(--font-sans); font-size: 14px; padding: 10px 12px; border-radius: 6px;
+              background: #fff; border: 1px solid var(--border-default); color: var(--ink-900); outline: none;
+              transition: box-shadow var(--dur-1), border-color var(--dur-1); width: 100%; box-sizing: border-box; }
+  .ax-input:focus { border-color: var(--brass-400); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brass-400) 35%, transparent); }
+  .ax-input.mono   { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Table base */
+  table.ax { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 13px; }
+  table.ax th { text-align: left; padding: 10px 14px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+                color: var(--slate-500); font-weight: 600; background: var(--paper-200); border-bottom: 1px solid var(--border-default); }
+  table.ax td { padding: 12px 14px; border-bottom: 1px solid var(--border-subtle); color: var(--ink-900); vertical-align: middle; }
+  table.ax tbody tr:hover { background: var(--paper-50); }
+  table.ax td.num, table.ax th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Scrollbar */
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-thumb { background: var(--slate-200); border-radius: 8px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+
+  /* Animations */
+  @keyframes fadeUp { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform:none; } }
+  .fade-in { animation: fadeUp 320ms var(--ease-standard) both; }
+
+  /* Sidebar item */
+  .nav-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:8px;
+              color: var(--ink-900); cursor:pointer; font-size:13px; font-weight:500;
+              border: 1px solid transparent;
+              transition: background var(--dur-2) var(--ease-standard); }
+  .nav-item:hover { background: var(--paper-200); }
+  .nav-item[data-active="true"] { background: var(--ink-900); color: var(--paper-50); font-weight: 600; }
+  .nav-item[data-active="true"] .nav-meta { color: var(--brass-300); }
+  .nav-meta { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--slate-500); }
+
+  /* Status pill */
+  .status-pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px;
+                 font-size:11px; font-weight:600; }
+
+  /* Login backdrop noise */
+  .paper-grain {
+    background-color: var(--paper-100);
+    background-image: radial-gradient(rgba(15,27,45,0.04) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+
+  /* Card hover lift */
+  .lift { transition: box-shadow var(--dur-2), transform var(--dur-2); }
+  .lift:hover { box-shadow: var(--elev-2); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- Shared primitives + tweaks panel + screens -->
+<script type="text/babel" src="shared.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="shell.jsx"></script>
+<script type="text/babel" src="screen-login.jsx"></script>
+<script type="text/babel" src="screen-dashboard.jsx"></script>
+<script type="text/babel" src="screen-sale.jsx"></script>
+<script type="text/babel" src="screen-transactions.jsx"></script>
+<script type="text/babel" src="screen-cash.jsx"></script>
+<script type="text/babel" src="screen-reports.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>

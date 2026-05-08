@@ -46,7 +46,7 @@ def open_cash_route(
     actor: Profile = Depends(require_user),
     db: Session = Depends(get_db),
 ) -> CashSessionResponse:
-    record = open_cash_session(db, session_date=payload.session_date, opening_cash=payload.opening_cash, actor=actor)
+    record = open_cash_session(db, session_date=payload.session_date, opening_cash=payload.opening_cash, actor=actor, reason=payload.reason)
     return cash_session_record_to_response(record)
 
 
@@ -90,7 +90,7 @@ def close_cash_route(
     actor: Profile = Depends(require_user),
     db: Session = Depends(get_db),
 ) -> CashSessionResponse:
-    record = close_cash_session(db, session_date=payload.session_date, counted_cash=payload.counted_cash, actor=actor)
+    record = close_cash_session(db, session_date=payload.session_date, counted_cash=payload.counted_cash, actor=actor, reason=payload.reason)
     return cash_session_record_to_response(record)
 
 

@@ -1,0 +1,477 @@
+{
+  "nodes": [
+    {
+      "id": "web_app_api_auth_login_route_ts_POST",
+      "label": "POST /api/auth/login",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/login/route.ts",
+      "source_location": "6:6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_auth_logout_route_ts_POST",
+      "label": "POST /api/auth/logout",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/logout/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_auth_session_route_ts_GET",
+      "label": "GET /api/auth/session",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/session/route.ts",
+      "source_location": "10:10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_admin_historic_migration_route_ts_POST",
+      "label": "POST /api/bff/admin/historic-migration",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_dashboard_route_ts_GET",
+      "label": "GET /api/bff/dashboard",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/dashboard/route.ts",
+      "source_location": "4:4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_route_ts_GET",
+      "label": "GET /api/bff/sales",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_route_ts_POST",
+      "label": "POST /api/bff/sales",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "15:15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_id_route_ts_GET",
+      "label": "GET /api/bff/sales/[id]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_id_route_ts_PUT",
+      "label": "PUT /api/bff/sales/[id]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "15:15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_id_route_ts_DELETE",
+      "label": "DELETE /api/bff/sales/[id]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "32:32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_GET",
+      "label": "GET /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "48:48",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_POST",
+      "label": "POST /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "53:53",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_PUT",
+      "label": "PUT /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "61:61",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_DELETE",
+      "label": "DELETE /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "69:69",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_proxy",
+      "label": "proxy function",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "26:26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_cron_daily_report_route_ts_GET",
+      "label": "GET /api/cron/daily-report",
+      "file_type": "code",
+      "source_file": "web/app/api/cron/daily-report/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_cash_management_page_tsx_CashManagementPage",
+      "label": "CashManagementPage",
+      "file_type": "code",
+      "source_file": "web/app/cash-management/page.tsx",
+      "source_location": "187:187",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "web_app_api_auth_login_route_ts_POST",
+      "target": "lib_supabase_createSupabaseClient",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/login/route.ts",
+      "source_location": "15:15",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_auth_login_route_ts_POST",
+      "target": "lib_csrf_createCsrfToken",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/login/route.ts",
+      "source_location": "23:23",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_auth_logout_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/logout/route.ts",
+      "source_location": "6:6",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_auth_session_route_ts_GET",
+      "target": "lib_auth_getAccessTokenFromCookies",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/session/route.ts",
+      "source_location": "11:11",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_admin_historic_migration_route_ts_POST",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts",
+      "source_location": "23:23",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_admin_historic_migration_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts",
+      "source_location": "6:6",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_dashboard_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/dashboard/route.ts",
+      "source_location": "5:5",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "7:7",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_route_ts_POST",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "20:20",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "16:16",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "7:7",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_PUT",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "21:21",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_PUT",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "16:16",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_DELETE",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "38:38",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_DELETE",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "33:33",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_GET",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "50:50",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_POST",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "58:58",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "55:55",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_PUT",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "66:66",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_PUT",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "63:63",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_DELETE",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "74:74",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_DELETE",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "71:71",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_cron_daily_report_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/cron/daily-report/route.ts",
+      "source_location": "12:12",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_cron_daily_report_route_ts_GET",
+      "target": "resend_emails_send",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/cron/daily-report/route.ts",
+      "source_location": "19:19",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_cash_management_page_tsx_CashManagementPage",
+      "target": "lib_csrf_client_getCsrfHeaders",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/cash-management/page.tsx",
+      "source_location": "512:512",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "authentication_flow",
+      "label": "Authentication Flow",
+      "nodes": [
+        "web_app_api_auth_login_route_ts_POST",
+        "web_app_api_auth_logout_route_ts_POST",
+        "web_app_api_auth_session_route_ts_GET"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/auth"
+    },
+    {
+      "id": "bff_proxy_pattern",
+      "label": "BFF Proxy Pattern",
+      "nodes": [
+        "web_app_api_bff_dashboard_route_ts_GET",
+        "web_app_api_bff_sales_route_ts_GET",
+        "web_app_api_bff_sales_route_ts_POST",
+        "web_app_api_bff_sales_id_route_ts_GET",
+        "web_app_api_bff_sales_id_route_ts_PUT",
+        "web_app_api_bff_sales_id_route_ts_DELETE",
+        "web_app_api_bff_path_route_ts_proxy"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

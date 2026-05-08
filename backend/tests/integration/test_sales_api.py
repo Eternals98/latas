@@ -1,16 +1,16 @@
 from datetime import date, datetime, timezone
 from decimal import Decimal
 
-from src.api.main import app
-from src.models.audit_log import AuditLog
-from src.models.cash_session import CashSession
-from src.models.company import Company
-from src.models.customer import Customer
-from src.models.payment_method import PaymentMethod
-from src.models.profile import Profile
-from src.models.transaction import Transaction
-from src.models.transaction_payment import TransactionPayment
-from src.services.supabase_auth import require_user
+from app.main import app
+from app.models.audit_log import AuditLog
+from app.models.cash_session import CashSession
+from app.models.company import Company
+from app.models.customer import Customer
+from app.models.payment_method import PaymentMethod
+from app.models.profile import Profile
+from app.models.transaction import Transaction
+from app.models.transaction_payment import TransactionPayment
+from app.services.supabase_auth import require_user
 from tests.helpers import ensure_auth_user, set_request_user
 
 
@@ -123,7 +123,7 @@ def test_create_sale_with_multiple_payments_and_audit(client, db_session):
     app.dependency_overrides[require_user] = lambda: actor
     try:
         response = client.post(
-            "/api/sales",
+            "/api/v1/sales",
             json={
                 "company_id": company.id,
                 "transaction_date": date(2026, 4, 30).isoformat(),
@@ -164,7 +164,7 @@ def test_create_sale_rejects_total_mismatch(client, db_session):
     app.dependency_overrides[require_user] = lambda: actor
     try:
         response = client.post(
-            "/api/sales",
+            "/api/v1/sales",
             json={
                 "company_id": company.id,
                 "transaction_date": date(2026, 4, 30).isoformat(),
@@ -191,7 +191,7 @@ def test_create_sale_rejects_inactive_payment_method(client, db_session):
     set_request_user(db_session, actor.id)
     try:
         response = client.post(
-            "/api/sales",
+            "/api/v1/sales",
             json={
                 "company_id": company.id,
                 "transaction_date": date(2026, 4, 30).isoformat(),
@@ -215,7 +215,7 @@ def test_create_sale_assigns_generic_customer_when_missing(client, db_session):
     app.dependency_overrides[require_user] = lambda: actor
     try:
         response = client.post(
-            "/api/sales",
+            "/api/v1/sales",
             json={
                 "company_id": company.id,
                 "transaction_date": date(2026, 4, 30).isoformat(),
@@ -305,7 +305,7 @@ def test_list_sales_with_filters(client, db_session):
     app.dependency_overrides[require_user] = lambda: actor
     try:
         response = client.get(
-            "/api/sales",
+            "/api/v1/sales",
             params={
                 "date_from": "2026-04-15",
                 "date_to": "2026-04-30",
@@ -365,7 +365,7 @@ def test_get_sale_by_id_returns_detail(client, db_session):
     app.dependency_overrides[require_user] = lambda: actor
     set_request_user(db_session, actor.id)
     try:
-        response = client.get(f"/api/sales/{tx.id}")
+        response = client.get(f"/api/v1/sales/{tx.id}")
     finally:
         app.dependency_overrides.pop(require_user, None)
 
@@ -381,7 +381,7 @@ def test_get_sale_by_id_not_found(client, db_session):
     app.dependency_overrides[require_user] = lambda: actor
     set_request_user(db_session, actor.id)
     try:
-        response = client.get("/api/sales/00000000-0000-0000-0000-000000000000")
+        response = client.get("/api/v1/sales/00000000-0000-0000-0000-000000000000")
     finally:
         app.dependency_overrides.pop(require_user, None)
 
@@ -399,7 +399,7 @@ def test_create_sale_fails_when_generic_customer_missing(client, db_session):
     set_request_user(db_session, actor.id)
     try:
         response = client.post(
-            "/api/sales",
+            "/api/v1/sales",
             json={
                 "company_id": company.id,
                 "transaction_date": date(2026, 4, 30).isoformat(),
@@ -425,7 +425,7 @@ def test_create_sale_fails_when_company_is_inactive(client, db_session):
     set_request_user(db_session, actor.id)
     try:
         response = client.post(
-            "/api/sales",
+            "/api/v1/sales",
             json={
                 "company_id": company.id,
                 "transaction_date": date(2026, 4, 30).isoformat(),
@@ -448,7 +448,7 @@ def test_create_sale_with_cash_requires_open_session(client, db_session):
     set_request_user(db_session, actor.id)
     try:
         response = client.post(
-            "/api/sales",
+            "/api/v1/sales",
             json={
                 "company_id": company.id,
                 "transaction_date": date(2026, 5, 1).isoformat(),

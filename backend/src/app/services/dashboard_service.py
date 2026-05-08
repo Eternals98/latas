@@ -6,17 +6,17 @@ from decimal import Decimal
 from sqlalchemy import case, extract, func, select
 from sqlalchemy.orm import Session
 
-from src.api.schemas.dashboard import (
+from app.schemas.dashboard import (
     DashboardResponse,
     MetodoPagoDashboardItem,
     VentasPorEmpresaItem,
     VentasPorMesItem,
     to_money,
 )
-from src.models.company import Company
-from src.models.payment_method import PaymentMethod
-from src.models.transaction import Transaction
-from src.models.transaction_payment import TransactionPayment
+from   app.models.company import Company
+from   app.models.payment_method import PaymentMethod
+from   app.models.transaction import Transaction
+from   app.models.transaction_payment import TransactionPayment
 
 
 def _now() -> datetime:

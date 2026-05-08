@@ -1,0 +1,1 @@
+{"nodes": [{"id": "backendFetch", "label": "backendFetch", "file_type": "code", "source_file": "web/lib/backend.ts"}], "edges": [{"source": "backendFetch", "target": "getAccessTokenFromCookies", "relation": "calls", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "web/lib/backend.ts"}], "hyperedges": []}

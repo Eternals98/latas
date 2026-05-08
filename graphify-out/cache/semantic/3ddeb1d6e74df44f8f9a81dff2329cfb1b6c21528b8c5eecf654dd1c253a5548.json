@@ -1,0 +1,1 @@
+{"nodes": [{"id": "migration_003", "label": "migration_003", "file_type": "document", "source_file": "supabase/migrations/003_seed_profiles_from_auth_users.sql"}, {"id": "migrations_003", "label": "003_seed_profiles_from_auth_users.sql", "file_type": "code", "source_file": "supabase/migrations/003_seed_profiles_from_auth_users.sql"}], "edges": [], "hyperedges": []}

@@ -2,5 +2,16 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     ".opencode/plugins/graphify.js"
-  ]
+  ],
+  "mcp": {
+    "designmd": {
+      "command": "npx",
+      "args": ["designmd-mcp"],
+      "env": {
+        "DESIGNMD_API_KEY": "dk_a4f7b13e936d0c46e6358b8bea311cd576175671"
+      },
+      "enabled": true
+    }
+  }
 }
+

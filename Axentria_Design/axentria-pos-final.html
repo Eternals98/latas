@@ -1,0 +1,413 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Axentria — Sistema de Ventas</title>
+<meta name="viewport" content="width=1280"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  html, body { margin: 0; height: 100%; background: var(--surface-app); overflow: hidden; }
+  #root { height: 100%; display: flex; flex-direction: column; }
+
+  /* Re-usable utility classes */
+  .num    { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .display{ font-family: var(--font-display); font-weight: 400; letter-spacing: -0.01em; }
+  .ovl    { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; color: var(--slate-500); }
+  .hairline { background: var(--border-default); height: 1px; }
+
+  /* Buttons */
+  .ax-btn { font-family: var(--font-sans); font-weight: 600; line-height: 1; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 9px 14px; font-size: 14px; border-radius: 6px;
+            transition: background var(--dur-2) var(--ease-standard), transform var(--dur-1) var(--ease-standard); }
+  .ax-btn[data-variant="primary"] { background: var(--ink-900); color: var(--paper-50); border:1px solid var(--ink-900); }
+  .ax-btn[data-variant="primary"]:hover { background: var(--ink-800); }
+  .ax-btn[data-variant="accent"]  { background: var(--brass-400); color: var(--ink-900); border:1px solid var(--brass-400); }
+  .ax-btn[data-variant="accent"]:hover  { background: var(--brass-500); }
+  .ax-btn[data-variant="ghost"]   { background: #fff; color: var(--ink-900); border: 1px solid var(--border-default); }
+  .ax-btn[data-variant="ghost"]:hover    { background: var(--paper-100); }
+  .ax-btn[data-variant="text"]    { background: transparent; color: var(--ink-900); border:1px solid transparent; }
+  .ax-btn[data-variant="text"]:hover     { color: var(--brass-600); }
+  .ax-btn[data-variant="danger"]  { background: var(--coral-500); color: white; border:1px solid var(--coral-500); }
+  .ax-btn[data-variant="danger"]:hover   { background: var(--coral-600); }
+  .ax-btn:active { transform: translateY(1px); }
+  .ax-btn:focus-visible { outline: none; box-shadow: var(--inset-focus); }
+
+  /* Inputs */
+  .ax-input { font-family: var(--font-sans); font-size: 14px; padding: 10px 12px; border-radius: 6px;
+              background: #fff; border: 1px solid var(--border-default); color: var(--ink-900); outline: none;
+              transition: box-shadow var(--dur-1), border-color var(--dur-1); width: 100%; box-sizing: border-box; }
+  .ax-input:focus { border-color: var(--brass-400); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brass-400) 35%, transparent); }
+  .ax-input.mono   { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Table base */
+  table.ax { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 13px; }
+  table.ax th { text-align: left; padding: 10px 14px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+                color: var(--slate-500); font-weight: 600; background: var(--paper-200); border-bottom: 1px solid var(--border-default); }
+  table.ax td { padding: 12px 14px; border-bottom: 1px solid var(--border-subtle); color: var(--ink-900); vertical-align: middle; }
+  table.ax tbody tr:hover { background: var(--paper-50); }
+  table.ax td.num, table.ax th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Sidebar item */
+  .nav-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:8px;
+              color: var(--ink-900); cursor:pointer; font-size:13px; font-weight:500;
+              border: 1px solid transparent;
+              transition: background var(--dur-2) var(--ease-standard); }
+  .nav-item:hover { background: var(--paper-200); }
+  .nav-item[data-active="true"] { background: var(--ink-900); color: var(--paper-50); font-weight: 600; }
+  .nav-item[data-active="true"] .nav-meta { color: var(--brass-300); }
+  .nav-meta { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--slate-500); }
+
+  /* Status pill */
+  .status-pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px;
+                 font-size:11px; font-weight:600; }
+
+  /* Login backdrop noise */
+  .paper-grain {
+    background-color: var(--paper-100);
+    background-image: radial-gradient(rgba(15,27,45,0.04) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+
+  /* Card hover lift */
+  .lift { transition: box-shadow var(--dur-2), transform var(--dur-2); }
+  .lift:hover { box-shadow: var(--elev-2); }
+
+  /* Animations */
+  @keyframes fadeUp { from { opacity:0; transform: translateY(4px); } to { opacity:1; transform:none; } }
+  .fade-in { animation: fadeUp 320ms var(--ease-standard) both; }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.4; }
+    50% { transform: scale(1.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+
+  @keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .slide-in-right { animation: slideInRight 400ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+// --- SHARED PRIMITIVES ------------------------------------------------------
+const Icon = ({ name, size = 16, strokeWidth = 1.75, ...rest }) => {
+  const paths = {
+    plus: "M12 5v14M5 12h14",
+    minus: "M5 12h14",
+    check: "M5 12l5 5L20 7",
+    x: "M6 6l12 12M6 18L18 6",
+    chevronDown: "M6 9l6 6 6-6",
+    chevronRight: "M9 6l6 6-6 6",
+    chevronLeft: "M15 6l-6 6 6 6",
+    search: "M11 19a8 8 0 110-16 8 8 0 010 16zM21 21l-4.3-4.3",
+    bell: "M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9zM10 21a2 2 0 004 0",
+    user: "M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0",
+    users: "M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z M22 21v-2a4 4 0 00-3-3.87 M16 3.13a4 4 0 010 7.75",
+    home: "M3 11l9-8 9 8v10a2 2 0 01-2 2h-4v-6h-6v6H5a2 2 0 01-2-2z",
+    chart: "M3 3v18h18 M7 14l4-4 4 4 5-7",
+    list: "M3 6h18 M3 12h18 M3 18h12",
+    box: "M3 7l9-4 9 4-9 4z M3 7v10l9 4 9-4V7 M12 11v10",
+    cash: "M3 6h18v12H3z M3 10h18 M7 14h.01 M12 14h2",
+    receipt: "M4 2h16v20l-4-2-4 2-4-2-4 2z M9 8h6 M9 12h6 M9 16h4",
+    return: "M21 12a9 9 0 11-3-6.7L21 8 M21 3v5h-5",
+    settings: "M12 15a3 3 0 100-6 3 3 0 000 6z M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z",
+    logout: "M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4 M16 17l5-5-5-5 M21 12H9",
+    calendar: "M3 6a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2z M3 10h18 M8 2v4 M16 2v4",
+    trash: "M3 6h18 M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2 M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6",
+    print: "M6 9V2h12v7 M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2 M6 14h12v8H6z",
+    arrowUp: "M12 19V5 M5 12l7-7 7 7",
+    arrowDown: "M12 5v14 M5 12l7 7 7-7",
+    eye: "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M12 15a3 3 0 100-6 3 3 0 000 6z",
+    moreH: "M5 12h.01M12 12h.01M19 12h.01",
+    download: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4 M7 10l5 5 5-5 M12 15V3",
+    filter: "M3 4h18l-7 9v7l-4-2v-5z",
+    creditCard: "M3 6h18v12H3z M3 10h18",
+  };
+  const d = paths[name] || "";
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" {...rest}>
+      {d.split(" M").map((seg, i) => (
+        <path key={i} d={(i === 0 ? "" : "M") + seg} />
+      ))}
+    </svg>
+  );
+};
+
+const Button = ({ variant = "primary", size = "md", icon, children, onClick, disabled, type = "button", style, ...rest }) => {
+  return (
+    <button type={type} disabled={disabled} onClick={onClick}
+      className="ax-btn"
+      data-variant={variant}
+      style={{
+        opacity: disabled ? 0.45 : 1,
+        ...style
+      }} {...rest}>
+      {icon ? <Icon name={icon} size={size === "sm" ? 13 : 15} /> : null}
+      {children}
+    </button>
+  );
+};
+
+const Input = ({ label, hint, error, prefix, type = "text", value, onChange, placeholder, mono, style, ...rest }) => {
+  const id = useRef(`in-${Math.random().toString(36).slice(2, 8)}`).current;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6, ...style }}>
+      {label ? <label htmlFor={id} style={{ fontSize: 12, fontWeight: 600, color: "var(--ink-900)" }}>{label}</label> : null}
+      {prefix ? (
+        <div style={{
+          display: "flex", alignItems: "stretch",
+          borderRadius: 6, border: `1px solid ${error ? "var(--coral-500)" : "var(--border-default)"}`,
+          background: "#fff", overflow: "hidden",
+        }}>
+          <span style={{ padding: "10px 12px", background: "var(--paper-200)", color: "var(--slate-700)",
+                         fontFamily: "var(--font-mono)", fontSize: 14, borderRight: "1px solid var(--border-default)" }}>{prefix}</span>
+          <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder}
+                 className="ax-input" style={{ border: 0, flex: 1 }}  {...rest}/>
+        </div>
+      ) : (
+        <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder}
+          className="ax-input"
+          style={{ fontFamily: mono ? "var(--font-mono)" : "var(--font-sans)",
+                   borderColor: error ? "var(--coral-500)" : undefined,
+                   boxShadow: error ? "0 0 0 3px color-mix(in oklab, var(--coral-500) 25%, transparent)" : "none" }} {...rest}/>
+      )}
+      {hint || error ? (
+        <span style={{ fontSize: 11, color: error ? "var(--coral-600)" : "var(--slate-500)" }}>{error || hint}</span>
+      ) : null}
+    </div>
+  );
+};
+
+const Badge = ({ tone = "neutral", dot = true, children }) => {
+  const tones = {
+    success: { bg: "var(--sage-50)",   fg: "var(--sage-700)",   dotBg: "var(--sage-500)" },
+    danger:  { bg: "var(--coral-50)",  fg: "var(--coral-700)",  dotBg: "var(--coral-500)" },
+    warn:    { bg: "var(--brass-50)",  fg: "var(--brass-700)",  dotBg: "var(--brass-400)" },
+    info:    { bg: "var(--paper-200)", fg: "var(--ink-800)",    dotBg: "var(--ink-700)" },
+    neutral: { bg: "var(--slate-100)", fg: "var(--slate-700)",  dotBg: "var(--slate-500)" },
+  };
+  const t = tones[tone];
+  return (
+    <span className="status-pill" style={{ background: t.bg, color: t.fg }}>
+      {dot ? <span style={{ width: 6, height: 6, borderRadius: "50%", background: t.dotBg }}/> : null}
+      {children}
+    </span>
+  );
+};
+
+const Card = ({ variant = "default", padding = 16, children, style, ...rest }) => {
+  const variants = {
+    default: { background: "#fff", border: "1px solid var(--border-default)", boxShadow: "var(--elev-1)" },
+    ledger:  { background: "#fff", border: "1px solid var(--border-default)", borderLeft: "3px solid var(--brass-400)", boxShadow: "var(--elev-1)" },
+    inverse: { background: "var(--ink-900)", color: "var(--paper-50)", border: "1px solid var(--ink-900)" },
+    sunken:  { background: "var(--paper-200)", border: "1px solid var(--border-default)" },
+  };
+  return (
+    <div style={{ borderRadius: 10, padding, ...variants[variant], ...(style || {}) }} {...rest}>{children}</div>
+  );
+};
+
+const Avatar = ({ name = "?", size = 28, tone = "brass" }) => {
+  const initials = name.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+  const tones = {
+    brass: { bg: "var(--brass-100)", fg: "var(--brass-700)" },
+    sage:  { bg: "var(--sage-100)",  fg: "var(--sage-700)"  },
+    coral: { bg: "var(--coral-100)", fg: "var(--coral-700)" },
+    ink:   { bg: "var(--ink-900)",   fg: "var(--paper-50)"  },
+  };
+  const t = tones[tone];
+  return (
+    <span style={{ width: size, height: size, borderRadius: "50%", background: t.bg, color: t.fg,
+                   display: "inline-grid", placeItems: "center",
+                   fontSize: size * 0.42, fontWeight: 700, fontFamily: "var(--font-sans)" }}>
+      {initials}
+    </span>
+  );
+};
+
+// --- LOGIN SCREEN -----------------------------------------------------------
+const LoginScreen = ({ onSignIn }) => {
+  const [email, setEmail] = useState("admin@axentria.com");
+  const [pass, setPass]   = useState("password");
+  const [err, setErr]     = useState(false);
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!email || !pass) { setErr(true); return; }
+    onSignIn();
+  };
+
+  return (
+    <div className="paper-grain" style={{ minHeight: "100%", display: "grid", placeItems: "center", padding: 32 }}>
+      <div style={{ width: 440, fontFamily: "var(--font-sans)" }} className="fade-in">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", marginBottom: 32 }}>
+          <div style={{ width: 72, height: 72, borderRadius: 20, background: "var(--ink-900)",
+                        display: "grid", placeItems: "center", boxShadow: "var(--elev-3)", padding: 14, marginBottom: 20 }}>
+            <img src="assets/logo-axentria-mark.svg" alt="Axentria" style={{ width: "100%", height: "100%" }} />
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <img src="assets/logo-axentria.svg" alt="Axentria" style={{ height: 32, marginBottom: 8 }} />
+            <div style={{ fontSize: 16, color: "var(--slate-500)", fontFamily: "var(--font-display)", fontStyle: "italic" }}>
+              El libro de ventas, hecho aplicación.
+            </div>
+          </div>
+        </div>
+
+        <div style={{ background: "#fff", borderRadius: 16, padding: "32px 36px",
+                      border: "1px solid var(--border-default)", boxShadow: "var(--elev-3)",
+                      position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 4, background: "var(--brass-400)" }} />
+          <div className="ovl" style={{ marginBottom: 24 }}>Acceso al sistema</div>
+          <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <Input label="Correo electrónico" value={email} onChange={e => { setEmail(e.target.value); setErr(false); }}
+                   placeholder="nombre@empresa.com" prefix={<Icon name="user" size={16} />} />
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+                <label style={{ fontSize: 12, fontWeight: 700 }}>Contraseña</label>
+                <a href="#" style={{ fontSize: 11, color: "var(--brass-600)", fontWeight: 600 }}>¿Olvidó su clave?</a>
+              </div>
+              <Input type="password" value={pass} onChange={e => { setPass(e.target.value); setErr(false); }}
+                     placeholder="••••••••••••" error={err && "Credenciales incorrectas"} prefix={<Icon name="settings" size={16} style={{transform: "rotate(45deg)"}}/>} />
+            </div>
+            <Button type="submit" size="lg" style={{ marginTop: 12, width: "100%" }}>
+              Ingresar al panel <Icon name="chevronRight" size={16} style={{ marginLeft: 4 }} />
+            </Button>
+          </form>
+          <div className="hairline" style={{ margin: "28px 0 20px" }} />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--sage-500)" }} />
+              <span style={{ fontSize: 11, color: "var(--slate-500)" }}>Sistema operativo</span>
+            </div>
+            <span style={{ fontSize: 11, color: "var(--slate-400)", fontFamily: "var(--font-mono)" }}>v 4.2.1 · POS-01</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- DASHBOARD SCREEN -------------------------------------------------------
+const DashboardScreen = ({ go }) => {
+  const [val1] = useState(124500);
+  const [val2] = useState(118200);
+  const [val3] = useState(290000);
+  const dailySeries = [42,46,49,44,52,58,55,63,67,72,69,78,82,88,95,90,97,102,108,118];
+
+  return (
+    <div style={{ padding: "32px", maxWidth: 1400, margin: "0 auto" }} className="fade-in">
+      <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr 1fr", gap: 20 }}>
+        <HeroFigure accent label="Ventas totales · Mes" value={val1} delta="+12.4% vs mes anterior" note="Cierre proyectado $138 k"/>
+        <HeroFigure label="Ventas del día" value={val2} delta="+8.1%" note="hoy · 14:32"/>
+        <HeroFigure label="Efectivo total en caja" value={val3} delta="−$3.200 retiros" deltaTone="coral" note="3 cajas activas"/>
+      </div>
+
+      <Card style={{ marginTop: 20, padding: "24px 28px", display: "grid", gridTemplateColumns: "1fr 240px 240px", gap: 32, alignItems: "center" }} className="lift">
+        <div>
+          <div className="ovl">Tendencia · últimos 20 días</div>
+          <div className="display" style={{ fontSize: 48, lineHeight: 1.1, marginTop: 8, color: "var(--ink-900)" }}>
+            $ <span className="num" style={{ fontWeight: 500 }}>124.500</span>
+          </div>
+          <div style={{ fontSize: 13, color: "var(--slate-500)", marginTop: 6 }}>
+            Promedio diario <span className="num" style={{ color: "var(--ink-900)", fontWeight: 700 }}>$ 6.225</span> · pico registrado el lunes 6 may
+          </div>
+        </div>
+        <Spark data={dailySeries} color="var(--brass-500)" width={240} height={80}/>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13, paddingLeft: 20, borderLeft: "1px solid var(--border-subtle)" }}>
+          <div style={{display:'flex',justify:'space-between'}}><span>Ticket promedio</span><span className="num" style={{fontWeight:700}}>$ 18.420</span></div>
+          <div style={{display:'flex',justify:'space-between'}}><span>Ventas registradas</span><span className="num" style={{fontWeight:700}}>2.295</span></div>
+          <div style={{display:'flex',justify:'space-between'}}><span>Devoluciones</span><span className="num" style={{fontWeight:700,color:'var(--coral-600)'}}>3 · $ 850</span></div>
+          <div style={{display:'flex',justify:'space-between'}}><span>Estado caja</span><Badge tone="success">abierta</Badge></div>
+        </div>
+      </Card>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 20, marginTop: 20 }}>
+        <Card padding={0} style={{overflow:'hidden'}}>
+          <div style={{padding:'18px 22px', borderBottom:'1px solid var(--border-subtle)', display:'flex', justify:'space-between', align:'center'}}>
+            <div><div className="ovl">Ventas por entidad</div><div style={{fontSize:17, fontWeight:700, color:'var(--ink-900)'}}>Distribución operativa</div></div>
+            <Button variant="text" size="sm">Ver todas →</Button>
+          </div>
+          <table className="ax">
+            <thead><tr><th>Entidad</th><th>Tipo</th><th className="num">Volumen</th><th className="num">Ingresos</th><th>Participación</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div style={{display:'flex',align:'center',gap:12}}><Avatar name="Latas SAS" size={30} tone="ink"/><span style={{fontWeight:600}}>Latas S.A.S.</span></div></td>
+                <td><Badge tone="info">Empresa</Badge></td>
+                <td className="num">1.245</td>
+                <td className="num" style={{fontWeight:700}}>$ 65.400</td>
+                <td><div style={{display:'flex',align:'center',gap:8}}><div style={{flex:1,height:6,background:'var(--paper-200)',borderRadius:999,overflow:'hidden'}}><div style={{width:'53%',height:'100%',background:'var(--brass-400)'}}/></div><span className="num" style={{fontSize:11}}>53%</span></div></td>
+              </tr>
+              <tr>
+                <td><div style={{display:'flex',align:'center',gap:12}}><Avatar name="Tomas Gomez" size={30} tone="brass"/><span style={{fontWeight:600}}>Tomás Gómez</span></div></td>
+                <td><Badge tone="warn">Cliente</Badge></td>
+                <td className="num">892</td>
+                <td className="num" style={{fontWeight:700}}>$ 42.100</td>
+                <td><div style={{display:'flex',align:'center',gap:8}}><div style={{flex:1,height:6,background:'var(--paper-200)',borderRadius:999,overflow:'hidden'}}><div style={{width:'34%',height:'100%',background:'var(--brass-400)'}}/></div><span className="num" style={{fontSize:11}}>34%</span></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </Card>
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
+          <Card>
+            <div className="ovl">Acciones rápidas</div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginTop:12}}>
+              <QuickAction icon="plus" label="Nueva venta" onClick={()=>go('sale')}/>
+              <QuickAction icon="cash" label="Gestión caja" accent onClick={()=>go('cash')}/>
+              <QuickAction icon="receipt" label="Historial" onClick={()=>go('transactions')}/>
+              <QuickAction icon="list" label="Reportes" onClick={()=>go('reports')}/>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const HeroFigure = ({ label, value, delta, deltaTone = "sage", note, accent = false }) => (
+  <div className="lift" style={{
+    background: accent ? "var(--ink-900)" : "#fff", color: accent ? "var(--paper-50)" : "var(--ink-900)",
+    borderRadius: 14, padding: "22px 24px", border: accent ? "1px solid var(--ink-900)" : "1px solid var(--border-default)",
+    borderLeft: accent ? "1px solid var(--ink-900)" : "3px solid var(--brass-400)", display: "flex", flexDirection: "column", gap: 10, minHeight: 150,
+  }}>
+    <div className="ovl" style={{ color: accent ? "var(--brass-300)" : undefined }}>{label}</div>
+    <div className="display" style={{ fontSize: 52, lineHeight: 1 }}>
+      <span style={{ fontFamily: "var(--font-mono)" }}>$</span>
+      <span className="num" style={{ fontFamily: "var(--font-mono)", fontWeight: 500 }}>{value.toLocaleString("es-CL")}</span>
+    </div>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 12 }}>
+      {delta ? <span className="status-pill" style={{ background: accent ? "rgba(255,255,255,0.1)" : (deltaTone === "sage" ? "var(--sage-50)" : "var(--coral-50)"), color: deltaTone === "sage" ? "var(--sage-700)" : "var(--coral-700)" }}>{delta}</span> : null}
+      {note ? <span style={{ opacity: 0.7 }}>{note}</span> : null}
+    </div>
+  </div>
+);
+
+const Spark = ({ data, color, width, height }) => {
+  const max = Math.max(...data), min = Math.min(...data);
+  const dx = width / (data.length - 1);
+  const path = data.map((v, i) => `${i === 0 ? "M" : "L"}${(i * dx).toFixed(1)},${(height - ((v - min) / (max - min || 1)) * (height - 10) - 5).toFixed(1)}`).join(" ");
+  return (
+    <svg width={width} height={height}>
+      <path d={path + ` L${width},${height} L0,${height} Z`} fill={color} fillOpacity="0.1"/>
+      <path d={path} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"/>
+    </svg>
+  );
+};
+
+const QuickAction = ({ icon, label, onClick, accent }) => (
+  <button onClick={onClick} className="lift" style={{ display: "flex", alignItems: "center", gap: 10, padding: 14, borderRadius: 10, cursor: "pointer", background: accent ? "var(--brass-50)" : "#fff", border: `1px solid ${accent ? "var(--brass-200)" : "var(--border-default)"}`, color: "var(--ink-900)", fontWeight: 600, fontSize: 13, fontFamily: "var(--font-sans)" }}>
+    <span style={{ width: 30, height: 30, borderRadius: 8, display: "grid", placeItems: "center", background: accent ? "var(--brass-400)" : "var(--paper-200)" }}><Icon name={icon} size={15}/></span>
+    {label}

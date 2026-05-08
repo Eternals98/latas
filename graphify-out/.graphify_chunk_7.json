@@ -1,0 +1,543 @@
+{
+  "nodes": [
+    {
+      "id": "tests_helpers_ensure_auth_user",
+      "label": "ensure_auth_user",
+      "file_type": "code",
+      "source_file": "backend/tests/helpers.py",
+      "source_location": "5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_helpers_set_request_user",
+      "label": "set_request_user",
+      "file_type": "code",
+      "source_file": "backend/tests/helpers.py",
+      "source_location": "34",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cash_api__seed_core",
+      "label": "_seed_core",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cash_api_test_cash_flow_open_to_close",
+      "label": "test_cash_flow_open_to_close",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "77",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cash_api_test_cash_permissions_enforced",
+      "label": "test_cash_permissions_enforced",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "118",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cors_test_cors_preflight_allows_dashboard_from_vite_origin",
+      "label": "test_cors_preflight_allows_dashboard_from_vite_origin",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cors.py",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_health_test_health_endpoint",
+      "label": "test_health_endpoint",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_health.py",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api__seed_core",
+      "label": "_seed_core",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api__open_cash_session",
+      "label": "_open_cash_session",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "96",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_with_multiple_payments_and_audit",
+      "label": "test_create_sale_with_multiple_payments_and_audit",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "118",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_rejects_total_mismatch",
+      "label": "test_create_sale_rejects_total_mismatch",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "160",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_rejects_inactive_payment_method",
+      "label": "test_create_sale_rejects_inactive_payment_method",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "184",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_assigns_generic_customer_when_missing",
+      "label": "test_create_sale_assigns_generic_customer_when_missing",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "211",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_list_sales_with_filters",
+      "label": "test_list_sales_with_filters",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "235",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_get_sale_by_id_returns_detail",
+      "label": "test_get_sale_by_id_returns_detail",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "327",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_get_sale_by_id_not_found",
+      "label": "test_get_sale_by_id_not_found",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "379",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_fails_when_generic_customer_missing",
+      "label": "test_create_sale_fails_when_generic_customer_missing",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "392",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_fails_when_company_is_inactive",
+      "label": "test_create_sale_fails_when_company_is_inactive",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "419",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_with_cash_requires_open_session",
+      "label": "test_create_sale_with_cash_requires_open_session",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "445",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_validate_admin_credentials_accepts_configured_values",
+      "label": "test_validate_admin_credentials_accepts_configured_values",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_validate_admin_credentials_rejects_invalid_password",
+      "label": "test_validate_admin_credentials_rejects_invalid_password",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_create_admin_token_has_eight_hour_expiry",
+      "label": "test_create_admin_token_has_eight_hour_expiry",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_verify_admin_token_rejects_invalid_token",
+      "label": "test_verify_admin_token_rejects_invalid_token",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_verify_admin_token_rejects_expired_token",
+      "label": "test_verify_admin_token_rejects_expired_token",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service__seed_core",
+      "label": "_seed_core",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "25",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_open_cash_session_duplicate_same_day",
+      "label": "test_open_cash_session_duplicate_same_day",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "83",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_open_cash_session_rejects_cashier",
+      "label": "test_open_cash_session_rejects_cashier",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "92",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_delivery_and_vault_withdrawal_insufficient_balance",
+      "label": "test_delivery_and_vault_withdrawal_insufficient_balance",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "99",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_adjustment_requires_admin_and_reason",
+      "label": "test_adjustment_requires_admin_and_reason",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "131",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_close_cash_session_calculates_difference",
+      "label": "test_close_cash_session_calculates_difference",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "148",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_cash_delivery_creates_audit_log",
+      "label": "test_cash_delivery_creates_audit_log",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "168",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_manual_adjustment_audit_captures_reason",
+      "label": "test_manual_adjustment_audit_captures_reason",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "193",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_create_sale_with_cash_requires_open_session",
+      "label": "test_create_sale_with_cash_requires_open_session",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "220",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_decode_token_success",
+      "label": "test_decode_token_success",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_decode_token_rejects_when_kid_not_found",
+      "label": "test_decode_token_rejects_when_kid_not_found",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "30",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_decode_token_rejects_invalid_signature",
+      "label": "test_decode_token_rejects_invalid_signature",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_load_jwks_reloads_after_expiration",
+      "label": "test_load_jwks_reloads_after_expiration",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "76",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "seed_sql",
+      "label": "seed.sql",
+      "file_type": "document",
+      "source_file": "supabase/seed.sql"
+    },
+    {
+      "id": "migration_001",
+      "label": "001_init_schema_and_seed.sql",
+      "file_type": "document",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql"
+    },
+    {
+      "id": "table_companies",
+      "label": "public.companies",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "10"
+    },
+    {
+      "id": "table_profiles",
+      "label": "public.profiles",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "17"
+    },
+    {
+      "id": "table_customers",
+      "label": "public.customers",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "25"
+    },
+    {
+      "id": "table_payment_methods",
+      "label": "public.payment_methods",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "40"
+    },
+    {
+      "id": "table_cash_sessions",
+      "label": "public.cash_sessions",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "49"
+    },
+    {
+      "id": "table_cash_events",
+      "label": "public.cash_events",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "63"
+    },
+    {
+      "id": "table_transactions",
+      "label": "public.transactions",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "73"
+    },
+    {
+      "id": "table_transaction_payments",
+      "label": "public.transaction_payments",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "96"
+    },
+    {
+      "id": "table_cash_movements",
+      "label": "public.cash_movements",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "104"
+    },
+    {
+      "id": "table_audit_logs",
+      "label": "public.audit_logs",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "116"
+    }
+  ],
+  "edges": [
+    {
+      "source": "tests_cash_api_seed_core",
+      "target": "tests_helpers_ensure_auth_user",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "15"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_flow_open_to_close",
+      "target": "tests_integration_test_cash_api__seed_core",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "78"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_flow_open_to_close",
+      "target": "tests_helpers_set_request_user",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "79"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_permissions_enforced",
+      "target": "tests_integration_test_cash_api__seed_core",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "119"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_permissions_enforced",
+      "target": "tests_helpers_set_request_user",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "120"
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

@@ -1,0 +1,1 @@
+{"nodes": [{"id": "app.api.v1.endpoints.auth.router", "label": "Auth Router", "file_type": "code", "source_file": "backend/src/app/api/v1/endpoints/auth.py", "source_location": "16:1", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

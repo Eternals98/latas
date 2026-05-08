@@ -1,0 +1,1 @@
+{"nodes": [{"id": "app.api.v1.endpoints.companies.router", "label": "Companies Router", "file_type": "code", "source_file": "backend/src/app/api/v1/endpoints/companies.py", "source_location": "14:1", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

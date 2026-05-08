@@ -7,12 +7,13 @@ from uuid import uuid4
 from sqlalchemy import and_, func, select
 from sqlalchemy.orm import Session
 
-from src.api.schemas.cash import CashMovementRecord, CashSessionRecord, to_money
-from src.models.cash_event import CashEvent
-from src.models.audit_log import AuditLog
-from src.models.cash_movement import CashMovement
-from src.models.cash_session import CashSession
-from src.models.profile import Profile
+from app.schemas.cash.movement import CashMovementRecord, to_money
+from app.schemas.cash.session import CashSessionRecord
+from app.models.cash_event import CashEvent
+from app.models.audit_log import AuditLog
+from app.models.cash_movement import CashMovement
+from app.models.cash_session import CashSession
+from app.models.profile import Profile
 
 
 class CashValidationError(Exception):
@@ -41,15 +42,25 @@ def _require_admin_or_cashier(actor: Profile) -> None:
         raise CashValidationError("Operación no permitida para este usuario.")
 
 
+def _check_date_permission(actor: Profile, session_date: date, reason: str | None) -> None:
+    """
+    Cajero: solo puede operar la caja del día actual.
+    Admin: puede operar cualquier fecha pero debe proveer motivo si no es hoy.
+    """
+    today = date.today()
+    if actor.role == "cashier":
+        if session_date != today:
+            raise CashValidationError("El cajero solo puede operar la caja del día actual.")
+    elif actor.role == "admin":
+        if session_date != today and not (reason and reason.strip()):
+            raise CashValidationError("El administrador debe registrar un motivo para operar en una fecha diferente al día actual.")
+
+
 def _get_session_by_date(db: Session, session_date: date, lock: bool = False) -> CashSession | None:
     stmt = select(CashSession).where(CashSession.session_date == session_date)
     if lock:
         stmt = stmt.with_for_update()
-    return (
-        db.execute(stmt)
-        .scalars()
-        .first()
-    )
+    return db.execute(stmt).scalars().first()
 
 
 def _get_open_session_or_raise(db: Session, session_date: date, lock: bool = False) -> CashSession:
@@ -195,6 +206,7 @@ def _create_movement(
     db.add(movement)
     return movement
 
+
 def record_cash_movement(
     db: Session,
     *,
@@ -219,14 +231,26 @@ def record_cash_movement(
     )
 
 
+def get_cash_balance(db: Session, session_date: date) -> Decimal:
+    """Returns the current cash balance for the given session date."""
+    session = _get_session_by_date(db, session_date)
+    if session is None:
+        return Decimal("0.00")
+    cash_balance, _ = _compute_balances(db, session.id, to_money(session.opening_cash))
+    return cash_balance
+
+
 def open_cash_session(
     db: Session,
     *,
     session_date: date,
     opening_cash: Decimal,
     actor: Profile,
+    reason: str | None = None,
 ) -> CashSessionRecord:
     _require_admin_or_cashier(actor)
+    _check_date_permission(actor, session_date, reason)
+
     existing = _get_session_by_date(db, session_date)
     if existing is not None:
         if actor.role != "admin":
@@ -242,14 +266,14 @@ def open_cash_session(
             event_type="reopen",
             actor=actor,
             payload={"session_date": session_date.isoformat(), "reopened_at": _now().isoformat()},
-            note="Reapertura de caja",
+            note=reason or "Reapertura de caja",
         )
         _log_audit(
             db,
             action="REOPEN_CASH_SESSION",
             entity_id=existing.id,
             actor=actor,
-            reason=None,
+            reason=reason,
             new_data={"session_date": session_date.isoformat()},
         )
         db.commit()
@@ -278,7 +302,7 @@ def open_cash_session(
             action="OPEN_CASH_SESSION",
             entity_id=session.id,
             actor=actor,
-            reason=None,
+            reason=reason,
             new_data={"session_date": session_date.isoformat(), "opening_cash": f"{to_money(opening_cash):.2f}"},
         )
         _record_cash_event(
@@ -287,7 +311,7 @@ def open_cash_session(
             event_type="open",
             actor=actor,
             payload={"session_date": session_date.isoformat(), "opening_cash": f"{to_money(opening_cash):.2f}"},
-            note="Apertura de caja",
+            note=reason or "Apertura de caja",
         )
         db.commit()
         db.refresh(session)
@@ -459,8 +483,11 @@ def close_cash_session(
     session_date: date,
     counted_cash: Decimal,
     actor: Profile,
+    reason: str | None = None,
 ) -> CashSessionRecord:
     _require_admin_or_cashier(actor)
+    _check_date_permission(actor, session_date, reason)
+
     session = _get_open_session_or_raise(db, session_date)
     session_record = _session_to_record(db, session)
     if actor.role == "cashier" and _first_event_by_type(db, session.id, "close") is not None:
@@ -483,7 +510,7 @@ def close_cash_session(
             action="CLOSE_CASH_SESSION",
             entity_id=session.id,
             actor=actor,
-            reason=None,
+            reason=reason,
             new_data={
                 "expected": f"{expected:.2f}",
                 "counted": f"{counted:.2f}",
@@ -500,7 +527,7 @@ def close_cash_session(
                 "counted": f"{counted:.2f}",
                 "difference": f"{difference:.2f}",
             },
-            note="Cierre de caja con diferencia" if difference != 0 else "Cierre de caja",
+            note=reason or ("Cierre de caja con diferencia" if difference != 0 else "Cierre de caja"),
         )
         db.commit()
         db.refresh(session)

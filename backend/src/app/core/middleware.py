@@ -58,7 +58,7 @@ def setup_middleware(app: FastAPI) -> None:
     app.add_middleware(GZipMiddleware, minimum_size=1000)
 
     # Trusted Hosts: Prevents HTTP Host Header attacks
-    allowed_hosts = ["localhost", "127.0.0.1"]
+    allowed_hosts = ["localhost", "127.0.0.1", "testserver"]
     if settings.app_env == "production":
         allowed_hosts = ["axentria.vercel.app", "localhost", "127.0.0.1"]
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)

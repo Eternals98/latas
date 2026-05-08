@@ -4,7 +4,7 @@ import jwt
 import pytest
 from fastapi import HTTPException
 
-import src.services.supabase_auth as supabase_auth
+import app.services.supabase_auth as supabase_auth
 
 
 def test_decode_token_success(monkeypatch):

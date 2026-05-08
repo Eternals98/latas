@@ -7,26 +7,24 @@ from uuid import uuid4
 from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import Session
 
-from src.app.schemas.transactions.sales import (
+from app.schemas.transactions.sales import (
     SaleCreateRequest,
-    SaleResponse,
     SaleDetailRecord,
     SaleListFilters,
+    SalePaymentResponse,
+    SaleUpdateRequest,
 )
-from src.app.schemas.transactions.base import (
-    TransactionCancelRequest,
-    to_money
-)
-from src.app.services.transaction_service import create_transaction, cancel_transaction
-from src.models.audit_log import AuditLog
-from src.models.cash_movement import CashMovement
-from src.models.company import Company
-from src.models.customer import Customer
-from src.models.payment_method import PaymentMethod
-from src.models.profile import Profile
-from src.models.transaction import Transaction
-from src.models.transaction_payment import TransactionPayment
-from src.services.cash_service import get_open_cash_session_by_date
+from app.schemas.transactions.base import TransactionCancelRequest, to_money
+from app.services.transaction_service import create_transaction, cancel_transaction
+from app.models.audit_log import AuditLog
+from app.models.cash_movement import CashMovement
+from app.models.company import Company
+from app.models.customer import Customer
+from app.models.payment_method import PaymentMethod
+from app.models.profile import Profile
+from app.models.transaction import Transaction
+from app.models.transaction_payment import TransactionPayment
+from app.services.cash_service import get_open_cash_session_by_date
 
 
 class SalesValidationError(Exception):
@@ -136,15 +134,17 @@ def create_sale(
     session = get_open_cash_session_by_date(db, session_date=payload.transaction_date.date())
     if session is None:
         raise SalesConflictError("No se puede registrar la venta porque la caja está cerrada para la fecha indicada.")
-    
+
     customer_id = payload.customer_id
     if customer_id is None:
         customer_id = _get_generic_customer_id(db)
     else:
         _validate_customer_active(db, customer_id)
-        
-    _validate_payments(db, payload)
-    
+
+    methods_map = _validate_payments(db, payload)
+
+    has_cash = any(methods_map[p.payment_method_id].affects_cash for p in payload.payments)
+
     transaction = create_transaction(
         db,
         payload=payload,
@@ -152,12 +152,9 @@ def create_sale(
         actor=actor,
         customer_id=customer_id,
         document_number=payload.document_number,
-        cash_session_id=session.id if any(
-            # Check if any payment method affects cash
-            db.get(PaymentMethod, p.payment_method_id).affects_cash for p in payload.payments
-        ) else None,
+        cash_session_id=session.id if has_cash else None,
     )
-    
+
     return get_sale_by_id(db, sale_id=transaction.id)
 
 
@@ -166,7 +163,11 @@ def _build_sales_query(filters: SaleListFilters):
     if filters.date_from:
         conditions.append(Transaction.transaction_date >= filters.date_from)
     if filters.date_to:
-        conditions.append(Transaction.transaction_date < datetime.combine(filters.date_to + timedelta(days=1), datetime.min.time(), tzinfo=UTC))
+        conditions.append(
+            Transaction.transaction_date < datetime.combine(
+                filters.date_to + timedelta(days=1), datetime.min.time(), tzinfo=UTC
+            )
+        )
     if filters.company_id:
         conditions.append(Transaction.company_id == filters.company_id)
     if filters.company_ids:
@@ -200,7 +201,9 @@ def _build_sales_query(filters: SaleListFilters):
             Transaction.document_number,
             Transaction.description,
             Transaction.total_amount,
+            Transaction.payment_terms,
             Transaction.status,
+            Transaction.transaction_type,
             Transaction.created_at,
         )
         .join(Company, Company.id == Transaction.company_id)
@@ -263,7 +266,9 @@ def list_sales(db: Session, *, filters: SaleListFilters) -> tuple[list[SaleDetai
             document_number=row.document_number,
             description=row.description or "",
             total_amount=to_money(row.total_amount),
+            payment_terms=row.payment_terms,
             status=row.status,
+            transaction_type=row.transaction_type,
             created_at=row.created_at,
             payments=payments_map.get(row.id, []),
         )
@@ -285,7 +290,9 @@ def get_sale_by_id(db: Session, *, sale_id: str) -> SaleDetailRecord:
             Transaction.document_number,
             Transaction.description,
             Transaction.total_amount,
+            Transaction.payment_terms,
             Transaction.status,
+            Transaction.transaction_type,
             Transaction.created_at,
         )
         .join(Company, Company.id == Transaction.company_id)
@@ -307,7 +314,9 @@ def get_sale_by_id(db: Session, *, sale_id: str) -> SaleDetailRecord:
         document_number=row.document_number,
         description=row.description or "",
         total_amount=to_money(row.total_amount),
+        payment_terms=row.payment_terms,
         status=row.status,
+        transaction_type=row.transaction_type,
         created_at=row.created_at,
         payments=payments_map.get(row.id, []),
     )
@@ -434,10 +443,10 @@ def cancel_sale(
 ) -> SaleDetailRecord:
     transaction = _load_sale_transaction(db, sale_id)
     _validate_admin_can_mutate(actor, transaction)
-    opened_session = get_open_cash_session_by_date(db, session_date=transaction.transaction_date)
+    opened_session = get_open_cash_session_by_date(db, session_date=transaction.transaction_date.date())
     if opened_session is None:
         raise SalesConflictError("No se puede anular la venta porque la caja está cerrada.")
-    
+
     cancel_transaction(
         db,
         transaction_id=sale_id,
@@ -446,5 +455,5 @@ def cancel_sale(
         actor=actor,
         cash_session_id=opened_session.id,
     )
-    
+
     return get_sale_by_id(db, sale_id=sale_id)

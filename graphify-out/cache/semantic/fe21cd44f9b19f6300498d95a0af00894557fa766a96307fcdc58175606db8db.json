@@ -1,0 +1,1 @@
+{"nodes": [{"id": "app_models_AuditLog", "label": "AuditLog", "file_type": "code", "source_file": "backend/src/app/models/audit_log.py"}], "edges": [{"source": "app_models_AuditLog", "target": "app_models_Profile", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "backend/src/app/models/audit_log.py"}], "hyperedges": []}

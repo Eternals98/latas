@@ -1,0 +1,3902 @@
+{
+  "nodes": [
+    {
+      "id": "start-backend",
+      "label": "Start Backend Script",
+      "file_type": "code",
+      "source_file": "start-backend.ps1",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "start-frontend",
+      "label": "Start Frontend Script",
+      "file_type": "code",
+      "source_file": "start-frontend.ps1",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.main.app",
+      "label": "FastAPI App Instance",
+      "file_type": "code",
+      "source_file": "backend/src/app/main.py",
+      "source_location": "23:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.router.router",
+      "label": "API V1 Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "17:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.auth.router",
+      "label": "Auth Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/auth.py",
+      "source_location": "16:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.router",
+      "label": "Cash Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "40:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.companies.router",
+      "label": "Companies Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/companies.py",
+      "source_location": "14:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.open_cash_route",
+      "label": "open_cash_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "44:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.cash_delivery_route",
+      "label": "cash_delivery_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "54:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.adjustment_route",
+      "label": "adjustment_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "70:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.close_cash_route",
+      "label": "close_cash_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "88:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_clientes_page_ClientesPage",
+      "label": "ClientesPage",
+      "file_type": "code",
+      "source_file": "web/app/clientes/page.tsx"
+    },
+    {
+      "id": "web_app_configuracion_ConfigurationClientPage_ConfigurationClientPage",
+      "label": "ConfigurationClientPage",
+      "file_type": "code",
+      "source_file": "web/app/configuracion/ConfigurationClientPage.tsx"
+    },
+    {
+      "id": "web_app_configuracion_page_ConfigurationPage",
+      "label": "ConfigurationPage",
+      "file_type": "code",
+      "source_file": "web/app/configuracion/page.tsx"
+    },
+    {
+      "id": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "label": "DashboardClientPage",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "id": "web_app_dashboard_DashboardClientPage_MetricCard",
+      "label": "MetricCard",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "id": "web_app_dashboard_DashboardClientPage_TableShell",
+      "label": "TableShell",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "id": "web_app_dashboard_page_DashboardRoutePage",
+      "label": "DashboardRoutePage",
+      "file_type": "code",
+      "source_file": "web/app/dashboard/page.tsx"
+    },
+    {
+      "id": "web_app_login_page_LoginPage",
+      "label": "LoginPage",
+      "file_type": "code",
+      "source_file": "web/app/login/page.tsx"
+    },
+    {
+      "id": "web_app_reportes_page_ReportesPage",
+      "label": "ReportesPage",
+      "file_type": "code",
+      "source_file": "web/app/reportes/page.tsx"
+    },
+    {
+      "id": "web_app_salesRegister_page_RegistroPage",
+      "label": "RegistroPage",
+      "file_type": "code",
+      "source_file": "web/app/salesRegister/page.tsx"
+    },
+    {
+      "id": "web_app_transactions_page_TransactionsPage",
+      "label": "TransactionsPage",
+      "file_type": "code",
+      "source_file": "web/app/transactions/page.tsx"
+    },
+    {
+      "id": "rationale_money_handling_pattern",
+      "label": "Currency Handling Pattern",
+      "file_type": "rationale",
+      "source_file": "web/app/salesRegister/page.tsx"
+    },
+    {
+      "id": "TransactionsClientPage",
+      "label": "TransactionsClientPage",
+      "file_type": "code",
+      "source_file": "web/app/transactions/TransactionsClientPage.tsx"
+    },
+    {
+      "id": "MultiSelectCombobox",
+      "label": "MultiSelectCombobox",
+      "file_type": "code",
+      "source_file": "web/components/combobox-multiselect.tsx"
+    },
+    {
+      "id": "SearchModal",
+      "label": "SearchModal",
+      "file_type": "code",
+      "source_file": "web/components/input-text.tsx"
+    },
+    {
+      "id": "getCsrfHeaders",
+      "label": "getCsrfHeaders",
+      "file_type": "code",
+      "source_file": "web/lib/csrf-client.ts"
+    },
+    {
+      "id": "getAccessTokenFromCookies",
+      "label": "getAccessTokenFromCookies",
+      "file_type": "code",
+      "source_file": "web/lib/auth.ts"
+    },
+    {
+      "id": "backendFetch",
+      "label": "backendFetch",
+      "file_type": "code",
+      "source_file": "web/lib/backend.ts"
+    },
+    {
+      "id": "createCsrfToken",
+      "label": "createCsrfToken",
+      "file_type": "code",
+      "source_file": "web/lib/csrf.ts"
+    },
+    {
+      "id": "requireCsrf",
+      "label": "requireCsrf",
+      "file_type": "code",
+      "source_file": "web/lib/csrf.ts"
+    },
+    {
+      "id": "setLanguage",
+      "label": "setLanguage",
+      "file_type": "code",
+      "source_file": "web/lib/i18n.ts"
+    },
+    {
+      "id": "t",
+      "label": "t",
+      "file_type": "code",
+      "source_file": "web/lib/i18n.ts"
+    },
+    {
+      "id": "getSessionUser",
+      "label": "getSessionUser",
+      "file_type": "code",
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "id": "requireAdminSession",
+      "label": "requireAdminSession",
+      "file_type": "code",
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "id": "createSupabaseClient",
+      "label": "createSupabaseClient",
+      "file_type": "code",
+      "source_file": "web/lib/supabase.ts"
+    },
+    {
+      "id": "latas_project",
+      "label": "LATAS",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "frontend_nextjs",
+      "label": "Frontend (Next.js 16)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "backend_fastapi",
+      "label": "Backend (FastAPI)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "db_supabase_postgres",
+      "label": "Database (Supabase PostgreSQL)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "supabase_auth",
+      "label": "Supabase Auth",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "rls_policy",
+      "label": "Row Level Security (RLS)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "bff_layer",
+      "label": "BFF Layer (web/app/api/bff/*)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "table_companies",
+      "label": "companies",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_profiles",
+      "label": "profiles",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_customers",
+      "label": "customers",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_payment_methods",
+      "label": "payment_methods",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_cash_sessions",
+      "label": "cash_sessions",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_transactions",
+      "label": "transactions",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_transaction_payments",
+      "label": "transaction_payments",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_cash_movements",
+      "label": "cash_movements",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_audit_logs",
+      "label": "audit_logs",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "service_sales",
+      "label": "sales_service",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "service_cash",
+      "label": "cash_service",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "service_dashboard",
+      "label": "dashboard_service",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "dep_require_user",
+      "label": "require_user()",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "dep_require_admin",
+      "label": "require_admin()",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "route_sales",
+      "label": "sales route",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "id": "route_cash",
+      "label": "cash route",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "id": "route_dashboard",
+      "label": "dashboard route",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "id": "page_sales_register",
+      "label": "salesRegister page",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "id": "app_models_AdminUser",
+      "label": "AdminUser",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/admin_user.py"
+    },
+    {
+      "id": "app_models_AuditLog",
+      "label": "AuditLog",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/audit_log.py"
+    },
+    {
+      "id": "app_models_CashEvent",
+      "label": "CashEvent",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/cash_event.py"
+    },
+    {
+      "id": "app_models_CashMovement",
+      "label": "CashMovement",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "id": "app_models_CashSession",
+      "label": "CashSession",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/cash_session.py"
+    },
+    {
+      "id": "app_models_Company",
+      "label": "Company",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/company.py"
+    },
+    {
+      "id": "app_models_Customer",
+      "label": "Customer",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/customer.py"
+    },
+    {
+      "id": "app_models_PaymentMethod",
+      "label": "PaymentMethod",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/payment_method.py"
+    },
+    {
+      "id": "app_models_Profile",
+      "label": "Profile",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/profile.py"
+    },
+    {
+      "id": "app_models_Transaction",
+      "label": "Transaction",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "id": "app_models_TransactionPayment",
+      "label": "TransactionPayment",
+      "file_type": "code",
+      "source_file": "backend/src/app/models/transaction_payment.py"
+    },
+    {
+      "id": "app_schemas_admin_AdminLoginRequest",
+      "label": "AdminLoginRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/admin.py"
+    },
+    {
+      "id": "app_schemas_admin_AdminTokenResponse",
+      "label": "AdminTokenResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/admin.py"
+    },
+    {
+      "id": "app_schemas_dashboard_VentasPorMesItem",
+      "label": "VentasPorMesItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_dashboard_VentasPorEmpresaItem",
+      "label": "VentasPorEmpresaItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_dashboard_MetodoPagoDashboardItem",
+      "label": "MetodoPagoDashboardItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_dashboard_DashboardResponse",
+      "label": "DashboardResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/dashboard.py"
+    },
+    {
+      "id": "app_schemas_health_HealthResponse",
+      "label": "HealthResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/health.py"
+    },
+    {
+      "id": "app_schemas_historic_migration_HistoricMigrationResponse",
+      "label": "HistoricMigrationResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/historic_migration.py"
+    },
+    {
+      "id": "app_schemas_phase1_CompanyResponse",
+      "label": "CompanyResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_phase1_CustomerResponse",
+      "label": "CustomerResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_phase1_PaymentMethodResponse",
+      "label": "PaymentMethodResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_phase1_ProfileResponse",
+      "label": "ProfileResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashActionRequest",
+      "label": "CashActionRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashAdjustmentRequest",
+      "label": "CashAdjustmentRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashMovementItem",
+      "label": "CashMovementItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashMovementRecord",
+      "label": "CashMovementRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashEventItem",
+      "label": "CashEventItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashEventHistoryResponse",
+      "label": "CashEventHistoryResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_movement_CashEventRecord",
+      "label": "CashEventRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashOpenRequest",
+      "label": "CashOpenRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashCloseRequest",
+      "label": "CashCloseRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashSessionResponse",
+      "label": "CashSessionResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashSessionDetailResponse",
+      "label": "CashSessionDetailResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashHistoryResponse",
+      "label": "CashHistoryResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "app_schemas_cash_session_CashSessionRecord",
+      "label": "CashSessionRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "base_TransactionPaymentCreateRequest",
+      "label": "TransactionPaymentCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionBase",
+      "label": "TransactionBase",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCreateRequest",
+      "label": "TransactionCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCancelRequest",
+      "label": "TransactionCancelRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionResponse",
+      "label": "TransactionResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionPaymentResponse",
+      "label": "TransactionPaymentResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCompanyResponse",
+      "label": "TransactionCompanyResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCustomerResponse",
+      "label": "TransactionCustomerResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionListResponse",
+      "label": "TransactionListResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionListFilters",
+      "label": "TransactionListFilters",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_ErrorResponse",
+      "label": "ErrorResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_to_money",
+      "label": "to_money",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "movements_MovementCreateRequest",
+      "label": "MovementCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/movements.py"
+    },
+    {
+      "id": "pays_PayCreateRequest",
+      "label": "PayCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/pays.py"
+    },
+    {
+      "id": "returns_ReturnCreateRequest",
+      "label": "ReturnCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/returns.py"
+    },
+    {
+      "id": "sales_SaleCreateRequest",
+      "label": "SaleCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "sales_SaleResponse",
+      "label": "SaleResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "sales_sale_record_to_response",
+      "label": "sale_record_to_response",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "admin_auth_AdminAuthError",
+      "label": "AdminAuthError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth__hash_password",
+      "label": "_hash_password",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "test_cash_service",
+      "label": "test_cash_service",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py"
+    },
+    {
+      "id": "test_supabase_auth_jwt",
+      "label": "test_supabase_auth_jwt",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py"
+    },
+    {
+      "id": "seed_sql",
+      "label": "seed_sql",
+      "file_type": "document",
+      "source_file": "supabase/seed.sql"
+    },
+    {
+      "id": "migration_001",
+      "label": "migration_001",
+      "file_type": "document",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql"
+    },
+    {
+      "id": "migration_002",
+      "label": "migration_002",
+      "file_type": "document",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migration_003",
+      "label": "migration_003",
+      "file_type": "document",
+      "source_file": "supabase/migrations/003_seed_profiles_from_auth_users.sql"
+    },
+    {
+      "id": "migration_004",
+      "label": "migration_004",
+      "file_type": "document",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "proxy_ts",
+      "label": "proxy_ts",
+      "file_type": "code",
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "app_shell",
+      "label": "app_shell",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "layout_tsx",
+      "label": "layout_tsx",
+      "file_type": "code",
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "id": "logout_button",
+      "label": "logout_button",
+      "file_type": "code",
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "id": "page_tsx",
+      "label": "page_tsx",
+      "file_type": "code",
+      "source_file": "web/app/page.tsx"
+    },
+    {
+      "id": "login_route",
+      "label": "login_route",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/login/route.ts"
+    },
+    {
+      "id": "logout_route",
+      "label": "logout_route",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/logout/route.ts"
+    },
+    {
+      "id": "session_route",
+      "label": "session_route",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/session/route.ts"
+    },
+    {
+      "id": "historic_migration_route",
+      "label": "historic_migration_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts"
+    },
+    {
+      "id": "dashboard_route",
+      "label": "dashboard_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/dashboard/route.ts"
+    },
+    {
+      "id": "sales_route",
+      "label": "sales_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/route.ts"
+    },
+    {
+      "id": "sales_id_route",
+      "label": "sales_id_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts"
+    },
+    {
+      "id": "bff_catchall_route",
+      "label": "bff_catchall_route",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts"
+    },
+    {
+      "id": "phase1_CompanyResponse",
+      "label": "CompanyResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "phase1_CustomerResponse",
+      "label": "CustomerResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "phase1_PaymentMethodResponse",
+      "label": "PaymentMethodResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "phase1_ProfileResponse",
+      "label": "ProfileResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/phase1.py"
+    },
+    {
+      "id": "cash_movement_to_money",
+      "label": "to_money",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_CashActionRequest",
+      "label": "CashActionRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_CashAdjustmentRequest",
+      "label": "CashAdjustmentRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_CashMovementItem",
+      "label": "CashMovementItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_CashMovementRecord",
+      "label": "CashMovementRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_cash_movement_record_to_response",
+      "label": "cash_movement_record_to_response",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_CashEventItem",
+      "label": "CashEventItem",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_CashEventHistoryResponse",
+      "label": "CashEventHistoryResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_CashEventRecord",
+      "label": "CashEventRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_cash_event_label",
+      "label": "cash_event_label",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_movement_cash_event_record_to_response",
+      "label": "cash_event_record_to_response",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "id": "cash_session_to_money",
+      "label": "to_money",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "cash_session_CashOpenRequest",
+      "label": "CashOpenRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "cash_session_CashCloseRequest",
+      "label": "CashCloseRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "cash_session_CashSessionResponse",
+      "label": "CashSessionResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "cash_session_CashSessionDetailResponse",
+      "label": "CashSessionDetailResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "cash_session_CashHistoryResponse",
+      "label": "CashHistoryResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "cash_session_CashSessionRecord",
+      "label": "CashSessionRecord",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "cash_session_cash_session_record_to_response",
+      "label": "cash_session_record_to_response",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "id": "transactions_base_to_money",
+      "label": "to_money",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionPaymentCreateRequest",
+      "label": "TransactionPaymentCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionBase",
+      "label": "TransactionBase",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionCreateRequest",
+      "label": "TransactionCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionCancelRequest",
+      "label": "TransactionCancelRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionResponse",
+      "label": "TransactionResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionPaymentResponse",
+      "label": "TransactionPaymentResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionCompanyResponse",
+      "label": "TransactionCompanyResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionCustomerResponse",
+      "label": "TransactionCustomerResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionListResponse",
+      "label": "TransactionListResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_TransactionListFilters",
+      "label": "TransactionListFilters",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_base_ErrorResponse",
+      "label": "ErrorResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "transactions_movements_MovementCreateRequest",
+      "label": "MovementCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/movements.py"
+    },
+    {
+      "id": "transactions_pays_PayCreateRequest",
+      "label": "PayCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/pays.py"
+    },
+    {
+      "id": "transactions_returns_ReturnCreateRequest",
+      "label": "ReturnCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/returns.py"
+    },
+    {
+      "id": "transactions_sales_SaleCreateRequest",
+      "label": "SaleCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "transactions_sales_SaleResponse",
+      "label": "SaleResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "transactions_sales_sale_record_to_response",
+      "label": "sale_record_to_response",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "admin_auth_AdminAuthError",
+      "label": "AdminAuthError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth__hash_password",
+      "label": "_hash_password",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth__verify_password",
+      "label": "_verify_password",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_ensure_initial_admin_user",
+      "label": "ensure_initial_admin_user",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_validate_admin_credentials",
+      "label": "validate_admin_credentials",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_create_admin_token",
+      "label": "create_admin_token",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_verify_admin_token",
+      "label": "verify_admin_token",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth_require_admin",
+      "label": "require_admin",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "bootstrap_service_ensure_phase1_seeds",
+      "label": "ensure_phase1_seeds",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/bootstrap_service.py"
+    },
+    {
+      "id": "cash_service_CashValidationError",
+      "label": "CashValidationError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_CashConflictError",
+      "label": "CashConflictError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_CashNotFoundError",
+      "label": "CashNotFoundError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__require_admin",
+      "label": "_require_admin",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__require_admin_or_cashier",
+      "label": "_require_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__get_session_by_date",
+      "label": "_get_session_by_date",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__get_open_session_or_raise",
+      "label": "_get_open_session_or_raise",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__compute_balances",
+      "label": "_compute_balances",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__session_to_record",
+      "label": "_session_to_record",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__log_audit",
+      "label": "_log_audit",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__record_cash_event",
+      "label": "_record_cash_event",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__first_event_by_type",
+      "label": "_first_event_by_type",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service__create_movement",
+      "label": "_create_movement",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_record_cash_movement",
+      "label": "record_cash_movement",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_open_cash_session",
+      "label": "open_cash_session",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_register_cash_delivery",
+      "label": "register_cash_delivery",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_register_manual_adjustment",
+      "label": "register_manual_adjustment",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_register_vault_withdrawal",
+      "label": "register_vault_withdrawal",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_close_cash_session",
+      "label": "close_cash_session",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_get_today_cash_status",
+      "label": "get_today_cash_status",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_list_cash_history",
+      "label": "list_cash_history",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_list_cash_events",
+      "label": "list_cash_events",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "cash_service_get_open_cash_session_by_date",
+      "label": "get_open_cash_session_by_date",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/cash_service.py"
+    },
+    {
+      "id": "dashboard_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service__month_range",
+      "label": "_month_range",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service__start_of_day",
+      "label": "_start_of_day",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service__start_of_next_day",
+      "label": "_start_of_next_day",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "dashboard_service_get_dashboard",
+      "label": "get_dashboard",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/dashboard_service.py"
+    },
+    {
+      "id": "historic_migration_service_HistoricMigrationError",
+      "label": "HistoricMigrationError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__sheet_timestamp",
+      "label": "_sheet_timestamp",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__row_timestamp",
+      "label": "_row_timestamp",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__normalize_text",
+      "label": "_normalize_text",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__normalize_key",
+      "label": "_normalize_key",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__as_decimal",
+      "label": "_as_decimal",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__is_method_marker",
+      "label": "_is_method_marker",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_company",
+      "label": "_resolve_company",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_customer",
+      "label": "_resolve_customer",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_payment_method",
+      "label": "_resolve_payment_method",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__sheet_is_consolidated",
+      "label": "_sheet_is_consolidated",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__resolve_sheet_month",
+      "label": "_resolve_sheet_month",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__payment_columns",
+      "label": "_payment_columns",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__collect_row_payments",
+      "label": "_collect_row_payments",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__row_error_context",
+      "label": "_row_error_context",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service__create_cash_session",
+      "label": "_create_cash_session",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service_migrate_historic_excel",
+      "label": "migrate_historic_excel",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "historic_migration_service_emit_transaction",
+      "label": "emit_transaction",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/historic_migration_service.py"
+    },
+    {
+      "id": "sales_service_SalesValidationError",
+      "label": "SalesValidationError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_SalesConflictError",
+      "label": "SalesConflictError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_SalesNotFoundError",
+      "label": "SalesNotFoundError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_SalesPermissionError",
+      "label": "SalesPermissionError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__now",
+      "label": "_now",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__get_generic_customer_id",
+      "label": "_get_generic_customer_id",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_company_active",
+      "label": "_validate_company_active",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_customer_active",
+      "label": "_validate_customer_active",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_payments",
+      "label": "_validate_payments",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_create_sale",
+      "label": "create_sale",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__build_sales_query",
+      "label": "_build_sales_query",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__payments_for_transactions",
+      "label": "_payments_for_transactions",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_list_sales",
+      "label": "list_sales",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_get_sale_by_id",
+      "label": "get_sale_by_id",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__validate_admin_can_mutate",
+      "label": "_validate_admin_can_mutate",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__load_payment_methods",
+      "label": "_load_payment_methods",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service__load_sale_transaction",
+      "label": "_load_sale_transaction",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_update_sale_with_payments",
+      "label": "update_sale_with_payments",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "sales_service_cancel_sale",
+      "label": "cancel_sale",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/sales_service.py"
+    },
+    {
+      "id": "supabase_auth__auth_401",
+      "label": "_auth_401",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__auth_503",
+      "label": "_auth_503",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__load_jwks",
+      "label": "_load_jwks",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__decode_token",
+      "label": "_decode_token",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__display_name",
+      "label": "_display_name",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth_ensure_profile",
+      "label": "ensure_profile",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth__set_request_context",
+      "label": "_set_request_context",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth_require_user",
+      "label": "require_user",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "supabase_auth_require_admin",
+      "label": "require_admin",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/supabase_auth.py"
+    },
+    {
+      "id": "tests_helpers_ensure_auth_user",
+      "label": "ensure_auth_user",
+      "file_type": "code",
+      "source_file": "backend/tests/helpers.py",
+      "source_location": "5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_helpers_set_request_user",
+      "label": "set_request_user",
+      "file_type": "code",
+      "source_file": "backend/tests/helpers.py",
+      "source_location": "34",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cash_api__seed_core",
+      "label": "_seed_core",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cash_api_test_cash_flow_open_to_close",
+      "label": "test_cash_flow_open_to_close",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "77",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cash_api_test_cash_permissions_enforced",
+      "label": "test_cash_permissions_enforced",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "118",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_cors_test_cors_preflight_allows_dashboard_from_vite_origin",
+      "label": "test_cors_preflight_allows_dashboard_from_vite_origin",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_cors.py",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_health_test_health_endpoint",
+      "label": "test_health_endpoint",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_health.py",
+      "source_location": "1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api__seed_core",
+      "label": "_seed_core",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api__open_cash_session",
+      "label": "_open_cash_session",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "96",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_with_multiple_payments_and_audit",
+      "label": "test_create_sale_with_multiple_payments_and_audit",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "118",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_rejects_total_mismatch",
+      "label": "test_create_sale_rejects_total_mismatch",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "160",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_rejects_inactive_payment_method",
+      "label": "test_create_sale_rejects_inactive_payment_method",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "184",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_assigns_generic_customer_when_missing",
+      "label": "test_create_sale_assigns_generic_customer_when_missing",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "211",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_list_sales_with_filters",
+      "label": "test_list_sales_with_filters",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "235",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_get_sale_by_id_returns_detail",
+      "label": "test_get_sale_by_id_returns_detail",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "327",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_get_sale_by_id_not_found",
+      "label": "test_get_sale_by_id_not_found",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "379",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_fails_when_generic_customer_missing",
+      "label": "test_create_sale_fails_when_generic_customer_missing",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "392",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_fails_when_company_is_inactive",
+      "label": "test_create_sale_fails_when_company_is_inactive",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "419",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_integration_test_sales_api_test_create_sale_with_cash_requires_open_session",
+      "label": "test_create_sale_with_cash_requires_open_session",
+      "file_type": "code",
+      "source_file": "backend/tests/integration/test_sales_api.py",
+      "source_location": "445",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_validate_admin_credentials_accepts_configured_values",
+      "label": "test_validate_admin_credentials_accepts_configured_values",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "8",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_validate_admin_credentials_rejects_invalid_password",
+      "label": "test_validate_admin_credentials_rejects_invalid_password",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_create_admin_token_has_eight_hour_expiry",
+      "label": "test_create_admin_token_has_eight_hour_expiry",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_verify_admin_token_rejects_invalid_token",
+      "label": "test_verify_admin_token_rejects_invalid_token",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_admin_auth_test_verify_admin_token_rejects_expired_token",
+      "label": "test_verify_admin_token_rejects_expired_token",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_admin_auth.py",
+      "source_location": "32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service__seed_core",
+      "label": "_seed_core",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "25",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_open_cash_session_duplicate_same_day",
+      "label": "test_open_cash_session_duplicate_same_day",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "83",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_open_cash_session_rejects_cashier",
+      "label": "test_open_cash_session_rejects_cashier",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "92",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_delivery_and_vault_withdrawal_insufficient_balance",
+      "label": "test_delivery_and_vault_withdrawal_insufficient_balance",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "99",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_adjustment_requires_admin_and_reason",
+      "label": "test_adjustment_requires_admin_and_reason",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "131",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_close_cash_session_calculates_difference",
+      "label": "test_close_cash_session_calculates_difference",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "148",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_cash_delivery_creates_audit_log",
+      "label": "test_cash_delivery_creates_audit_log",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "168",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_manual_adjustment_audit_captures_reason",
+      "label": "test_manual_adjustment_audit_captures_reason",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "193",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_cash_service_test_create_sale_with_cash_requires_open_session",
+      "label": "test_create_sale_with_cash_requires_open_session",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_cash_service.py",
+      "source_location": "220",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_decode_token_success",
+      "label": "test_decode_token_success",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_decode_token_rejects_when_kid_not_found",
+      "label": "test_decode_token_rejects_when_kid_not_found",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "30",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_decode_token_rejects_invalid_signature",
+      "label": "test_decode_token_rejects_invalid_signature",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "tests_unit_test_supabase_auth_jwt_test_load_jwks_reloads_after_expiration",
+      "label": "test_load_jwks_reloads_after_expiration",
+      "file_type": "code",
+      "source_file": "backend/tests/unit/test_supabase_auth_jwt.py",
+      "source_location": "76",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "seed_sql",
+      "label": "seed.sql",
+      "file_type": "document",
+      "source_file": "supabase/seed.sql"
+    },
+    {
+      "id": "migration_001",
+      "label": "001_init_schema_and_seed.sql",
+      "file_type": "document",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql"
+    },
+    {
+      "id": "table_companies",
+      "label": "public.companies",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "10"
+    },
+    {
+      "id": "table_profiles",
+      "label": "public.profiles",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "17"
+    },
+    {
+      "id": "table_customers",
+      "label": "public.customers",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "25"
+    },
+    {
+      "id": "table_payment_methods",
+      "label": "public.payment_methods",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "40"
+    },
+    {
+      "id": "table_cash_sessions",
+      "label": "public.cash_sessions",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "49"
+    },
+    {
+      "id": "table_cash_events",
+      "label": "public.cash_events",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "63"
+    },
+    {
+      "id": "table_transactions",
+      "label": "public.transactions",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "73"
+    },
+    {
+      "id": "table_transaction_payments",
+      "label": "public.transaction_payments",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "96"
+    },
+    {
+      "id": "table_cash_movements",
+      "label": "public.cash_movements",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "104"
+    },
+    {
+      "id": "table_audit_logs",
+      "label": "public.audit_logs",
+      "file_type": "rationale",
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql",
+      "source_location": "116"
+    },
+    {
+      "id": "migrations_002",
+      "label": "002_search_indexes_and_db_invariants.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_fn_enforce_transaction_invariants",
+      "label": "fn_enforce_transaction_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_fn_enforce_cash_movement_invariants",
+      "label": "fn_enforce_cash_movement_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_trg_enforce_transaction_invariants",
+      "label": "trg_enforce_transaction_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_002_trg_enforce_cash_movement_invariants",
+      "label": "trg_enforce_cash_movement_invariants",
+      "file_type": "code",
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "id": "migrations_003",
+      "label": "003_seed_profiles_from_auth_users.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/003_seed_profiles_from_auth_users.sql"
+    },
+    {
+      "id": "migrations_004",
+      "label": "004_enforce_rls_and_cash_permissions.sql",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_current_user_role",
+      "label": "current_user_role",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_is_active_role",
+      "label": "is_active_role",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_profiles_self_select",
+      "label": "profiles_self_select",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_companies_read_authenticated",
+      "label": "companies_read_authenticated",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_customers_read_authenticated",
+      "label": "customers_read_authenticated",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_payment_methods_read_authenticated",
+      "label": "payment_methods_read_authenticated",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_sessions_select_admin_or_cashier",
+      "label": "cash_sessions_select_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_sessions_insert_admin_only",
+      "label": "cash_sessions_insert_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_sessions_update_admin_only",
+      "label": "cash_sessions_update_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_select_admin_or_cashier",
+      "label": "cash_movements_select_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_insert_admin_or_cashier",
+      "label": "cash_movements_insert_admin_or_cashier",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_update_admin_only",
+      "label": "cash_movements_update_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "migrations_004_cash_movements_delete_admin_only",
+      "label": "cash_movements_delete_admin_only",
+      "file_type": "code",
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "web_proxy",
+      "label": "proxy.ts",
+      "file_type": "code",
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "web_proxy_proxy",
+      "label": "proxy",
+      "file_type": "code",
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "web_app_AppShell",
+      "label": "AppShell.tsx",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_AppShell_AppShell",
+      "label": "AppShell",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_AppShell_NavLink",
+      "label": "NavLink",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_AppShell_logoutAction",
+      "label": "logoutAction",
+      "file_type": "code",
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "id": "web_app_layout",
+      "label": "layout.tsx",
+      "file_type": "code",
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "id": "web_app_layout_RootLayout",
+      "label": "RootLayout",
+      "file_type": "code",
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "id": "web_app_LogoutButton",
+      "label": "LogoutButton.tsx",
+      "file_type": "code",
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "id": "web_app_LogoutButton_LogoutButton",
+      "label": "LogoutButton",
+      "file_type": "code",
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "id": "web_app_page",
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "web/app/page.tsx"
+    },
+    {
+      "id": "web_app_page_HomePage",
+      "label": "HomePage",
+      "file_type": "code",
+      "source_file": "web/app/page.tsx"
+    },
+    {
+      "id": "web_app_api_auth_login_route_ts_POST",
+      "label": "POST /api/auth/login",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/login/route.ts",
+      "source_location": "6:6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_auth_logout_route_ts_POST",
+      "label": "POST /api/auth/logout",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/logout/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_auth_session_route_ts_GET",
+      "label": "GET /api/auth/session",
+      "file_type": "code",
+      "source_file": "web/app/api/auth/session/route.ts",
+      "source_location": "10:10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_admin_historic_migration_route_ts_POST",
+      "label": "POST /api/bff/admin/historic-migration",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_dashboard_route_ts_GET",
+      "label": "GET /api/bff/dashboard",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/dashboard/route.ts",
+      "source_location": "4:4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_route_ts_GET",
+      "label": "GET /api/bff/sales",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_route_ts_POST",
+      "label": "POST /api/bff/sales",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "15:15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_id_route_ts_GET",
+      "label": "GET /api/bff/sales/[id]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_id_route_ts_PUT",
+      "label": "PUT /api/bff/sales/[id]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "15:15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_sales_id_route_ts_DELETE",
+      "label": "DELETE /api/bff/sales/[id]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "32:32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_GET",
+      "label": "GET /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "48:48",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_POST",
+      "label": "POST /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "53:53",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_PUT",
+      "label": "PUT /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "61:61",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_DELETE",
+      "label": "DELETE /api/bff/[...path]",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "69:69",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_bff_path_route_ts_proxy",
+      "label": "proxy function",
+      "file_type": "code",
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "26:26",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_api_cron_daily_report_route_ts_GET",
+      "label": "GET /api/cron/daily-report",
+      "file_type": "code",
+      "source_file": "web/app/api/cron/daily-report/route.ts",
+      "source_location": "5:5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_app_cash_management_page_tsx_CashManagementPage",
+      "label": "CashManagementPage",
+      "file_type": "code",
+      "source_file": "web/app/cash-management/page.tsx",
+      "source_location": "187:187",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "start-backend",
+      "target": "app.main.app",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "start-backend.ps1",
+      "source_location": "14:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.main.app",
+      "target": "app.api.v1.router.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/main.py",
+      "source_location": "50:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.router.router",
+      "target": "app.api.v1.endpoints.auth.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "19:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.router.router",
+      "target": "app.api.v1.endpoints.cash.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "20:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.router.router",
+      "target": "app.api.v1.endpoints.companies.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "22:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.open_cash_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "43:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.cash_delivery_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "53:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.adjustment_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "69:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.close_cash_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "87:1",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_configuracion_page_ConfigurationPage",
+      "target": "web_app_configuracion_ConfigurationClientPage_ConfigurationClientPage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/configuracion/page.tsx"
+    },
+    {
+      "source": "web_app_dashboard_page_DashboardRoutePage",
+      "target": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/dashboard/page.tsx"
+    },
+    {
+      "source": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "target": "web_app_dashboard_DashboardClientPage_MetricCard",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "source": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "target": "web_app_dashboard_DashboardClientPage_TableShell",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "source": "web_app_salesRegister_page_RegistroPage",
+      "target": "rationale_money_handling_pattern",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/salesRegister/page.tsx"
+    },
+    {
+      "source": "web_app_dashboard_DashboardClientPage_DashboardClientPage",
+      "target": "rationale_money_handling_pattern",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/dashboard/DashboardClientPage.tsx"
+    },
+    {
+      "source": "TransactionsClientPage",
+      "target": "getCsrfHeaders",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/transactions/TransactionsClientPage.tsx"
+    },
+    {
+      "source": "TransactionsClientPage",
+      "target": "MultiSelectCombobox",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/transactions/TransactionsClientPage.tsx"
+    },
+    {
+      "source": "backendFetch",
+      "target": "getAccessTokenFromCookies",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/lib/backend.ts"
+    },
+    {
+      "source": "getSessionUser",
+      "target": "getAccessTokenFromCookies",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "source": "requireAdminSession",
+      "target": "getSessionUser",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "source": "SearchModal",
+      "target": "MultiSelectCombobox",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "web/components/input-text.tsx"
+    },
+    {
+      "source": "frontend_nextjs",
+      "target": "bff_layer",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "bff_layer",
+      "target": "backend_fastapi",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "backend_fastapi",
+      "target": "db_supabase_postgres",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "backend_fastapi",
+      "target": "supabase_auth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "db_supabase_postgres",
+      "target": "rls_policy",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_sales",
+      "target": "service_sales",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_cash",
+      "target": "service_cash",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_dashboard",
+      "target": "service_dashboard",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_sales",
+      "target": "dep_require_user",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_sales",
+      "target": "dep_require_admin",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "table_transactions",
+      "target": "table_companies",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transactions",
+      "target": "table_customers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transactions",
+      "target": "table_cash_sessions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transaction_payments",
+      "target": "table_transactions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transaction_payments",
+      "target": "table_payment_methods",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_cash_movements",
+      "target": "table_cash_sessions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_cash_movements",
+      "target": "table_transactions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_profiles",
+      "target": "supabase_auth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "page_sales_register",
+      "target": "route_sales",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_//file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "source": "app_models_AdminUser",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/admin_user.py"
+    },
+    {
+      "source": "app_models_AuditLog",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/audit_log.py"
+    },
+    {
+      "source": "app_models_CashEvent",
+      "target": "app_models_CashSession",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_event.py"
+    },
+    {
+      "source": "app_models_CashEvent",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_event.py"
+    },
+    {
+      "source": "app_models_CashMovement",
+      "target": "app_models_Transaction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "source": "app_models_CashMovement",
+      "target": "app_models_CashSession",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "source": "app_models_CashMovement",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_movement.py"
+    },
+    {
+      "source": "app_models_CashSession",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/cash_session.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Company",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Customer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_CashSession",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Transaction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_Transaction",
+      "target": "app_models_Profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "source": "app_models_TransactionPayment",
+      "target": "app_models_Transaction",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction_payment.py"
+    },
+    {
+      "source": "app_models_TransactionPayment",
+      "target": "app_models_PaymentMethod",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/models/transaction_payment.py"
+    },
+    {
+      "source": "app_schemas_cash_movement_CashAdjustmentRequest",
+      "target": "app_schemas_cash_movement_CashActionRequest",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "source": "app_schemas_cash_session_CashSessionDetailResponse",
+      "target": "app_schemas_cash_session_CashSessionResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "app_schemas_cash_session_CashSessionDetailResponse",
+      "target": "app_schemas_cash_movement_CashMovementItem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "app_schemas_cash_session_CashHistoryResponse",
+      "target": "app_schemas_cash_session_CashSessionResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "logout_button",
+      "target": "logout_route",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/LogoutButton.tsx"
+    },
+    {
+      "source": "app_shell",
+      "target": "logout_route",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "source": "layout_tsx",
+      "target": "app_shell",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "source": "session_route",
+      "target": "bff_catchall_route",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/auth/session/route.ts"
+    },
+    {
+      "source": "historic_migration_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts"
+    },
+    {
+      "source": "dashboard_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/dashboard/route.ts"
+    },
+    {
+      "source": "sales_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/sales/route.ts"
+    },
+    {
+      "source": "sales_id_route",
+      "target": "bff_catchall_route",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts"
+    },
+    {
+      "source": "migration_002",
+      "target": "migration_001",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migration_004",
+      "target": "migration_001",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "cash_movement_CashAdjustmentRequest",
+      "target": "cash_movement_CashActionRequest",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "source": "cash_movement_cash_movement_record_to_response",
+      "target": "cash_movement_CashMovementItem",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "source": "cash_movement_cash_movement_record_to_response",
+      "target": "cash_movement_to_money",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "source": "cash_movement_cash_event_record_to_response",
+      "target": "cash_movement_CashEventItem",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "source": "cash_movement_cash_event_record_to_response",
+      "target": "cash_movement_cash_event_label",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/movement.py"
+    },
+    {
+      "source": "cash_session_CashSessionDetailResponse",
+      "target": "cash_session_CashSessionResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "cash_session_CashSessionDetailResponse",
+      "target": "cash_movement_CashMovementItem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "cash_session_CashHistoryResponse",
+      "target": "cash_session_CashSessionResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "cash_session_cash_session_record_to_response",
+      "target": "cash_session_CashSessionResponse",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "cash_session_cash_session_record_to_response",
+      "target": "cash_session_to_money",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/cash/session.py"
+    },
+    {
+      "source": "transactions_base_TransactionCreateRequest",
+      "target": "transactions_base_TransactionBase",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "source": "transactions_movements_MovementCreateRequest",
+      "target": "transactions_base_TransactionCreateRequest",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/movements.py"
+    },
+    {
+      "source": "transactions_pays_PayCreateRequest",
+      "target": "transactions_base_TransactionCreateRequest",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/pays.py"
+    },
+    {
+      "source": "transactions_returns_ReturnCreateRequest",
+      "target": "transactions_base_TransactionCreateRequest",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/returns.py"
+    },
+    {
+      "source": "transactions_sales_SaleCreateRequest",
+      "target": "transactions_base_TransactionCreateRequest",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "source": "transactions_sales_SaleResponse",
+      "target": "transactions_base_TransactionResponse",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "source": "transactions_sales_SaleResponse",
+      "target": "transactions_base_TransactionCompanyResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "source": "transactions_sales_SaleResponse",
+      "target": "transactions_base_TransactionCustomerResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "source": "transactions_sales_SaleResponse",
+      "target": "transactions_base_TransactionPaymentResponse",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "source": "transactions_sales_sale_record_to_response",
+      "target": "transactions_sales_SaleResponse",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "source": "tests_cash_api_seed_core",
+      "target": "tests_helpers_ensure_auth_user",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "15"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_flow_open_to_close",
+      "target": "tests_integration_test_cash_api__seed_core",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "78"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_flow_open_to_close",
+      "target": "tests_helpers_set_request_user",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "79"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_permissions_enforced",
+      "target": "tests_integration_test_cash_api__seed_core",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "119"
+    },
+    {
+      "source": "tests_integration_test_cash_api_test_cash_permissions_enforced",
+      "target": "tests_helpers_set_request_user",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/tests/integration/test_cash_api.py",
+      "source_location": "120"
+    },
+    {
+      "source": "migrations_002_trg_enforce_transaction_invariants",
+      "target": "migrations_002_fn_enforce_transaction_invariants",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migrations_002_trg_enforce_cash_movement_invariants",
+      "target": "migrations_002_fn_enforce_cash_movement_invariants",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migrations_002_fn_enforce_cash_movement_invariants",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/002_search_indexes_and_db_invariants.sql"
+    },
+    {
+      "source": "migrations_004_companies_read_authenticated",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_customers_read_authenticated",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_payment_methods_read_authenticated",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_sessions_select_admin_or_cashier",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_sessions_insert_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_sessions_update_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_select_admin_or_cashier",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_insert_admin_or_cashier",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_update_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "migrations_004_cash_movements_delete_admin_only",
+      "target": "migrations_004_current_user_role",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "source": "web_app_layout_RootLayout",
+      "target": "web_app_AppShell_AppShell",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/layout.tsx"
+    },
+    {
+      "source": "web_app_AppShell_AppShell",
+      "target": "web_app_AppShell_NavLink",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "source": "web_app_AppShell_AppShell",
+      "target": "web_app_AppShell_logoutAction",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/AppShell.tsx"
+    },
+    {
+      "source": "web_app_api_auth_login_route_ts_POST",
+      "target": "lib_supabase_createSupabaseClient",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/login/route.ts",
+      "source_location": "15:15",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_auth_login_route_ts_POST",
+      "target": "lib_csrf_createCsrfToken",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/login/route.ts",
+      "source_location": "23:23",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_auth_logout_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/logout/route.ts",
+      "source_location": "6:6",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_auth_session_route_ts_GET",
+      "target": "lib_auth_getAccessTokenFromCookies",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/auth/session/route.ts",
+      "source_location": "11:11",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_admin_historic_migration_route_ts_POST",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts",
+      "source_location": "23:23",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_admin_historic_migration_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/admin/historic-migration/route.ts",
+      "source_location": "6:6",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_dashboard_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/dashboard/route.ts",
+      "source_location": "5:5",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "7:7",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_route_ts_POST",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "20:20",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/route.ts",
+      "source_location": "16:16",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "7:7",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_PUT",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "21:21",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_PUT",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "16:16",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_DELETE",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "38:38",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_sales_id_route_ts_DELETE",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/sales/[id]/route.ts",
+      "source_location": "33:33",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_GET",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "50:50",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_POST",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "58:58",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_POST",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "55:55",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_PUT",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "66:66",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_PUT",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "63:63",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_DELETE",
+      "target": "web_app_api_bff_path_route_ts_proxy",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "74:74",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_bff_path_route_ts_DELETE",
+      "target": "lib_csrf_requireCsrf",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts",
+      "source_location": "71:71",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_cron_daily_report_route_ts_GET",
+      "target": "lib_backend_backendFetch",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/cron/daily-report/route.ts",
+      "source_location": "12:12",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_api_cron_daily_report_route_ts_GET",
+      "target": "resend_emails_send",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/cron/daily-report/route.ts",
+      "source_location": "19:19",
+      "weight": 1.0
+    },
+    {
+      "source": "web_app_cash_management_page_tsx_CashManagementPage",
+      "target": "lib_csrf_client_getCsrfHeaders",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/cash-management/page.tsx",
+      "source_location": "512:512",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "cash_api_endpoints",
+      "label": "Cash Management API Endpoints",
+      "nodes": [
+        "app.api.v1.endpoints.cash.open_cash_route",
+        "app.api.v1.endpoints.cash.cash_delivery_route",
+        "app.api.v1.endpoints.cash.adjustment_route",
+        "app.api.v1.endpoints.cash.close_cash_route"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py"
+    },
+    {
+      "id": "sales_registration_flow",
+      "label": "Sales Registration Flow",
+      "nodes": [
+        "web_app_salesRegister_page_RegistroPage",
+        "rationale_money_handling_pattern"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "web/app/salesRegister/page.tsx"
+    },
+    {
+      "id": "auth_session_flow",
+      "label": "Authentication and Session Flow",
+      "nodes": [
+        "getAccessTokenFromCookies",
+        "getSessionUser",
+        "requireAdminSession",
+        "backendFetch"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/lib/session.ts"
+    },
+    {
+      "id": "csrf_protection_flow",
+      "label": "CSRF Protection Flow",
+      "nodes": [
+        "createCsrfToken",
+        "requireCsrf",
+        "getCsrfHeaders"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/lib/csrf.ts"
+    },
+    {
+      "id": "financial_data_flow",
+      "label": "Financial Data Flow",
+      "nodes": [
+        "frontend_nextjs",
+        "bff_layer",
+        "backend_fastapi",
+        "db_supabase_postgres"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "auth_and_access_control",
+      "label": "Auth and Access Control",
+      "nodes": [
+        "supabase_auth",
+        "table_profiles",
+        "dep_require_user",
+        "dep_require_admin",
+        "rls_policy"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "sales_registration_process",
+      "label": "Sales Registration Process",
+      "nodes": [
+        "page_sales_register",
+        "route_sales",
+        "service_sales",
+        "table_transactions",
+        "table_transaction_payments"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "cash_lifecycle_flow",
+      "label": "Cash Session Lifecycle",
+      "nodes": [
+        "app_models_CashSession",
+        "app_models_CashMovement",
+        "app_models_CashEvent",
+        "app_schemas_cash_session_CashOpenRequest",
+        "app_schemas_cash_session_CashCloseRequest"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/models/cash_session.py"
+    },
+    {
+      "id": "financial_ledger_flow",
+      "label": "Core Sales Ledger",
+      "nodes": [
+        "app_models_Transaction",
+        "app_models_TransactionPayment",
+        "app_models_PaymentMethod",
+        "app_models_Company",
+        "app_models_Customer"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/models/transaction.py"
+    },
+    {
+      "id": "user_auth_flow",
+      "label": "User Auth and Roles",
+      "nodes": [
+        "app_models_Profile",
+        "app_models_AdminUser",
+        "app_schemas_admin_AdminLoginRequest",
+        "app_schemas_admin_AdminTokenResponse"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/models/profile.py"
+    },
+    {
+      "id": "auth_flow",
+      "label": "Authentication Flow",
+      "nodes": [
+        "login_route",
+        "logout_route",
+        "session_route",
+        "proxy_ts",
+        "page_tsx"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/proxy.ts"
+    },
+    {
+      "id": "bff_layer",
+      "label": "BFF Proxy Layer",
+      "nodes": [
+        "historic_migration_route",
+        "dashboard_route",
+        "sales_route",
+        "sales_id_route",
+        "bff_catchall_route"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "web/app/api/bff/[...path]/route.ts"
+    },
+    {
+      "id": "db_schema_evolution",
+      "label": "Database Schema Evolution",
+      "nodes": [
+        "migration_001",
+        "migration_002",
+        "migration_003",
+        "migration_004"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/001_init_schema_and_seed.sql"
+    },
+    {
+      "id": "cash_permissions_system",
+      "label": "Cash Permissions System",
+      "nodes": [
+        "migrations_004_current_user_role",
+        "migrations_004_is_active_role",
+        "migrations_004_profiles_self_select",
+        "migrations_004_companies_read_authenticated",
+        "migrations_004_customers_read_authenticated",
+        "migrations_004_payment_methods_read_authenticated",
+        "migrations_004_cash_sessions_select_admin_or_cashier",
+        "migrations_004_cash_sessions_insert_admin_only",
+        "migrations_004_cash_sessions_update_admin_only",
+        "migrations_004_cash_movements_select_admin_or_cashier",
+        "migrations_004_cash_movements_insert_admin_or_cashier",
+        "migrations_004_cash_movements_update_admin_only",
+        "migrations_004_cash_movements_delete_admin_only"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "supabase/migrations/004_enforce_rls_and_cash_permissions.sql"
+    },
+    {
+      "id": "authentication_flow",
+      "label": "Authentication Flow",
+      "nodes": [
+        "web_app_api_auth_login_route_ts_POST",
+        "web_app_api_auth_logout_route_ts_POST",
+        "web_app_api_auth_session_route_ts_GET"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/auth"
+    },
+    {
+      "id": "bff_proxy_pattern",
+      "label": "BFF Proxy Pattern",
+      "nodes": [
+        "web_app_api_bff_dashboard_route_ts_GET",
+        "web_app_api_bff_sales_route_ts_GET",
+        "web_app_api_bff_sales_route_ts_POST",
+        "web_app_api_bff_sales_id_route_ts_GET",
+        "web_app_api_bff_sales_id_route_ts_PUT",
+        "web_app_api_bff_sales_id_route_ts_DELETE",
+        "web_app_api_bff_path_route_ts_proxy"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "web/app/api/bff"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

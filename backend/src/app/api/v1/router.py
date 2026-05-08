@@ -13,6 +13,9 @@ from app.api.v1.endpoints.historic_migration import router as historic_migration
 from app.api.v1.endpoints.health import router as health_router
 from app.api.v1.endpoints.payment_methods import router as payment_methods_router
 from app.api.v1.endpoints.sales import router as sales_router
+from app.api.v1.endpoints.movements import router as movements_router
+from app.api.v1.endpoints.pays import router as pays_router
+from app.api.v1.endpoints.returns import router as returns_router
 
 router = APIRouter()
 router.include_router(health_router)
@@ -23,4 +26,7 @@ router.include_router(companies_router)
 router.include_router(customers_router)
 router.include_router(dashboard_router)
 router.include_router(sales_router)
+router.include_router(movements_router)
+router.include_router(pays_router)
+router.include_router(returns_router)
 router.include_router(historic_migration_router)

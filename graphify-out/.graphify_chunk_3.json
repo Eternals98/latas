@@ -1,0 +1,128 @@
+{
+  "nodes": [
+    {
+      "id": "base_TransactionPaymentCreateRequest",
+      "label": "TransactionPaymentCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionBase",
+      "label": "TransactionBase",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCreateRequest",
+      "label": "TransactionCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCancelRequest",
+      "label": "TransactionCancelRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionResponse",
+      "label": "TransactionResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionPaymentResponse",
+      "label": "TransactionPaymentResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCompanyResponse",
+      "label": "TransactionCompanyResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionCustomerResponse",
+      "label": "TransactionCustomerResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionListResponse",
+      "label": "TransactionListResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_TransactionListFilters",
+      "label": "TransactionListFilters",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_ErrorResponse",
+      "label": "ErrorResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "base_to_money",
+      "label": "to_money",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/base.py"
+    },
+    {
+      "id": "movements_MovementCreateRequest",
+      "label": "MovementCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/movements.py"
+    },
+    {
+      "id": "pays_PayCreateRequest",
+      "label": "PayCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/pays.py"
+    },
+    {
+      "id": "returns_ReturnCreateRequest",
+      "label": "ReturnCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/returns.py"
+    },
+    {
+      "id": "sales_SaleCreateRequest",
+      "label": "SaleCreateRequest",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "sales_SaleResponse",
+      "label": "SaleResponse",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "sales_sale_record_to_response",
+      "label": "sale_record_to_response",
+      "file_type": "code",
+      "source_file": "backend/src/app/schemas/transactions/sales.py"
+    },
+    {
+      "id": "admin_auth_AdminAuthError",
+      "label": "AdminAuthError",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    },
+    {
+      "id": "admin_auth__hash_password",
+      "label": "_hash_password",
+      "file_type": "code",
+      "source_file": "backend/src/app/services/admin_auth.py"
+    }
+  ],
+  "edges": [],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

@@ -1,0 +1,79 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<title>Axentria Next.js Project</title>
+<style>
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f4f5;
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #18181b;
+  }
+  .card {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    text-align: center;
+  }
+  .icon {
+    width: 64px;
+    height: 64px;
+    background: #0f1b2d;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 24px;
+  }
+  h1 { margin: 0 0 12px; font-size: 24px; }
+  p { color: #71717a; line-height: 1.5; margin-bottom: 24px; }
+  .badge {
+    background: #f0fdf4;
+    color: #166534;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .file-list {
+    text-align: left;
+    background: #fafafa;
+    padding: 16px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 13px;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+    </svg>
+  </div>
+  <h1>Proyecto Migrado a Next.js</h1>
+  <p>Los archivos han sido actualizados y organizados siguiendo la arquitectura de Next.js con TypeScript.</p>
+  <span class="badge">Estructura Lista</span>
+  
+  <div class="file-list">
+    src/<br/>
+    ├── app/<br/>
+    │   ├── layout.tsx<br/>
+    │   └── page.tsx<br/>
+    ├── components/<br/>
+    │   ├── Shell.tsx<br/>
+    │   ├── SaleScreen.tsx<br/>
+    │   └── ... (6 screens)<br/>
+    └── lib/useTweaks.ts
+  </div>
+</div>
+</body>
+</html>

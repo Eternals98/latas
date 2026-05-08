@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
-from src.models.company import Company
-from src.models.customer import Customer
-from src.models.payment_method import PaymentMethod
+from   app.models.company import Company
+from   app.models.customer import Customer
+from   app.models.payment_method import PaymentMethod
 
 
 def ensure_phase1_seeds(db: Session) -> None:

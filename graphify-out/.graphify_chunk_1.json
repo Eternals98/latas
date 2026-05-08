@@ -1,0 +1,235 @@
+{
+  "nodes": [
+    {
+      "id": "start-backend",
+      "label": "Start Backend Script",
+      "file_type": "code",
+      "source_file": "start-backend.ps1",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "start-frontend",
+      "label": "Start Frontend Script",
+      "file_type": "code",
+      "source_file": "start-frontend.ps1",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.main.app",
+      "label": "FastAPI App Instance",
+      "file_type": "code",
+      "source_file": "backend/src/app/main.py",
+      "source_location": "23:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.router.router",
+      "label": "API V1 Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "17:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.auth.router",
+      "label": "Auth Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/auth.py",
+      "source_location": "16:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.router",
+      "label": "Cash Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "40:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.companies.router",
+      "label": "Companies Router",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/companies.py",
+      "source_location": "14:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.open_cash_route",
+      "label": "open_cash_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "44:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.cash_delivery_route",
+      "label": "cash_delivery_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "54:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.adjustment_route",
+      "label": "adjustment_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "70:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "app.api.v1.endpoints.cash.close_cash_route",
+      "label": "close_cash_route",
+      "file_type": "code",
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "88:1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "start-backend",
+      "target": "app.main.app",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "start-backend.ps1",
+      "source_location": "14:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.main.app",
+      "target": "app.api.v1.router.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/main.py",
+      "source_location": "50:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.router.router",
+      "target": "app.api.v1.endpoints.auth.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "19:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.router.router",
+      "target": "app.api.v1.endpoints.cash.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "20:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.router.router",
+      "target": "app.api.v1.endpoints.companies.router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/router.py",
+      "source_location": "22:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.open_cash_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "43:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.cash_delivery_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "53:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.adjustment_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "69:1",
+      "weight": 1.0
+    },
+    {
+      "source": "app.api.v1.endpoints.cash.router",
+      "target": "app.api.v1.endpoints.cash.close_cash_route",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py",
+      "source_location": "87:1",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "cash_api_endpoints",
+      "label": "Cash Management API Endpoints",
+      "nodes": [
+        "app.api.v1.endpoints.cash.open_cash_route",
+        "app.api.v1.endpoints.cash.cash_delivery_route",
+        "app.api.v1.endpoints.cash.adjustment_route",
+        "app.api.v1.endpoints.cash.close_cash_route"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/app/api/v1/endpoints/cash.py"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

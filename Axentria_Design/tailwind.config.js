@@ -1,0 +1,85 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        ink: {
+          500: 'var(--ink-500)',
+          600: 'var(--ink-600)',
+          700: 'var(--ink-700)',
+          800: 'var(--ink-800)',
+          900: 'var(--ink-900)',
+          950: 'var(--ink-950)',
+        },
+        paper: {
+          50: 'var(--paper-50)',
+          100: 'var(--paper-100)',
+          200: 'var(--paper-200)',
+          300: 'var(--paper-300)',
+        },
+        brass: {
+          50: 'var(--brass-50)',
+          100: 'var(--brass-100)',
+          200: 'var(--brass-200)',
+          300: 'var(--brass-300)',
+          400: 'var(--brass-400)',
+          500: 'var(--brass-500)',
+          600: 'var(--brass-600)',
+          700: 'var(--brass-700)',
+        },
+        sage: {
+          50: 'var(--sage-50)',
+          100: 'var(--sage-100)',
+          300: 'var(--sage-300)',
+          500: 'var(--sage-500)',
+          600: 'var(--sage-600)',
+          700: 'var(--sage-700)',
+        },
+        coral: {
+          50: 'var(--coral-50)',
+          100: 'var(--coral-100)',
+          300: 'var(--coral-300)',
+          500: 'var(--coral-500)',
+          600: 'var(--coral-600)',
+          700: 'var(--coral-700)',
+        },
+        slate: {
+          50: 'var(--slate-50)',
+          100: 'var(--slate-100)',
+          200: 'var(--slate-200)',
+          300: 'var(--slate-300)',
+          400: 'var(--slate-400)',
+          500: 'var(--slate-500)',
+          600: 'var(--slate-600)',
+          700: 'var(--slate-700)',
+          800: 'var(--slate-800)',
+          900: 'var(--slate-900)',
+        },
+      },
+      fontFamily: {
+        display: ['var(--font-display)', 'serif'],
+        sans: ['var(--font-sans)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+      },
+      boxShadow: {
+        'elev-1': 'var(--elev-1)',
+        'elev-2': 'var(--elev-2)',
+        'elev-3': 'var(--elev-3)',
+        'elev-4': 'var(--elev-4)',
+      },
+      borderRadius: {
+        'xs': 'var(--radius-xs)',
+        'sm': 'var(--radius-sm)',
+        'md': 'var(--radius-md)',
+        'lg': 'var(--radius-lg)',
+        'xl': 'var(--radius-xl)',
+      },
+    },
+  },
+  plugins: [],
+};

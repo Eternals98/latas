@@ -1,0 +1,356 @@
+{
+  "nodes": [
+    {
+      "id": "latas_project",
+      "label": "LATAS",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "frontend_nextjs",
+      "label": "Frontend (Next.js 16)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "backend_fastapi",
+      "label": "Backend (FastAPI)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "db_supabase_postgres",
+      "label": "Database (Supabase PostgreSQL)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "supabase_auth",
+      "label": "Supabase Auth",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "rls_policy",
+      "label": "Row Level Security (RLS)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "bff_layer",
+      "label": "BFF Layer (web/app/api/bff/*)",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "table_companies",
+      "label": "companies",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_profiles",
+      "label": "profiles",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_customers",
+      "label": "customers",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_payment_methods",
+      "label": "payment_methods",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_cash_sessions",
+      "label": "cash_sessions",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_transactions",
+      "label": "transactions",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_transaction_payments",
+      "label": "transaction_payments",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_cash_movements",
+      "label": "cash_movements",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "table_audit_logs",
+      "label": "audit_logs",
+      "file_type": "code",
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "id": "service_sales",
+      "label": "sales_service",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "service_cash",
+      "label": "cash_service",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "service_dashboard",
+      "label": "dashboard_service",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "dep_require_user",
+      "label": "require_user()",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "dep_require_admin",
+      "label": "require_admin()",
+      "file_type": "code",
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "route_sales",
+      "label": "sales route",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "id": "route_cash",
+      "label": "cash route",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "id": "route_dashboard",
+      "label": "dashboard route",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    },
+    {
+      "id": "page_sales_register",
+      "label": "salesRegister page",
+      "file_type": "code",
+      "source_file": "documentacion_configuracion_proyecto.md"
+    }
+  ],
+  "edges": [
+    {
+      "source": "frontend_nextjs",
+      "target": "bff_layer",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "bff_layer",
+      "target": "backend_fastapi",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "backend_fastapi",
+      "target": "db_supabase_postgres",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "backend_fastapi",
+      "target": "supabase_auth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "db_supabase_postgres",
+      "target": "rls_policy",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_sales",
+      "target": "service_sales",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_cash",
+      "target": "service_cash",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_dashboard",
+      "target": "service_dashboard",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_sales",
+      "target": "dep_require_user",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "route_sales",
+      "target": "dep_require_admin",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "source": "table_transactions",
+      "target": "table_companies",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transactions",
+      "target": "table_customers",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transactions",
+      "target": "table_cash_sessions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transaction_payments",
+      "target": "table_transactions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_transaction_payments",
+      "target": "table_payment_methods",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_cash_movements",
+      "target": "table_cash_sessions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_cash_movements",
+      "target": "table_transactions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "table_profiles",
+      "target": "supabase_auth",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "diseno_sistema_ventas_caja_reportes.md"
+    },
+    {
+      "source": "page_sales_register",
+      "target": "route_sales",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_//file": "documentacion_configuracion_proyecto.md"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "financial_data_flow",
+      "label": "Financial Data Flow",
+      "nodes": [
+        "frontend_nextjs",
+        "bff_layer",
+        "backend_fastapi",
+        "db_supabase_postgres"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "auth_and_access_control",
+      "label": "Auth and Access Control",
+      "nodes": [
+        "supabase_auth",
+        "table_profiles",
+        "dep_require_user",
+        "dep_require_admin",
+        "rls_policy"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "sales_registration_process",
+      "label": "Sales Registration Process",
+      "nodes": [
+        "page_sales_register",
+        "route_sales",
+        "service_sales",
+        "table_transactions",
+        "table_transaction_payments"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "source_file": "CLAUDE.md"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
