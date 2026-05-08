@@ -14,9 +14,9 @@ dist/
 build/
 
 # Next.js (web)
-web/.next/
-web/node_modules/
-web/.vercel/
+latas-web/.next/
+latas-web/node_modules/
+latas-web/.vercel/
 
 # Python (backend)
 backend/.pytest_cache/
@@ -29,4 +29,6 @@ backend/**/*.py[cod]
 *.db
 
 .vercel
-.env*.local
+.env.local
+.env.*.local
+.vercel
