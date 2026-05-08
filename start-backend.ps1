@@ -11,7 +11,7 @@ if (-not (Test-Path $backendRoot)) {
 Set-Location $backendRoot
 
 if (Test-Path $venvPython) {
-    & $venvPython -m uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+    & $venvPython -m uvicorn src.app.main:app --reload --host 0.0.0.0 --port 8000
     exit $LASTEXITCODE
 }
 

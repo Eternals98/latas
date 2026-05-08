@@ -1,17 +1,16 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { getCsrfHeaders } from "../../lib/csrf-client";
-import { MultiSelectCombobox } from "../../components/combobox-multiselect";
+import { useEffect, useMemo, useState } from 'react';
+import { useTransactions } from '../../lib/hooks/useTransactions';
+import { useLookupData } from '../../lib/hooks/useLookupData';
+import { useSessionInfo } from '../../lib/hooks/useSessionInfo';
+import { useSales } from '../../lib/hooks/useSales';
+import { MultiSelectCombobox } from '../../components/combobox-multiselect';
+import { Card, Badge, Button, Icon, Input, fmtMoney, cn } from '../../components/Primitives';
 
 type SalePayment = { id: string; payment_method_id: string; payment_method_name: string; amount: string };
-type SaleItem = { id: string; company: { id: string; name: string }; customer: { id: string; name: string; phone: string | null } | null; transaction_date: string; document_number: string | null; description: string; total_amount: string; status: string; created_at: string; payments: SalePayment[] };
-type SaleListResponse = { items: SaleItem[]; total: number; limit: number; offset: number };
-type Company = { id: string; name: string };
-type PaymentMethod = { id: string; name: string };
+type SaleItem = { id: string; company: { id: string; name: string }; customer: { id: string; name: string; phone: string | null } | null; transaction_date: string; payment_date?: string; payment_terms?: 'contado' | 'crédito'; document_number: string | null; description: string; total_amount: string; status: string; created_at: string; payments: SalePayment[] };
 type EditPaymentLine = { payment_method_id: string; amount: string };
-type SessionInfo = { authenticated: boolean; role?: "admin" | "cashier" };
-type CashTodayResponse = { session?: { status?: string } };
 
 const COP_FORMATTER = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 });
 const PAYMENT_METHOD_STYLES = ["bg-sky-100 text-sky-700 ring-sky-200", "bg-emerald-100 text-emerald-700 ring-emerald-200", "bg-amber-100 text-amber-700 ring-amber-200", "bg-violet-100 text-violet-700 ring-violet-200", "bg-rose-100 text-rose-700 ring-rose-200", "bg-cyan-100 text-cyan-700 ring-cyan-200"] as const;
@@ -24,7 +23,6 @@ function formatDate(value: string): string { const [y, m, d] = value.split("-");
 function formatDateTime(value: string): string { const parsed = new Date(value); if (Number.isNaN(parsed.getTime())) return value; return parsed.toLocaleString("es-CO", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }); }
 function truncateDescription(description: string): string { return description.replace(/\s+/g, " ").trim(); }
 function formatTransactionReference(reference: string | null | undefined): string { if (!reference) return "Selecciona una transacción"; const trimmed = reference.trim(); if (!trimmed) return "Selecciona una transacción"; return trimmed.toUpperCase().split("-")[0] ?? trimmed.toUpperCase(); }
-function isCashOpen(status?: string | null): boolean { if (!status) return false; return ["open", "opened", "open_session", "abierta", "active"].includes(status.toLowerCase()); }
 function paymentMethodClass(name: string): string { const normalized = name.trim().toLowerCase(); const knownStyles: Record<string, string> = { efectivo: "bg-emerald-100 text-emerald-700 ring-emerald-200", cash: "bg-emerald-100 text-emerald-700 ring-emerald-200", tarjeta: "bg-sky-100 text-sky-700 ring-sky-200", debito: "bg-indigo-100 text-indigo-700 ring-indigo-200", "débito": "bg-indigo-100 text-indigo-700 ring-indigo-200", credito: "bg-violet-100 text-violet-700 ring-violet-200", "crédito": "bg-violet-100 text-violet-700 ring-violet-200", transfer: "bg-amber-100 text-amber-700 ring-amber-200", transferencia: "bg-amber-100 text-amber-700 ring-amber-200", nequi: "bg-cyan-100 text-cyan-700 ring-cyan-200", daviplata: "bg-rose-100 text-rose-700 ring-rose-200", banco: "bg-slate-100 text-slate-700 ring-slate-200" }; return knownStyles[normalized] ?? PAYMENT_METHOD_STYLES[normalized.length % PAYMENT_METHOD_STYLES.length]; }
 function saleStatusLabel(status: string): string { const normalized = status.trim().toLowerCase(); const map: Record<string, string> = { confirmed: "CONFIRMADA", confirmada: "CONFIRMADA", cancelled: "ANULADA", anulada: "ANULADA", canceled: "ANULADA", cancelada: "ANULADA" }; return map[normalized] ?? normalized.toUpperCase(); }
 function saleStatusClass(status: string): string { const normalized = status.trim().toLowerCase(); if (["anulada", "cancelada", "canceled", "cancelled"].includes(normalized)) return "bg-slate-100 text-slate-600 ring-slate-200"; if (["confirmed", "confirmada"].includes(normalized)) return "bg-emerald-100 text-emerald-700 ring-emerald-200"; return "bg-slate-100 text-slate-700 ring-slate-200"; }
@@ -33,14 +31,6 @@ export default function TransactionsClientPage() {
   const [dateFrom, setDateFrom] = useState(todayISO());
   const [dateTo, setDateTo] = useState(todayISO());
   const [search, setSearch] = useState("");
-  const [items, setItems] = useState<SaleItem[]>([]);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [role, setRole] = useState<"admin" | "cashier" | null>("admin");
-  const [cashIsOpen, setCashIsOpen] = useState(false);
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const [paymentMethodIds, setPaymentMethodIds] = useState<string[]>([]);
   const [selectedSaleId, setSelectedSaleId] = useState<string | null>(null);
@@ -51,31 +41,117 @@ export default function TransactionsClientPage() {
   const [cancelReason, setCancelReason] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [editTransactionDate, setEditTransactionDate] = useState("");
+  const [editPaymentDate, setEditPaymentDate] = useState("");
+  const [editPaymentTerms, setEditPaymentTerms] = useState<'contado' | 'crédito'>('contado');
   const [editCompanyId, setEditCompanyId] = useState("");
   const [editPayments, setEditPayments] = useState<EditPaymentLine[]>([]);
-  const [editSubmitting, setEditSubmitting] = useState(false);
-  const [cancelSubmitting, setCancelSubmitting] = useState(false);
 
-  async function loadLookupData() { const [companyResponse, paymentMethodResponse] = await Promise.all([fetch("/api/bff/companies", { cache: "no-store" }), fetch("/api/bff/payment-methods", { cache: "no-store" })]); const [companyBody, paymentMethodBody] = await Promise.all([companyResponse.json(), paymentMethodResponse.json()]); if (companyResponse.ok) setCompanies(companyBody as Company[]); if (paymentMethodResponse.ok) setPaymentMethods(paymentMethodBody as PaymentMethod[]); }
-  async function loadSessionInfo() { try { const response = await fetch("/api/auth/session", { cache: "no-store" }); const body = (await response.json()) as SessionInfo; if (response.ok && body.authenticated) setRole(body.role ?? null); } catch { setRole(null); } }
-  async function loadCashState() { try { const response = await fetch(`/api/bff/cash/today?session_date=${encodeURIComponent(dateFrom)}`, { cache: "no-store" }); if (!response.ok) return; const body = (await response.json()) as CashTodayResponse; setCashIsOpen(isCashOpen(body.session?.status ?? null)); } catch { setCashIsOpen(false); } }
-  async function loadSales() { setIsLoading(true); setError(null); try { const params = new URLSearchParams({ date_from: dateFrom, date_to: dateTo, limit: "100", offset: "0" }); if (search.trim()) params.set("search", search.trim()); companyIds.forEach((id) => params.append("company_ids", id)); paymentMethodIds.forEach((id) => params.append("payment_method_ids", id)); const response = await fetch(`/api/bff/sales?${params.toString()}`, { cache: "no-store" }); const body = (await response.json()) as SaleListResponse | { detail?: string }; if (!response.ok) { const detailText = "detail" in body ? body.detail : undefined; throw new Error(detailText || "No fue posible cargar transacciones."); } setItems((body as SaleListResponse).items); setTotal((body as SaleListResponse).total); } catch (e) { setError(e instanceof Error ? e.message : "No fue posible cargar transacciones."); setItems([]); setTotal(0); } finally { setIsLoading(false); } }
+  const { transactions, total, loading: transLoading, error: transError, fetchTransactions, refetch } = useTransactions();
+  const { companies, paymentMethods, loading: lookupLoading, error: lookupError } = useLookupData();
+  const { session, loading: sessionLoading } = useSessionInfo();
+  const { cancelling, editing, error: mutationError, cancelSale, editSale } = useSales();
 
-  useEffect(() => { loadSessionInfo().catch(() => undefined); loadLookupData().catch(() => undefined); loadSales(); loadCashState(); }, []);
-  useEffect(() => { const handle = window.setTimeout(() => { loadSales(); }, 250); return () => window.clearTimeout(handle); }, [dateFrom, dateTo, search, companyIds, paymentMethodIds]);
-  useEffect(() => { loadCashState(); }, [dateFrom]);
-  useEffect(() => { if (!selectedSaleId) { setDetail(null); return; } let cancelled = false; setIsDetailLoading(true); fetch(`/api/bff/sales/${selectedSaleId}`, { cache: "no-store" }).then(async (response) => { const body = (await response.json()) as SaleItem | { detail?: string }; if (!response.ok) { const detailText = "detail" in body ? body.detail : undefined; throw new Error(detailText || "No fue posible cargar detalle."); } if (!cancelled) setDetail(body as SaleItem); }).catch((e: unknown) => { if (!cancelled) { setError(e instanceof Error ? e.message : "No fue posible cargar detalle."); setDetail(null); } }).finally(() => { if (!cancelled) setIsDetailLoading(false); }); return () => { cancelled = true; }; }, [selectedSaleId]);
+  const role = session?.role ?? null;
+  const isLoading = transLoading || lookupLoading || sessionLoading;
+  const error = transError || lookupError || mutationError;
+  const items = transactions;
+  const canMutate = role === "admin";
+
+  useEffect(() => {
+    const handle = window.setTimeout(() => {
+      void fetchTransactions({
+        date_from: dateFrom,
+        date_to: dateTo,
+        search: search.trim() || undefined,
+        company_ids: companyIds.length > 0 ? companyIds : undefined,
+        payment_method_ids: paymentMethodIds.length > 0 ? paymentMethodIds : undefined,
+      });
+    }, 250);
+    return () => window.clearTimeout(handle);
+  }, [dateFrom, dateTo, search, companyIds, paymentMethodIds, fetchTransactions]);
+
+  useEffect(() => {
+    if (!selectedSaleId) {
+      setDetail(null);
+      return;
+    }
+    let cancelled = false;
+    setIsDetailLoading(true);
+    fetch(`/api/bff/sales/${selectedSaleId}`, { cache: 'no-store' })
+      .then(async (response) => {
+        const body = (await response.json()) as SaleItem | { detail?: string };
+        if (!response.ok) {
+          const detailText = 'detail' in body ? body.detail : undefined;
+          throw new Error(detailText || 'No fue posible cargar detalle.');
+        }
+        if (!cancelled) setDetail(body as SaleItem);
+      })
+      .catch((e: unknown) => {
+        if (!cancelled) {
+          setDetail(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsDetailLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedSaleId]);
 
   const totalAmount = useMemo(() => items.reduce((sum, item) => sum + Number(item.total_amount || "0"), 0), [items]);
   function toggleSelectedValue(values: string[], setter: (next: string[]) => void, value: string) { setter(values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value]); }
   const selectedSale = items.find((item) => item.id === selectedSaleId) ?? null;
   const visibleDetail = detail ?? selectedSale;
   const detailDocumentNumber = formatTransactionReference(detail?.document_number ?? selectedSale?.document_number ?? selectedSaleId);
-  const canMutate = role === "admin" && cashIsOpen;
-  useEffect(() => { if (!selectedSale) return; setEditDescription(selectedSale.description); setEditTransactionDate(selectedSale.transaction_date.slice(0, 16)); setEditCompanyId(selectedSale.company.id); setEditPayments(selectedSale.payments.map((payment) => ({ payment_method_id: payment.payment_method_id, amount: payment.amount }))); }, [selectedSale]);
 
-  async function submitCancel() { if (!selectedSaleId || !cancelReason.trim() || !canMutate) return; setCancelSubmitting(true); try { const response = await fetch(`/api/bff/sales/${selectedSaleId}`, { method: "DELETE", headers: { ...getCsrfHeaders(), "Content-Type": "application/json" }, body: JSON.stringify({ reason: cancelReason.trim(), impact_cash: selectedSale?.payments.some((payment) => payment.payment_method_name.trim().toLowerCase().includes("efectivo")), }), }); if (!response.ok) { const fallback = await response.text().catch(() => ""); let detail = "No fue posible anular la transacción."; try { const parsed = fallback ? (JSON.parse(fallback) as { detail?: string }) : null; if (parsed?.detail) detail = parsed.detail; } catch { if (fallback.trim()) detail = fallback.trim(); } setError(detail); return; } setShowCancelModal(false); setCancelReason(""); setSelectedSaleId(null); loadSales(); setError(null); } finally { setCancelSubmitting(false); } }
-  async function submitEdit() { if (!selectedSaleId || !canMutate) return; setEditSubmitting(true); try { const response = await fetch(`/api/bff/sales/${selectedSaleId}`, { method: "PUT", headers: { ...getCsrfHeaders(), "Content-Type": "application/json" }, body: JSON.stringify({ description: editDescription, transaction_date: new Date(editTransactionDate).toISOString(), company_id: editCompanyId, payments: editPayments, }), }); if (!response.ok) { const fallback = await response.text().catch(() => ""); let detail = "No fue posible editar la transacción."; try { const parsed = fallback ? (JSON.parse(fallback) as { detail?: string }) : null; if (parsed?.detail) detail = parsed.detail; } catch { if (fallback.trim()) detail = fallback.trim(); } setError(detail); return; } setShowEditModal(false); loadSales(); setError(null); } finally { setEditSubmitting(false); } }
+  useEffect(() => {
+    if (!selectedSale) return;
+    setEditDescription(selectedSale.description);
+    setEditTransactionDate(selectedSale.transaction_date.slice(0, 16));
+    setEditPaymentDate(selectedSale.payment_date?.slice(0, 10) || todayISO());
+    setEditPaymentTerms(selectedSale.payment_terms || 'contado');
+    setEditCompanyId(selectedSale.company.id);
+    setEditPayments(selectedSale.payments.map((payment) => ({ payment_method_id: payment.payment_method_id, amount: payment.amount })));
+  }, [selectedSale]);
+
+  useEffect(() => {
+    if (editPaymentTerms === 'contado') {
+      setEditPaymentDate(todayISO());
+    }
+  }, [editPaymentTerms]);
+
+  async function submitCancel() {
+    if (!selectedSaleId || !cancelReason.trim() || !canMutate) return;
+    const success = await cancelSale(selectedSaleId, {
+      reason: cancelReason.trim(),
+      impact_cash: selectedSale?.payments.some((payment) => payment.payment_method_name.trim().toLowerCase().includes("efectivo")) || false,
+    });
+    if (success) {
+      setShowCancelModal(false);
+      setCancelReason("");
+      setSelectedSaleId(null);
+      await refetch();
+    }
+  }
+
+  async function submitEdit() {
+    if (!selectedSaleId || !canMutate) return;
+    const success = await editSale(selectedSaleId, {
+      description: editDescription,
+      transaction_date: new Date(editTransactionDate).toISOString(),
+      payment_date: editPaymentTerms === 'crédito' ? editPaymentDate : todayISO(),
+      company_id: editCompanyId,
+      payments: editPayments.map((p) => ({
+        payment_method_id: p.payment_method_id,
+        amount: Number(p.amount),
+      })),
+    });
+    if (success) {
+      setShowEditModal(false);
+      await refetch();
+    }
+  }
 
   return (
     <main className="min-h-[calc(100vh-56px)] bg-[#F7F9FF] px-3 py-2 text-slate-900">
@@ -283,10 +359,10 @@ export default function TransactionsClientPage() {
                 <button
                   type="button"
                   onClick={submitCancel}
-                  disabled={cancelSubmitting || !cancelReason.trim()}
+                  disabled={cancelling || !cancelReason.trim()}
                   className="rounded-md bg-[#003D9B] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {cancelSubmitting ? "Anulando..." : "Confirmar anulación"}
+                  {cancelling ? "Anulando..." : "Confirmar anulación"}
                 </button>
               </div>
             </div>
@@ -311,7 +387,7 @@ export default function TransactionsClientPage() {
             </div>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <label className="block text-sm text-slate-700">
-                Fecha
+                Fecha de transacción
                 <input
                   type="datetime-local"
                   value={editTransactionDate}
@@ -333,12 +409,33 @@ export default function TransactionsClientPage() {
                   ))}
                 </select>
               </label>
+              <label className="block text-sm text-slate-700">
+                Términos de pago
+                <select
+                  value={editPaymentTerms}
+                  onChange={(e) => setEditPaymentTerms(e.target.value as 'contado' | 'crédito')}
+                  className="mt-1 w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 outline-none focus:border-[#003D9B]"
+                >
+                  <option value="contado">Contado</option>
+                  <option value="crédito">Crédito</option>
+                </select>
+              </label>
+              <label className="block text-sm text-slate-700">
+                Fecha de pago
+                <input
+                  type="date"
+                  value={editPaymentDate}
+                  onChange={(e) => setEditPaymentDate(e.target.value)}
+                  disabled={editPaymentTerms === 'contado'}
+                  className="mt-1 w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 outline-none focus:border-[#003D9B] disabled:cursor-not-allowed disabled:opacity-50"
+                />
+              </label>
               <label className="block text-sm text-slate-700 md:col-span-2">
                 Descripción
                 <textarea
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
-                  rows={4}
+                  rows={3}
                   className="mt-1 w-full rounded-lg border border-[#D6DDF5] bg-[#F7F9FF] px-3 py-2 outline-none focus:border-[#003D9B]"
                 />
               </label>
@@ -413,10 +510,10 @@ export default function TransactionsClientPage() {
               <button
                 type="button"
                 onClick={submitEdit}
-                disabled={editSubmitting}
+                disabled={editing}
                 className="rounded-md bg-[#003D9B] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {editSubmitting ? "Guardando..." : "Guardar cambios"}
+                {editing ? "Guardando..." : "Guardar cambios"}
               </button>
             </div>
           </div>

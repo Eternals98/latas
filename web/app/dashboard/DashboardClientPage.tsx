@@ -1,146 +1,69 @@
-"use client";
+'use client';
 
-import { type ReactNode, useEffect, useMemo, useState } from "react";
-
-type DashboardApiResponse = {
-  ventas_por_mes?: Array<{
-    mes?: number;
-    anio?: number;
-    periodo?: string;
-    cantidad_ventas?: number;
-    valor_total?: string | number;
-  }>;
-  ventas_por_empresa?: Array<{
-    empresa?: string;
-    nombre_empresa?: string;
-    cantidad_ventas?: string | number;
-    volumen?: string | number;
-    valor_total?: string | number;
-    total?: string | number;
-    ingresos?: string | number;
-  }>;
-  metodos_pago?: Array<{
-    metodo?: string;
-    medio?: string;
-    transacciones?: string | number;
-    cantidad?: string | number;
-    cantidad_pagos?: string | number;
-    monto_total?: string | number;
-    total?: string | number;
-  }>;
-  total_ventas?: string | number;
-  total_mes_actual?: string | number;
-  cantidad_ventas?: string | number;
-  ticket_promedio?: string | number;
-  generado_en?: string;
-};
+import { type ReactNode, useMemo, useState } from 'react';
+import { Card, Icon, cn, fmtMoney } from '../../components/Primitives';
+import { useDashboard, type DashboardApiResponse } from '../../lib/hooks';
 
 type EntityRow = { name: string; volume: number; income: number };
 type PaymentRow = { method: string; icon: string; transactions: number; total: number };
 
-const MONTHS = [{ key: "2026-05", label: "Mayo 2026" }];
+const MONTHS = [{ key: '2026-05', label: 'Mayo 2026' }];
 
 function toNumber(value: unknown) {
-  if (typeof value === "number") return value;
-  if (typeof value === "string") return Number(value);
+  if (typeof value === 'number') return value;
+  if (typeof value === 'string') return Number(value);
   return 0;
 }
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
-
 function formatNumber(value: number) {
-  return new Intl.NumberFormat("en-US").format(value);
+  return new Intl.NumberFormat('es-CL').format(value);
 }
 
 function normalizeMethodIcon(method: string) {
   const normalized = method.toLowerCase();
-  if (normalized.includes("efect")) return "payments";
-  if (normalized.includes("tarjeta") || normalized.includes("crédito") || normalized.includes("credito")) return "credit_card";
-  if (normalized.includes("transfer")) return "account_balance";
-  return "payments";
+  if (normalized.includes('efect')) return 'cash';
+  if (normalized.includes('tarjeta') || normalized.includes('crédito') || normalized.includes('credito')) return 'creditCard';
+  if (normalized.includes('transfer')) return 'creditCard';
+  return 'creditCard';
 }
 
 function isCashMethod(method: string) {
   const normalized = method.toLowerCase();
-  return normalized.includes("efect") || normalized.includes("cash");
+  return normalized.includes('efect') || normalized.includes('cash');
 }
 
-function MetricCard({ label, value }: { label: string; value: string }) {
+function HeroFigure({ label, value }: { label: string; value: string }) {
   return (
-    <div className="min-h-[84px] border border-slate-200 bg-white px-4 py-3 shadow-[0_1px_0_rgba(15,23,42,0.02)]">
-      <div className="h-full border-l-2 border-emerald-500 pl-3">
-        <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500">{label}</p>
-        <p className="mt-4 text-[28px] font-semibold leading-none text-slate-900">{value}</p>
-      </div>
-    </div>
+    <Card className="p-6">
+      <div className="text-[11px] tracking-widest uppercase font-semibold text-slate-500 mb-2">{label}</div>
+      <div className="text-3xl font-bold text-ink-900 font-mono">{value}</div>
+    </Card>
   );
 }
 
-function TableShell({
+function DataTable({
   title,
-  children,
   action,
+  children,
 }: {
   title: string;
-  children: ReactNode;
   action?: ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <section className="overflow-hidden border border-slate-200 bg-white shadow-[0_1px_0_rgba(15,23,42,0.02)]">
-      <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-[#f7f9ff] px-4 py-3">
-        <h2 className="text-[12px] font-bold uppercase tracking-[0.08em] text-slate-700">{title}</h2>
+    <Card padding={0} className="overflow-hidden">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-200 bg-paper-50 px-6 py-4">
+        <h2 className="text-[11px] tracking-widest uppercase font-bold text-slate-500">{title}</h2>
         {action}
       </div>
       {children}
-    </section>
+    </Card>
   );
 }
 
 export default function DashboardClientPage() {
   const [selectedMonth, setSelectedMonth] = useState(MONTHS[0].key);
-  const [data, setData] = useState<DashboardApiResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadDashboard() {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await fetch("/api/bff/dashboard", { cache: "no-store" });
-        if (!response.ok) {
-          throw new Error(`No se pudo cargar el dashboard (${response.status})`);
-        }
-        const payload = (await response.json()) as DashboardApiResponse;
-        if (active) {
-          setData(payload);
-        }
-      } catch (err) {
-        if (active) {
-          setError(err instanceof Error ? err.message : "Error desconocido al cargar el dashboard");
-        }
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    }
-
-    void loadDashboard();
-
-    return () => {
-      active = false;
-    };
-  }, []);
+  const { data, loading, error } = useDashboard();
 
   const monthLabel = MONTHS.find((item) => item.key === selectedMonth)?.label ?? "Mayo 2026";
 
@@ -186,106 +109,99 @@ export default function DashboardClientPage() {
   }, [data, selectedMonth]);
 
   return (
-    <main className="min-h-[calc(100vh-56px)] bg-[#f7f9ff] px-4 py-4 text-slate-900 sm:px-5 lg:px-6">
-      <div className="mx-auto max-w-[1280px]">
-        <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">Panel general</p>
-            <h1 className="mt-1 text-[24px] font-semibold tracking-[-0.03em] text-slate-900 sm:text-[28px]">Resumen de Operaciones</h1>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-2 rounded-[2px] border border-slate-200 bg-white px-3 py-2 shadow-[0_1px_0_rgba(15,23,42,0.02)]">
-              <span className="material-symbols-outlined text-[17px] text-slate-500">calendar_month</span>
-              <label className="text-[11px] font-bold uppercase tracking-[0.08em] text-slate-500" htmlFor="month-filter">
-                Mes
-              </label>
-              <select
-                id="month-filter"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                className="min-w-[130px] border-0 bg-transparent p-0 text-sm font-semibold text-slate-900 outline-none"
-              >
-                {MONTHS.map((item) => (
-                  <option key={item.key} value={item.key}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <button className="inline-flex h-9 items-center gap-2 bg-[#0054b8] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#00479d]">
-              <span className="material-symbols-outlined text-[17px]">bar_chart</span>
-              Ver Reportes
-            </button>
-          </div>
+    <div className="p-8 max-w-[1200px] mx-auto animate-in fade-in duration-500">
+      <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <div className="text-[11px] tracking-widest uppercase font-semibold text-slate-500 mb-2">Resumen General</div>
+          <h1 className="font-display text-3xl text-ink-900">Resumen de Operaciones</h1>
         </div>
 
-        {error ? (
-          <div className="mb-4 border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{error}</div>
-        ) : null}
-
-        <div className="grid gap-3 md:grid-cols-3">
-          <MetricCard label="Ventas totales mes" value={loading ? "Cargando..." : formatCurrency(summary.salesTotal)} />
-          <MetricCard label="Ventas diarias" value={loading ? "Cargando..." : formatCurrency(summary.dailySales)} />
-          <MetricCard label="Efectivo total" value={loading ? "Cargando..." : formatCurrency(summary.cashTotal)} />
-        </div>
-
-        <div className="mt-5 grid gap-4">
-          <TableShell title="Distribución de ventas por entidad" action={<span className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-500">{monthLabel}</span>}>
-            <div className="overflow-hidden">
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-[#fbfcff]">
-                    <th className="px-4 py-2 text-left text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">Nombre de Empresa</th>
-                    <th className="px-4 py-2 text-right text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">Volumen</th>
-                    <th className="px-4 py-2 text-right text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">Ingresos</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {(loading ? [] : summary.entities).map((row, index) => (
-                    <tr key={row.name} className={index === 0 ? "bg-white" : "bg-[#fcfdff]"}>
-                      <td className="px-4 py-3 text-left text-[14px] text-slate-700">{row.name}</td>
-                      <td className="px-4 py-3 text-right text-[14px] text-slate-700 tabular-nums">{formatNumber(row.volume)}</td>
-                      <td className="px-4 py-3 text-right text-[14px] font-semibold text-slate-900 tabular-nums">{formatCurrency(row.income)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </TableShell>
-
-          <TableShell title="Desglose por método de pago" action={<span className="text-[11px] font-medium uppercase tracking-[0.08em] text-slate-500">{monthLabel}</span>}>
-            <div className="overflow-hidden">
-              <table className="w-full border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-[#fbfcff]">
-                    <th className="px-4 py-2 text-left text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">Método</th>
-                    <th className="px-4 py-2 text-right text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">Transacciones</th>
-                    <th className="px-4 py-2 text-right text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">Monto Total</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200">
-                  {(loading ? [] : summary.payments).map((row, index) => (
-                    <tr key={row.method} className={index === 0 ? "bg-white" : "bg-[#fcfdff]"}>
-                      <td className="px-4 py-3 text-left">
-                        <div className="inline-flex items-center gap-2 text-[14px] text-slate-700">
-                          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
-                            <span className="material-symbols-outlined text-[16px] text-slate-600">{row.icon}</span>
-                          </span>
-                          <span>{row.method}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-right text-[14px] text-slate-700 tabular-nums">{formatNumber(row.transactions)}</td>
-                      <td className="px-4 py-3 text-right text-[14px] font-semibold text-slate-900 tabular-nums">{formatCurrency(row.total)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </TableShell>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg">
+            <Icon name="calendar" size={16} className="text-slate-500" />
+            <label className="text-[11px] tracking-widest uppercase font-bold text-slate-500" htmlFor="month-filter">
+              Mes
+            </label>
+            <select
+              id="month-filter"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="min-w-[130px] border-0 bg-transparent p-0 text-sm font-semibold text-ink-900 outline-none"
+            >
+              {MONTHS.map((item) => (
+                <option key={item.key} value={item.key}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
-    </main>
+
+      {error ? (
+        <div className="mb-6 p-4 bg-coral-50 border border-coral-200 rounded-lg text-sm text-coral-900">
+          {error}
+        </div>
+      ) : null}
+
+      <div className="grid gap-4 md:grid-cols-3 mb-8">
+        <HeroFigure label="Ventas totales mes" value={loading ? '...' : fmtMoney(summary.salesTotal)} />
+        <HeroFigure label="Ventas diarias" value={loading ? '...' : fmtMoney(summary.dailySales)} />
+        <HeroFigure label="Efectivo total" value={loading ? '...' : fmtMoney(summary.cashTotal)} />
+      </div>
+
+      <div className="flex flex-col gap-6">
+        <DataTable title="Distribución de ventas por entidad" action={<span className="text-[11px] tracking-widest uppercase font-medium text-slate-500">{monthLabel}</span>}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 bg-paper-50">
+                  <th className="px-6 py-3 text-left text-[11px] tracking-widest uppercase font-bold text-slate-500">Nombre de Empresa</th>
+                  <th className="px-6 py-3 text-right text-[11px] tracking-widest uppercase font-bold text-slate-500">Volumen</th>
+                  <th className="px-6 py-3 text-right text-[11px] tracking-widest uppercase font-bold text-slate-500">Ingresos</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {(loading ? [] : summary.entities).map((row) => (
+                  <tr key={row.name} className="hover:bg-paper-50 transition-colors">
+                    <td className="px-6 py-3 text-ink-900 font-medium">{row.name}</td>
+                    <td className="px-6 py-3 text-right text-ink-900 font-mono tabular-nums">{formatNumber(row.volume)}</td>
+                    <td className="px-6 py-3 text-right text-ink-900 font-bold font-mono tabular-nums">{fmtMoney(row.income)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </DataTable>
+
+        <DataTable title="Desglose por método de pago" action={<span className="text-[11px] tracking-widest uppercase font-medium text-slate-500">{monthLabel}</span>}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 bg-paper-50">
+                  <th className="px-6 py-3 text-left text-[11px] tracking-widest uppercase font-bold text-slate-500">Método</th>
+                  <th className="px-6 py-3 text-right text-[11px] tracking-widest uppercase font-bold text-slate-500">Transacciones</th>
+                  <th className="px-6 py-3 text-right text-[11px] tracking-widest uppercase font-bold text-slate-500">Monto Total</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {(loading ? [] : summary.payments).map((row) => (
+                  <tr key={row.method} className="hover:bg-paper-50 transition-colors">
+                    <td className="px-6 py-3">
+                      <div className="flex items-center gap-2">
+                        <Icon name={row.icon} size={16} className="text-slate-500" />
+                        <span className="text-ink-900 font-medium">{row.method}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3 text-right text-ink-900 font-mono tabular-nums">{formatNumber(row.transactions)}</td>
+                    <td className="px-6 py-3 text-right text-ink-900 font-bold font-mono tabular-nums">{fmtMoney(row.total)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </DataTable>
+      </div>
+    </div>
   );
 }

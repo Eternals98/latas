@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import { Card, Badge, Button, Icon, Input, fmtMoney, cn } from './Primitives';
+import { RegisterTransaccionModal } from './RegisterTransaccionModal';
 
 export const CashScreen = ({ cashOpen, openCash, closeCash }: { cashOpen: boolean, openCash: () => void, closeCash: () => void }) => {
   const [openingBalance] = useState(150000);
   const [salesCash]      = useState(84200);
   const [withdrawals]    = useState(3200);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   
   const currentBalance = openingBalance + salesCash - withdrawals;
 
@@ -32,7 +34,10 @@ export const CashScreen = ({ cashOpen, openCash, closeCash }: { cashOpen: boolea
 
             <div className="mt-10 flex gap-3">
               {cashOpen ? (
-                <Button variant="danger" icon="x" onClick={closeCash} className="flex-1">Cerrar Caja (Arqueo)</Button>
+                <>
+                  <Button variant="danger" icon="x" onClick={closeCash} className="flex-1">Cerrar Caja (Arqueo)</Button>
+                  <Button variant="accent" icon="plus" onClick={() => setShowRegisterModal(true)}>Registrar Venta</Button>
+                </>
               ) : (
                 <Button variant="accent" icon="check" onClick={openCash} className="flex-1">Abrir Caja del Día</Button>
               )}
@@ -71,6 +76,14 @@ export const CashScreen = ({ cashOpen, openCash, closeCash }: { cashOpen: boolea
           </Card>
         </div>
       </div>
+
+      <RegisterTransaccionModal
+        open={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        onSuccess={() => {
+          setShowRegisterModal(false);
+        }}
+      />
     </div>
   );
 };

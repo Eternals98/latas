@@ -1,209 +1,104 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ReactNode, useMemo } from "react";
-import { getCsrfHeaders } from "../lib/csrf-client";
-
-/* =========================
-   Tipos
-========================= */
-type NavItem = {
-  href?: string;
-  label: string;
-  icon?: string;
-  onClick?: () => void;
-};
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { ReactNode, useMemo } from 'react';
+import { Sidebar, TopBar } from '../components/Shell';
+import { getCsrfHeaders } from '../lib/csrf-client';
 
 type AppShellProps = {
   children: ReactNode;
-  role?: "admin" | "cashier" | null;
+  role?: 'admin' | 'cashier' | null;
 };
 
-/* =========================
-   Acción logout
-========================= */
-function logoutAction() {
-  return async () => {
-    await fetch("/api/auth/logout", { method: "POST", headers: getCsrfHeaders() });
-    window.location.assign("/login");
-  };
-}
-
-/* =========================
-   NAV
-========================= */
-const MAIN_NAV: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: "dashboard" },
-  { href: "/salesRegister", label: "Registro de ventas", icon: "point_of_sale" },
-  { href: "/cash-management", label: "Gestión de caja", icon: "account_balance_wallet" },
-  { href: "/transactions", label: "Transactions", icon: "receipt_long" },
-  { href: "/reportes", label: "Reportes", icon: "analytics" },
-  { href: "/configuracion", label: "Configuración", icon: "settings" },
-  { href: "/clientes", label: "Clientes", icon: "groups" },
-];
-
-const ADMIN_ONLY_PATHS = new Set(["/dashboard", "/transactions", "/reportes", "/configuracion"]);
-
-const FOOTER_NAV: NavItem[] = [
-  {
-    label: "Cerrar sesión",
-    icon: "logout",
-    onClick: logoutAction(),
-  },
-];
-
-/* =========================
-   NavLink
-========================= */
-function NavLink({ item, active }: { item: NavItem; active: boolean }) {
-  const base =
-    "flex h-10 items-center gap-3 pl-6 pr-4 text-sm font-medium relative z-10 transition";
-
-  const color = active
-    ? "text-white"
-    : "text-[#334155] hover:bg-slate-100";
-
-  // 🔹 Acción
-  if (item.onClick) {
-    return (
-      <button
-        onClick={item.onClick}
-        className={`${base} ${color} w-full text-left`}
-      >
-        <span
-          className={`material-symbols-outlined text-[18px] ${
-            active ? "text-white" : "text-[#334155]"
-          }`}
-        >
-          {item.icon}
-        </span>
-        <span>{item.label}</span>
-      </button>
-    );
-  }
-
-  // 🔹 Link
-  return (
-    <Link href={item.href!} className={`${base} ${color}`}>
-      <span
-        className={`material-symbols-outlined text-[18px] ${
-          active ? "text-white" : "text-[#334155]"
-        }`}
-      >
-        {item.icon}
-      </span>
-      <span>{item.label}</span>
-    </Link>
-  );
-}
-
-/* =========================
-   AppShell
-========================= */
 export function AppShell({ children, role }: AppShellProps) {
   const pathname = usePathname();
-  const visibleNav = role === "admin" ? MAIN_NAV : MAIN_NAV.filter((item) => !item.href || !ADMIN_ONLY_PATHS.has(item.href));
+  const router = useRouter();
 
-  const activeIndex = useMemo(() => {
-    return visibleNav.findIndex(
-      (i) =>
-        i.href &&
-        (pathname === i.href || pathname.startsWith(`${i.href}/`))
-    );
-  }, [pathname, visibleNav]);
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        headers: getCsrfHeaders(),
+      });
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  const routeMap: { [key: string]: string } = {
+    '/dashboard': 'dashboard',
+    '/salesRegister': 'sale',
+    '/transactions': 'transactions',
+    '/cash-management': 'cash',
+    '/reportes': 'reports',
+    '/configuracion': 'admin',
+  };
+
+  const currentRoute = routeMap[pathname] || 'dashboard';
+
+  const handleNavigate = (id: string) => {
+    const pathMap: { [key: string]: string } = {
+      dashboard: '/dashboard',
+      sale: '/salesRegister',
+      transactions: '/transactions',
+      cash: '/cash-management',
+      reports: '/reportes',
+      admin: '/configuracion',
+    };
+    router.push(pathMap[id] || '/dashboard');
+  };
+
+  const metaMap: { [key: string]: { title: string; eyebrow: string; subtitle: string } } = {
+    dashboard: {
+      title: 'Resumen de Operaciones',
+      eyebrow: 'Panel · 8 may 2026',
+      subtitle: 'Visión general consolidada del día',
+    },
+    sale: {
+      title: 'Registro de Venta',
+      eyebrow: 'Operación · Nuevo asiento',
+      subtitle: 'Capture una transacción comercial',
+    },
+    transactions: {
+      title: 'Transacciones',
+      eyebrow: 'Historial',
+      subtitle: 'Registro completo de movimientos',
+    },
+    cash: {
+      title: 'Gestión de Caja',
+      eyebrow: 'Caja Diaria',
+      subtitle: 'Movimientos y status del cajón',
+    },
+    reports: {
+      title: 'Reportes Operativos',
+      eyebrow: 'Informes',
+      subtitle: 'Genere y exporte reportes auditables',
+    },
+    admin: {
+      title: 'Administración',
+      eyebrow: 'Sistema',
+      subtitle: 'Usuarios, sucursales y catálogos',
+    },
+  };
+
+  const meta = metaMap[currentRoute] || metaMap.dashboard;
 
   return (
-    <div className="min-h-screen bg-[#f4f6fb] text-slate-900">
-      {/* Sidebar */}
-      <aside className="fixed left-0 top-0 hidden h-screen w-[240px] border-r border-slate-200 bg-white lg:flex lg:flex-col">
-        
-        {/* Header */}
-        <div className="border-b border-slate-200 px-6 py-5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-[#2563eb] text-sm font-extrabold text-white">
-              Ax
-            </div>
-            <div>
-              <p className="text-base font-extrabold text-[#1e3a8a]">
-                Axentria
-              </p>
-              <p className="text-xs text-slate-500">
-                Control de ventas
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* NAV */}
-        <nav className="relative flex-1 py-4">
-          
-          {/* 🔵 Indicador animado */}
-          {activeIndex >= 0 && (
-            <div
-              className="absolute left-0 h-10 w-full bg-[#003D9B] rounded-r-full 
-              transition-all duration-300 
-              ease-[cubic-bezier(0.34,1.56,0.64,1)]"
-              style={{
-                transform: `translateY(${activeIndex * 40}px) scaleX(1.03)`
-              }}
-            />
-          )}
-
-          {/* Items */}
-          {visibleNav.map((item) => {
-            const active =
-              item.href &&
-              (pathname === item.href ||
-                pathname.startsWith(`${item.href}/`));
-
-            return (
-              <NavLink key={item.label} item={item} active={!!active} />
-            );
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="border-t border-slate-200 py-3">
-          {FOOTER_NAV.map((item) => (
-            <NavLink key={item.label} item={item} active={false} />
-          ))}
-        </div>
-      </aside>
-
-      {/* Content */}
-      <div className="lg:pl-[240px]">
-        <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-slate-200 bg-white px-4 lg:px-6">
-          <div className="flex items-center gap-3">
-            <div className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span className="text-sm font-medium text-slate-600">
-              Sesión activa
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100">
-              <span className="material-symbols-outlined text-[18px]">
-                search
-              </span>
-            </button>
-
-            <button className="flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100">
-              <span className="material-symbols-outlined text-[18px]">
-                notifications
-              </span>
-            </button>
-
-            <button className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50">
-              <span className="material-symbols-outlined text-[18px]">
-                person
-              </span>
-            </button>
-          </div>
-        </header>
-
-        <div>{children}</div>
+    <div className="flex h-screen bg-paper-100 text-ink-900 font-sans">
+      <div className="hidden lg:flex lg:w-64 lg:flex-shrink-0">
+        <Sidebar
+          active={currentRoute}
+          onNavigate={handleNavigate}
+          onLogout={handleLogout}
+          cashOpen={false}
+        />
       </div>
+      <main className="flex-1 min-w-0 flex flex-col overflow-hidden">
+        <TopBar {...meta} />
+        <div className="flex-1 overflow-auto bg-paper-100">{children}</div>
+      </main>
     </div>
   );
 }

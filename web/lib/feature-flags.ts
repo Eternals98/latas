@@ -1,0 +1,6 @@
+export const FEATURE_FLAGS = {
+  USE_DASHBOARD_HOOK: process.env.NEXT_PUBLIC_USE_DASHBOARD_HOOK === 'true',
+  USE_SALES_HOOK: process.env.NEXT_PUBLIC_USE_SALES_HOOK === 'true',
+  USE_TRANSACTIONS_HOOKS: process.env.NEXT_PUBLIC_USE_TRANSACTIONS_HOOKS === 'true',
+  USE_CASH_HOOK: process.env.NEXT_PUBLIC_USE_CASH_HOOK === 'true',
+};

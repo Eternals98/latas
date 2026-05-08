@@ -4,7 +4,9 @@
       "Bash(Remove-Item \"F:\\\\Projects\\\\latas\\\\latas\\\\backend\\\\src\\\\app\\\\services\\\\admin_auth.py\" -Force)",
       "Bash(Remove-Item \"F:\\\\Projects\\\\latas\\\\latas\\\\backend\\\\src\\\\app\\\\models\\\\admin_user.py\" -Force)",
       "Bash(Write-Output \"Deleted\")",
-      "Bash(python -m pytest --co -q)"
+      "Bash(python -m pytest --co -q)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)"
     ]
   }
 }
