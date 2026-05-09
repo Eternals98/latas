@@ -1,0 +1,324 @@
+/* ================================================================
+   Axentria Design System — Colors & Type
+   ================================================================
+   Brand DNA: "Modern ledger" — heritage of the paper sales book
+   made for the web. Warm, confident, trustworthy.
+   ================================================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================================
+   FONT FACES — Self-hosted Axentria fonts
+   ================================================================ */
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/InstrumentSerif-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/InstrumentSerif-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/Manrope-VariableFont_wght.ttf") format("truetype-variations");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("/fonts/JetBrainsMono-VariableFont_wght.ttf") format("truetype-variations");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: italic;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("/fonts/JetBrainsMono-Italic-VariableFont_wght.ttf") format("truetype-variations");
+}
+
+/* ================================================================
+   CSS VARIABLES — Complete Axentria design tokens
+   ================================================================ */
+
+:root {
+  /* Core palette */
+  --ink-950: #07101c;
+  --ink-900: #0f1b2d;
+  --ink-800: #182640;
+  --ink-700: #233355;
+  --ink-600: #34466b;
+  --ink-500: #4a5b7d;
+
+  --paper-50:  #fdfbf6;
+  --paper-100: #faf6ee;
+  --paper-200: #f3ecdd;
+  --paper-300: #e9deca;
+
+  --brass-50:  #fdf6e8;
+  --brass-100: #faecc8;
+  --brass-200: #f4d896;
+  --brass-300: #ecbf5e;
+  --brass-400: #e0a24a;
+  --brass-500: #c5862e;
+  --brass-600: #9d6820;
+  --brass-700: #6f4815;
+
+  --sage-50:  #ecf6f0;
+  --sage-100: #cfe8d8;
+  --sage-300: #7ec3a0;
+  --sage-500: #2f9e72;
+  --sage-600: #1f7d59;
+  --sage-700: #145a40;
+
+  --coral-50:  #fdefe9;
+  --coral-100: #f9d4c4;
+  --coral-300: #ec9575;
+  --coral-500: #d9573d;
+  --coral-600: #b13e29;
+  --coral-700: #82291a;
+
+  --slate-50:  #f5f3ee;
+  --slate-100: #e9e5dc;
+  --slate-200: #d6d1c4;
+  --slate-300: #b8b2a2;
+  --slate-400: #918b7c;
+  --slate-500: #6c6859;
+  --slate-600: #4d4a40;
+  --slate-700: #36342d;
+  --slate-800: #24231e;
+  --slate-900: #15140f;
+
+  /* Semantic surfaces */
+  --surface-app:        var(--paper-100);
+  --surface-panel:      #ffffff;
+  --surface-panel-alt:  var(--paper-50);
+  --surface-sunken:     var(--paper-200);
+  --surface-inverse:    var(--ink-900);
+
+  /* Semantic foreground */
+  --fg-1: var(--ink-900);
+  --fg-2: var(--slate-600);
+  --fg-3: var(--slate-500);
+  --fg-muted: var(--slate-400);
+  --fg-on-inverse: var(--paper-50);
+  --fg-on-brass:   var(--ink-900);
+
+  /* Semantic actions */
+  --action-primary-bg:        var(--ink-900);
+  --action-primary-bg-hover:  var(--ink-800);
+  --action-primary-fg:        var(--paper-50);
+
+  --action-accent-bg:         var(--brass-400);
+  --action-accent-bg-hover:   var(--brass-500);
+  --action-accent-fg:         var(--ink-900);
+
+  --action-positive-bg:       var(--sage-500);
+  --action-positive-fg:       #ffffff;
+
+  --action-danger-bg:         var(--coral-500);
+  --action-danger-fg:         #ffffff;
+
+  /* Borders */
+  --border-subtle: color-mix(in oklab, var(--slate-200) 70%, transparent);
+  --border-default: var(--slate-200);
+  --border-strong:  var(--slate-300);
+  --border-inverse: var(--ink-700);
+
+  /* Status */
+  --status-success-fg: var(--sage-700);
+  --status-success-bg: var(--sage-50);
+  --status-danger-fg:  var(--coral-700);
+  --status-danger-bg:  var(--coral-50);
+  --status-warn-fg:    var(--brass-700);
+  --status-warn-bg:    var(--brass-50);
+  --status-info-fg:    var(--ink-800);
+  --status-info-bg:    color-mix(in oklab, var(--ink-900) 8%, white);
+
+  /* Spacing */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Radii */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --elev-0: none;
+  --elev-1: 0 1px 0 rgba(15,27,45,0.04), 0 1px 2px rgba(15,27,45,0.06);
+  --elev-2: 0 1px 0 rgba(15,27,45,0.04), 0 4px 12px -2px rgba(15,27,45,0.08);
+  --elev-3: 0 2px 0 rgba(15,27,45,0.04), 0 12px 28px -8px rgba(15,27,45,0.14);
+  --elev-4: 0 24px 60px -20px rgba(15,27,45,0.28);
+  --inset-1: inset 0 0 0 1px var(--border-default);
+  --inset-focus: 0 0 0 3px color-mix(in oklab, var(--brass-400) 50%, transparent);
+
+  /* Typography */
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-sans:    "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --fs-display-xl: 72px;
+  --fs-display-lg: 56px;
+  --fs-display-md: 40px;
+  --fs-h1:  32px;
+  --fs-h2:  24px;
+  --fs-h3:  20px;
+  --fs-h4:  17px;
+  --fs-body:    15px;
+  --fs-body-sm: 13px;
+  --fs-caption: 12px;
+  --fs-overline: 11px;
+
+  --lh-tight:  1.1;
+  --lh-snug:   1.25;
+  --lh-normal: 1.45;
+  --lh-loose:  1.6;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:  0.04em;
+  --tracking-overline: 0.12em;
+
+  /* Motion */
+  --ease-standard: cubic-bezier(.2,.7,.2,1);
+  --ease-out-soft: cubic-bezier(0,0,.2,1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+}
+
+/* ================================================================
+   BASE STYLES — HTML semantic defaults
+   ================================================================ */
+
+html, body {
+  background: var(--surface-app);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
+  font-family: var(--font-sans);
+  color: var(--fg-1);
+  letter-spacing: var(--tracking-tight);
+  margin: 0;
+}
+
+h1, .h1 { font-size: var(--fs-h1); font-weight: 700; line-height: var(--lh-snug); }
+h2, .h2 { font-size: var(--fs-h2); font-weight: 700; line-height: var(--lh-snug); }
+h3, .h3 { font-size: var(--fs-h3); font-weight: 600; line-height: var(--lh-snug); }
+h4, .h4 { font-size: var(--fs-h4); font-weight: 600; line-height: var(--lh-snug); }
+
+.display, .display-lg, .display-md {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: var(--lh-tight);
+  color: var(--fg-1);
+}
+
+.display     { font-size: var(--fs-display-xl); }
+.display-lg  { font-size: var(--fs-display-lg); }
+.display-md  { font-size: var(--fs-display-md); }
+
+p, .body { font-size: var(--fs-body); line-height: var(--lh-normal); color: var(--fg-1); margin: 0; }
+.body-sm  { font-size: var(--fs-body-sm); line-height: var(--lh-normal); color: var(--fg-2); }
+.caption  { font-size: var(--fs-caption); color: var(--fg-3); }
+.overline {
+  font-size: var(--fs-overline);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg-2);
+}
+
+.figure, .num, code, kbd {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+code, kbd {
+  font-size: 0.92em;
+  background: var(--surface-sunken);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  color: var(--ink-800);
+}
+
+a {
+  color: var(--ink-900);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  color: var(--brass-600);
+}
+
+::selection {
+  background: var(--brass-200);
+  color: var(--ink-900);
+}
+
+/* ================================================================
+   UTILITY CLASSES
+   ================================================================ */
+
+/* Paper grain texture (optional) */
+.paper-grain {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(15, 27, 45, 0.02) 2px,
+      rgba(15, 27, 45, 0.02) 4px
+    );
+}
+
+/* Focus visible ring (accessibility) */
+*:focus-visible {
+  outline: 2px solid var(--brass-400);
+  outline-offset: 2px;
+}
+
+/* Smooth transitions */
+button, a, input, textarea, select {
+  transition: background-color var(--dur-2) var(--ease-standard),
+              color var(--dur-2) var(--ease-standard),
+              border-color var(--dur-2) var(--ease-standard);
+}

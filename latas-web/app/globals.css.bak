@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ================================================================
+     CORE PALETTE (colores fundamentales)
+     ================================================================ */
+
+  /* Ink — primary brand color */
+  --ink-950: #07101c;
+  --ink-900: #0f1b2d;
+  --ink-800: #182640;
+  --ink-700: #233355;
+  --ink-600: #34466b;
+  --ink-500: #4a5b7d;
+
+  /* Paper — warm cream surfaces */
+  --paper-50:  #fdfbf6;
+  --paper-100: #faf6ee;
+  --paper-200: #f3ecdd;
+  --paper-300: #e9deca;
+
+  /* Brass — amber accent, gold leaf */
+  --brass-50:  #fdf6e8;
+  --brass-100: #faecc8;
+  --brass-200: #f4d896;
+  --brass-300: #ecbf5e;
+  --brass-400: #e0a24a;
+  --brass-500: #c5862e;
+  --brass-600: #9d6820;
+  --brass-700: #6f4815;
+
+  /* Sage — positive, income, success */
+  --sage-50:  #ecf6f0;
+  --sage-100: #cfe8d8;
+  --sage-300: #7ec3a0;
+  --sage-500: #2f9e72;
+  --sage-600: #1f7d59;
+  --sage-700: #145a40;
+
+  /* Coral — negative, outflow, destructive */
+  --coral-50:  #fdefe9;
+  --coral-100: #f9d4c4;
+  --coral-300: #ec9575;
+  --coral-500: #d9573d;
+  --coral-600: #b13e29;
+  --coral-700: #82291a;
+
+  /* Slate — neutral UI greys */
+  --slate-50:  #f5f3ee;
+  --slate-100: #e9e5dc;
+  --slate-200: #d6d1c4;
+  --slate-300: #b8b2a2;
+  --slate-400: #918b7c;
+  --slate-500: #6c6859;
+  --slate-600: #4d4a40;
+  --slate-700: #36342d;
+  --slate-800: #24231e;
+  --slate-900: #15140f;
+
+  /* ================================================================
+     SEMANTIC COLORS (colores de propósito)
+     ================================================================ */
+
+  /* Surfaces */
+  --surface-app:        var(--paper-100);     /* app background */
+  --surface-panel:      #ffffff;              /* cards, modals */
+  --surface-panel-alt:  var(--paper-50);     /* subtle alt panels */
+  --surface-sunken:     var(--paper-200);    /* inset wells */
+  --surface-inverse:    var(--ink-900);      /* dark blocks */
+
+  /* Foreground (text) */
+  --fg-1: var(--ink-900);      /* primary text */
+  --fg-2: var(--slate-600);    /* secondary text */
+  --fg-3: var(--slate-500);    /* tertiary, captions */
+  --fg-muted: var(--slate-400); /* muted/disabled */
+  --fg-on-inverse: var(--paper-50);  /* text on dark bg */
+  --fg-on-brass:   var(--ink-900);   /* text on brass */
+
+  /* Actions */
+  --action-primary-bg:       var(--ink-900);
+  --action-primary-bg-hover: var(--ink-800);
+  --action-primary-fg:       var(--paper-50);
+
+  --action-accent-bg:        var(--brass-400);
+  --action-accent-bg-hover:  var(--brass-500);
+  --action-accent-fg:        var(--ink-900);
+
+  --action-positive-bg:      var(--sage-500);
+  --action-positive-fg:      #ffffff;
+
+  --action-danger-bg:        var(--coral-500);
+  --action-danger-fg:        #ffffff;
+
+  /* Borders */
+  --border-subtle: color-mix(in oklab, var(--slate-200) 70%, transparent);
+  --border-default: var(--slate-200);
+  --border-strong:  var(--slate-300);
+  --border-inverse: var(--ink-700);
+
+  /* Status (semantic feedback) */
+  --status-success-fg: var(--sage-700);
+  --status-success-bg: var(--sage-50);
+
+  --status-danger-fg:  var(--coral-700);
+  --status-danger-bg:  var(--coral-50);
+
+  --status-warn-fg:    var(--brass-700);
+  --status-warn-bg:    var(--brass-50);
+
+  --status-info-fg:    var(--ink-800);
+  --status-info-bg:    color-mix(in oklab, var(--ink-900) 8%, white);
+
+  /* ================================================================
+     SPACING SCALE (4px base)
+     ================================================================ */
+  --space-0:  0;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* ================================================================
+     BORDER RADIUS
+     ================================================================ */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-pill: 999px;
+
+  /* ================================================================
+     SHADOWS / ELEVATION (soft, ink-on-paper feel)
+     ================================================================ */
+  --elev-0: none;
+  --elev-1: 0 1px 0 rgba(15,27,45,0.04), 0 1px 2px rgba(15,27,45,0.06);
+  --elev-2: 0 1px 0 rgba(15,27,45,0.04), 0 4px 12px -2px rgba(15,27,45,0.08);
+  --elev-3: 0 2px 0 rgba(15,27,45,0.04), 0 12px 28px -8px rgba(15,27,45,0.14);
+  --elev-4: 0 24px 60px -20px rgba(15,27,45,0.28);
+
+  /* Inset border for focus ring */
+  --inset-1: inset 0 0 0 1px var(--border-default);
+  --inset-focus: 0 0 0 3px color-mix(in oklab, var(--brass-400) 50%, transparent);
+
+  /* ================================================================
+     TYPOGRAPHY
+     ================================================================ */
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-sans:    "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Type scale */
+  --fs-display-xl: 72px;
+  --fs-display-lg: 56px;
+  --fs-display-md: 40px;
+  --fs-h1:  32px;
+  --fs-h2:  24px;
+  --fs-h3:  20px;
+  --fs-h4:  17px;
+  --fs-body:    15px;
+  --fs-body-sm: 13px;
+  --fs-caption: 12px;
+  --fs-overline: 11px;
+
+  /* Line heights */
+  --lh-tight:  1.1;
+  --lh-snug:   1.25;
+  --lh-normal: 1.45;
+  --lh-loose:  1.6;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide:  0.04em;
+  --tracking-overline: 0.12em;
+
+  /* ================================================================
+     MOTION
+     ================================================================ */
+  --ease-standard: cubic-bezier(.2,.7,.2,1);
+  --ease-out-soft: cubic-bezier(0,0,.2,1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+}

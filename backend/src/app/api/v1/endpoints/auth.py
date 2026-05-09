@@ -15,9 +15,31 @@ limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
+
+@router.post("/callback")
+@limiter.limit("30/minute")
+async def auth_callback(
+    request: Request,
+    profile: Profile = Depends(require_user),
+) -> dict:
+    """
+    Callback endpoint for Supabase authentication.
+    Validates JWT and returns user profile.
+    """
+    return {
+        "id": profile.id,
+        "email": profile.email,
+        "full_name": profile.full_name,
+        "role": profile.role,
+    }
+
+
 @router.get("/me", response_model=ProfileResponse)
 @limiter.limit("30/minute")
-async def get_me(request: Request, profile: Profile = Depends(require_user)) -> ProfileResponse:
+async def get_me(
+    request: Request,
+    profile: Profile = Depends(require_user),
+) -> ProfileResponse:
     """
     Retrieves the profile of the currently authenticated user.
     Validates the JWT session via the require_user dependency.

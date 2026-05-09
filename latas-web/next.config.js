@@ -1,9 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  reactCompiler: true,
 
   images: {
-    domains: ["localhost"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+    ],
   },
 
   headers: async () => [
@@ -33,11 +39,6 @@ const nextConfig = {
       permanent: false,
     },
   ],
-
-  // Opcional: habilitar React Compiler si lo habilitaste en tsconfig
-  experimental: {
-    reactCompiler: true,
-  },
 };
 
 module.exports = nextConfig;

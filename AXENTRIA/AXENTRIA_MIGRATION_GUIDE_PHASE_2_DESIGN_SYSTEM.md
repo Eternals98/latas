@@ -813,6 +813,7 @@ export default function DesignSystemPage() {
       {/* Colors */}
       <section className="mb-12">
         <h2 className="text-2xl mb-4">Colors</h2>
+        <div/>
         <div className="grid grid-cols-5 gap-4">
           <div className="bg-ink-900 h-20 rounded" />
           <div className="bg-brass-400 h-20 rounded" />
